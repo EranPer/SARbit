@@ -56,6 +56,7 @@
       <button id="btn-back" class="ghost small">← World map</button>
       <h2 id="m-title"></h2>
       <p id="m-place" class="muted"></p>
+      <p id="m-story" class="story"></p>
 
       <ol class="steps">
         <li data-step="1">👀 Look</li><li data-step="2">✨ Glow</li><li data-step="3">✏️ Mark</li><li data-step="4">✅ Check</li>
@@ -65,9 +66,13 @@
         <div id="alien-guide" class="alien small"></div>
         <p id="guide-text"></p>
       </div>
+      <p class="info-row"><button class="info" data-info="radar">? What is radar</button>
+        <button class="info" data-info="swipe" data-step-only="1">? The slider</button></p>
 
       <!-- step 2: two cards, two buckets -->
       <div id="glow-kit" hidden>
+        <p class="info-row"><button class="info" data-info="cards">? The two cards</button>
+          <button class="info" data-info="buckets">? Why colours</button></p>
         <div class="cards">
           <div class="card" draggable="true" data-date="before"><img alt=""><b>BEFORE</b><span class="d-before"></span></div>
           <div class="card" draggable="true" data-date="after"><img alt=""><b>AFTER</b><span class="d-after"></span></div>
@@ -80,13 +85,17 @@
           <span class="muted">Radar glasses:</span>
           <button class="ghost small" data-ch="CO"></button>
           <button class="ghost small" data-ch="CX"></button>
+          <button class="info" data-info="glasses">?</button>
         </div>
       </div>
 
       <!-- step 3: marking -->
       <div id="mark-kit" hidden>
-        <p class="counter">Marked: <b id="marked">0</b> squares</p>
-        <button id="btn-clear" class="ghost small">Clear all</button>
+        <p class="counter">Marked: <b id="marked">0</b> squares <button class="info" data-info="squares">?</button></p>
+        <div class="actions">
+          <button id="btn-hint" class="ghost small">💡 Hint</button>
+          <button id="btn-clear" class="ghost small">Clear all</button>
+        </div>
       </div>
 
       <div id="result" hidden></div>

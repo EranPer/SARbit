@@ -130,3 +130,13 @@ input { font: inherit; }
 .score-line { font-size: 15px; line-height: 1.5; }
 .legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 13px; margin-top: 6px; }
 .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+
+/* ---- explanations & hints (easy mode) ---- */
+.story { background: var(--panel2); border-left: 3px solid var(--accent); border-radius: 8px; padding: 8px 10px; font-size: 14px; line-height: 1.45; margin: 10px 0 0; }
+.info-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 0; }
+button.info { background: transparent; border: 1px solid var(--line); color: var(--accent); border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 600; }
+button.info:hover { background: var(--panel2); }
+.guide { border: 1px solid transparent; transition: border-color .3s; }
+.guide.flash { border-color: var(--accent); }
+path.hint-pulse { animation: pulse 0.9s ease-in-out infinite; }
+@keyframes pulse { 50% { stroke-opacity: .2; fill-opacity: .05; } }
