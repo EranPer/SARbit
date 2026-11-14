@@ -44,7 +44,8 @@
     const g = c.getContext("2d", { willReadFrequently: true }); g.drawImage(img, 0, 0);
     return g.getImageData(0, 0, c.width, c.height);
   };
-  const starText = (n) => "★".repeat(n) + `<span class="off">${"★".repeat(3 - n)}</span>`;
+  const starText = (n) => '<img src="art/star-on.webp" alt="★">'.repeat(n) + '<img class="off" src="art/star-off.webp" alt="☆">'.repeat(3 - n);
+  const ART = (name) => `<img class="ico" src="art/${name}.webp" alt="">`;
 
   // ---------- sound (made in the browser, no files) ----------
   let muted = store.get("muted", false), actx = null;
@@ -67,50 +68,73 @@
   $("#btn-sound").addEventListener("click", () => { muted = !muted; store.set("muted", muted); soundBtn(); });
   soundBtn();
 
-  // ---------- the alien (SVG, swap for illustrated art later) ----------
-  const ALIEN = `
-  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g class="float">
-    <line x1="100" y1="38" x2="100" y2="14" stroke="#7cf3c7" stroke-width="4"/>
-    <path d="M84 16 Q100 0 116 16" fill="none" stroke="#7cf3c7" stroke-width="4"/>
-    <circle cx="100" cy="12" r="4" fill="#fff"/>
-    <ellipse cx="100" cy="82" rx="52" ry="46" fill="#7cf3c7"/>
-    <ellipse cx="80" cy="78" rx="15" ry="18" fill="#0b1020"/><ellipse cx="120" cy="78" rx="15" ry="18" fill="#0b1020"/>
-    <circle cx="85" cy="72" r="5" fill="#fff"/><circle cx="125" cy="72" r="5" fill="#fff"/>
-    <path d="M86 104 Q100 114 114 104" fill="none" stroke="#0b1020" stroke-width="4" stroke-linecap="round"/>
-    <ellipse cx="100" cy="150" rx="78" ry="20" fill="#5aa8ff"/>
-    <ellipse cx="100" cy="142" rx="44" ry="12" fill="#b9d8ff" opacity=".8"/>
-    <circle cx="52" cy="152" r="4" fill="#ffc24a"/><circle cx="100" cy="160" r="4" fill="#ff5a5a"/><circle cx="148" cy="152" r="4" fill="#4be08a"/>
-  </g></svg>`;
-  ["#alien-intro", "#alien-guide", "#alien-end"].forEach((s) => ($(s).innerHTML = ALIEN));
-  function react(kind) {
-    const a = $("#alien-guide"); a.classList.remove("happy", "oops"); void a.offsetWidth; a.classList.add(kind);
+  // ---------- the alien (art: Grok Imagine, see CLAUDE.md) ----------
+  // faces: wave (hello), think, point (look at the map), surprised, happy, oops
+  const FACES = ["wave", "think", "point", "surprised", "happy", "oops"];
+  FACES.forEach((f) => (new Image().src = `art/alien-${f}.webp`));   // preload, so a face swap never blinks
+  function face(sel, f) {
+    const a = $(sel), img = a.querySelector("img") || a.appendChild(el("img", { alt: "SARbit the alien" }));
+    img.src = `art/alien-${f}.webp`; a.dataset.face = f;
+  }
+  face("#alien-intro", "full"); face("#alien-end", "happy"); face("#alien-guide", "wave");
+  let calm = "wave", faceTimer = null;
+  function setCalm(f) { calm = f; if (!faceTimer) face("#alien-guide", f); }
+  function react(kind) {   // happy / oops for a moment, then back to the calm face of this step
+    const a = $("#alien-guide"); face("#alien-guide", kind === "happy" ? "happy" : "oops");
+    a.classList.remove("happy", "oops"); void a.offsetWidth; a.classList.add(kind);
+    clearTimeout(faceTimer); faceTimer = setTimeout(() => { faceTimer = null; face("#alien-guide", calm); }, 2200);
   }
 
   // ---------- state ----------
   let missions = [];
-  let player = store.get("player", "");
-  let scores = store.get("scores", {});   // { missionId: best points }
-  let stars = store.get("stars", {});     // { missionId: best stars 0-3 }
+  // players: several cadets can share one device, each with their own points and stars
+  // sarbit.players = { name: { scores: { missionId: best points }, stars: { missionId: best 0-3 }, seen: time } }
+  let players = store.get("players", null);
+  if (!players) {   // carry over the one-player version
+    players = {};
+    const old = store.get("player", "");
+    if (old) players[old] = { scores: store.get("scores", {}), stars: store.get("stars", {}), seen: Date.now() };
+    store.set("players", players);
+  }
+  let player = store.get("player", ""), scores = {}, stars = {};
+  function usePlayer(name) {
+    player = name; store.set("player", name);
+    players[name] = players[name] || { scores: {}, stars: {}, seen: 0 };
+    scores = players[name].scores; stars = players[name].stars;
+    savePlayer(); updateHud();
+  }
+  function savePlayer() { if (player) { players[player] = { scores, stars, seen: Date.now() }; store.set("players", players); } }
+  const esc = (x) => String(x ?? "").replace(/[<>&"]/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[ch]));
   let worldMap = null, missionMap = null;
   let M = null;                            // the open mission
 
-  const total = () => Object.values(scores).reduce((a, b) => a + b, 0);
-  const totalStars = () => Object.values(stars).reduce((a, b) => a + b, 0);
+  const sum = (o) => Object.values(o || {}).reduce((a, b) => a + b, 0);
+  const total = () => sum(scores);
+  const totalStars = () => sum(stars);
   const updateHud = () => {
     $("#hud").hidden = !player;
-    $("#hud-name").textContent = player;
+    $("#hud-name").textContent = `👤 ${player}`;
     $("#hud-score").textContent = total();
     $("#hud-stars").textContent = totalStars();
   };
 
-  // ---------- intro ----------
-  $("#name-input").value = player;
+  // ---------- intro: who's playing? ----------
+  function renderPlayers() {
+    const names = Object.keys(players).sort((a, b) => players[b].seen - players[a].seen);
+    $("#players").hidden = !names.length;
+    $("#player-list").innerHTML = names.map((n) => `<button class="player ghost" data-name="${esc(n)}">👤 ${esc(n)}
+      <small>⭐ ${sum(players[n].stars)} · ${sum(players[n].scores)} pts</small></button>`).join("");
+    $("#player-list").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { usePlayer(b.dataset.name); openWorld(); }));
+    $("#name-input").value = names.length ? "" : player;
+  }
+  function switchPlayer() { if (M && M.cleanup) { M.cleanup(); M.cleanup = null; } show("screen-intro"); renderPlayers(); $("#name-input").focus(); }
   $("#name-form").addEventListener("submit", (e) => {
     e.preventDefault();
-    player = $("#name-input").value.trim().slice(0, 20) || "Cadet";
-    store.set("player", player);
-    updateHud(); openWorld();
+    usePlayer($("#name-input").value.trim().slice(0, 20) || "Cadet");
+    openWorld();
   });
+  $("#hud-name").addEventListener("click", switchPlayer);
+  $("#btn-switch").addEventListener("click", switchPlayer);
 
   // ---------- world map ----------
   async function openWorld() {
@@ -128,7 +152,7 @@
       L.circleMarker([m.lat, m.lon], { radius: 9, color: "#fff", weight: 2, fillColor: t.color, fillOpacity: done ? .45 : .95 })
         .addTo(worldMap).bindTooltip(`${m.title} · ${t.label}${done ? ` · ${"★".repeat(st)}` : ""}`).on("click", () => openMission(m.id));
       const li = el("li", { class: done ? "done" : "" }, [
-        el("span", { class: "chip", style: `background:${t.color}` }),
+        el("img", { class: "thumb", src: `art/card-${m.topic}.webp`, alt: "", style: `border-color:${t.color}` }),
         el("span", { text: m.title }),
       ]);
       const s = el("span", { class: "pts stars" }); s.innerHTML = done ? starText(st) : "";
@@ -139,12 +163,63 @@
     drawBoard();
   }
 
+  // top cadets on this device (the full scoreboard is a dialog)
+  const ranking = () => Object.entries(players).map(([name, p]) => ({ name, pts: sum(p.scores), stars: sum(p.stars),
+    done: missions.filter((m) => m.id in (p.scores || {})).length })).sort((a, b) => b.pts - a.pts || b.stars - a.stars);
   function drawBoard() {
-    const board = store.get("board", []);
-    $("#board-list").innerHTML = board.length
-      ? board.map((b) => `<li><b>${b.name.replace(/[<>&]/g, "")}</b> · ${b.score}</li>`).join("")
-      : "<li>No finished runs yet</li>";
+    const top = ranking().filter((r) => r.pts > 0).slice(0, 5);
+    $("#board-list").innerHTML = top.length
+      ? top.map((r) => `<li class="${r.name === player ? "me" : ""}"><b>${esc(r.name)}</b> · ⭐ ${r.stars} · ${r.pts}</li>`).join("")
+      : "<li>No scores yet: be the first!</li>";
   }
+
+  // ---------- scoreboard dialog: this device, and the world board (api/scores.js) ----------
+  const WORLD = "api/scores";
+  function openBoard(tab = "device") {
+    const d = $("#board-dialog");
+    if (!d.open) d.showModal();
+    d.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.tab === tab));
+    $("#board-device").hidden = tab !== "device"; $("#board-world").hidden = tab !== "world";
+    if (tab === "device") {
+      const rows = ranking();
+      $("#board-device").innerHTML = rows.length ? `<table class="board"><tr><th>#</th><th>Cadet</th><th>⭐</th><th>Points</th><th>Missions</th></tr>
+        ${rows.map((r, i) => `<tr class="${r.name === player ? "me" : ""}"><td>${i === 0 && r.pts ? "🏆" : i + 1}</td><td>${esc(r.name)}</td>
+          <td>${r.stars}</td><td>${r.pts}</td><td>${r.done} / ${missions.length}</td></tr>`).join("")}</table>
+        <p class="muted small">Scores stay on this device. Tap your name at the top to switch player.</p>` : "<p>No players yet.</p>";
+    } else worldTab();
+  }
+  async function worldTab() {
+    const box = $("#board-world");
+    box.innerHTML = "<p class=\"muted\">Loading the world board…</p>";
+    let data = null;
+    try { const r = await fetch(WORLD, { cache: "no-store" }); if (r.ok) data = await r.json(); } catch { /* offline */ }
+    if (!data || !Array.isArray(data.top)) {
+      box.innerHTML = `<p>The world board isn't switched on yet.</p><p class="muted small">For the team: Vercel → the SARbit project → Storage →
+        add an Upstash Redis database and connect it. Nothing else to change: <code>api/scores.js</code> is ready.</p>`;
+      return;
+    }
+    const me = data.top.find((r) => r.name.toLowerCase() === player.toLowerCase());
+    box.innerHTML = `${data.top.length ? `<table class="board"><tr><th>#</th><th>Cadet</th><th>⭐</th><th>Points</th></tr>
+      ${data.top.map((r, i) => `<tr class="${r === me ? "me" : ""}"><td>${i === 0 ? "🏆" : i + 1}</td><td>${esc(r.name)}</td><td>${r.stars}</td><td>${r.points}</td></tr>`).join("")}</table>`
+      : "<p>No scores yet: be the first!</p>"}
+      <div class="upload"><p class="small">Send <b>${esc(player)}</b>: ⭐ ${totalStars()} · ${total()} points. Everyone will see this name, so use a nickname, never your real full name.</p>
+      <button id="btn-upload" ${total() ? "" : "disabled"}>🌍 Send my score</button></div>`;
+    const up = $("#btn-upload");
+    if (up) up.onclick = async () => {
+      up.disabled = true; up.textContent = "Sending…";
+      try {
+        const r = await fetch(WORLD, { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: player, points: total(), stars: totalStars(), missions: missions.filter((m) => m.id in scores).length }) });
+        if (!r.ok) throw new Error(await r.text());
+        worldTab();
+      } catch (err) { up.textContent = "Couldn't send, try again"; up.disabled = false; }
+    };
+  }
+  $("#btn-board").addEventListener("click", () => openBoard());
+  $("#btn-world-board").addEventListener("click", () => openBoard());
+  $("#btn-end-board").addEventListener("click", () => openBoard());
+  $("#btn-board-close").addEventListener("click", () => $("#board-dialog").close());
+  document.querySelectorAll("#board-dialog .tabs button").forEach((b) => b.addEventListener("click", () => openBoard(b.dataset.tab)));
 
   // ---------- mission: 1 look · 2 glow · 3 find · 4 score ----------
   // Easy mode explains everything and gives hints; a Hard mode (no hints, fine grid) comes later.
@@ -187,7 +262,7 @@
     spots: () => `Tap the places that glow. Each glowing spot you find = ${PTS.spot} points, and the faster the better. ` +
       `Tapping where nothing changed costs a heart ❤️.` + (MODE === "easy" ? " Stuck? Press 💡 Hint." : ""),
   };
-  const say = (t) => ($("#guide-text").textContent = t);
+  const say = (t) => { $("#guide-text").textContent = t; if (guideMin) { const g = $("#guide-panel"); g.classList.remove("ping"); void g.offsetWidth; g.classList.add("ping"); } };
   const PLAYTEST = location.hash.includes("playtest");
   function log(ev, data = {}) {
     if (!PLAYTEST || !M) return;
@@ -212,8 +287,8 @@
           picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS,
           content: extra, rule: { sign: 0, db: CHANGE_DB, water_max: 99, ...((extra.game || {}).rule || {}) },
           focus: (extra.game || {}).focus || [0, 0, 1, 1], anaCache: {}, game: extra.game || { type: "spots" }, result: null, onTap: null };
-    const STEP3 = { spots: "🎯 Find", quiz: "🔎 Inspect", order: "⏳ Order", lasso: "⭕ Circle", hunt: "🛢️ Hunt" };
-    $('.steps li[data-step="3"]').textContent = STEP3[M.game.type] || "🎯 Play";
+    const STEP3 = { spots: ART("icon-find") + "Find", quiz: ART("icon-inspect") + "Inspect", order: "⏳ Order", lasso: "⭕ Circle", hunt: ART("icon-rig") + "Hunt" };
+    $('.steps li[data-step="3"]').innerHTML = STEP3[M.game.type] || "🎯 Play";
 
     $("#m-title").textContent = info.title || id;
     $("#m-place").textContent = info.place || "";
@@ -221,7 +296,7 @@
     renderInfo(extra);
     $(".d-before").textContent = info.before.date; $(".d-after").textContent = info.after.date;
     document.querySelectorAll(".glasses button[data-ch]").forEach((bt) => {
-      bt.textContent = bt.dataset.ch === "CO" ? `${CO} 💧 water` : `${CX} 🌿 plants`;
+      bt.innerHTML = bt.dataset.ch === "CO" ? `${ART("badge-water")}${CO} water` : `${ART("badge-leaf")}${CX} plants`;
       bt.hidden = bt.dataset.ch === "CX" && CO === CX;
     });
     setPoints();
@@ -248,14 +323,23 @@
   }
 
   function renderInfo(c) {
-    const esc = (s) => String(s || "").replace(/[<>&"]/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[ch]));
     const facts = (c.facts || []).map((f) => `<li>${esc(f)}</li>`).join("");
     const news = (c.news || []).filter((n) => /^https:\/\//.test(n.url)).map((n) =>
       `<li><a href="${esc(n.url)}" target="_blank" rel="noopener noreferrer">${esc(n.title)}</a><span>${esc(n.source)}${n.date ? " · " + esc(n.date) : ""}</span></li>`).join("");
-    $("#m-info").innerHTML = facts || news ? `<details open><summary>📰 What happened</summary>
-      ${facts ? `<ul class="facts">${facts}</ul>` : ""}${news ? `<p class="muted">Read more:</p><ul class="news">${news}</ul>` : ""}
-      <p class="muted small">Radar data: NASA-ISRO NISAR, ${esc(M.info.before.date)} and ${esc(M.info.after.date)}.</p></details>` : "";
+    $("#m-info").innerHTML = facts || news ? `${facts ? `<ul class="facts">${facts}</ul>` : ""}${news ? `<p class="muted">Read more:</p><ul class="news">${news}</ul>` : ""}
+      <p class="muted small">Radar data: NASA-ISRO NISAR, ${esc(M.info.before.date)} and ${esc(M.info.after.date)}.</p>` : "";
+    $("#news-panel").hidden = !(facts || news);
+    M.newsTouched = false;
   }
+  // the news panel opens by itself on Look and Score (not over the map while you play), unless you opened or closed it
+  function newsOpen(open) { $("#m-info").hidden = !open; $("#btn-news").classList.toggle("on", open); $("#btn-news").textContent = open ? "📰 What happened ✕" : "📰 What happened"; }
+  $("#btn-news").addEventListener("click", () => { M.newsTouched = true; newsOpen($("#m-info").hidden); });
+  // the alien's tips can shrink to just the alien; a new tip makes it wiggle
+  let guideMin = store.get("guideMin", false);
+  function guideSize(min) { guideMin = min; store.set("guideMin", min); $("#guide-panel").classList.toggle("min", min); $("#guide-panel").classList.remove("ping"); }
+  $("#btn-guide-min").addEventListener("click", () => guideSize(true));
+  $("#alien-guide").addEventListener("click", () => guideMin && guideSize(false));
+  guideSize(guideMin);
 
   // ---------- map layers: OpenStreetMap towns / roads / rivers, NASA's camera, a street map ----------
   const LAYERS = {
@@ -352,7 +436,7 @@
     box.hidden = !(c && (c.clouds === "yes" || c.clouds === "no") && !M.got.camera);
     if (box.hidden) return;
     const date = c.date || M.info.after.date;
-    box.innerHTML = `<p class="quiz-q">📷 Bonus: NASA's camera satellite flew over on ${date}. Can a normal camera see the ground?</p>
+    box.innerHTML = `<p class="quiz-q">${ART("icon-camera")} Bonus: NASA's camera satellite flew over on ${date}. Can a normal camera see the ground?</p>
       <button id="cam-show" class="ghost small">📷 Show me the camera photo</button>
       <div class="quiz-a" hidden><button data-c="yes">☁️ No, clouds hide it</button><button data-c="no">🌍 Yes, I can see it</button></div>`;
     $("#cam-show").onclick = () => { setLayer("camera", true); $("#cam-show").hidden = true; box.querySelector(".quiz-a").hidden = false;
@@ -394,6 +478,8 @@
     if (M.on.has("camera") || M.on.has("street")) { M.on.delete("camera"); M.on.delete("street"); setLayer(); }   // show the radar again
     $("#camera-kit").hidden = true;
 
+    setCalm(step === 1 ? "wave" : step === 2 ? "think" : step === 3 ? "point" : "happy");
+    if (!M.newsTouched) newsOpen(step === 1 || step === 4);
     if (step === 1) {
       startSwipe(); cameraQuestion();
       say("Slide the bar on the map: left = BEFORE, right = AFTER. Can you spot what changed? Tap a ? if you want me to explain.");
@@ -741,8 +827,8 @@
     const st = R && R.stars != null ? R.stars : !n ? 0 : f === n ? 3 : f >= n / 2 ? 2 : f >= 1 ? 1 : 0;
     if (M.ana && !R) drawFound(true);
     M.extra.push(L.imageOverlay(M.base + M.info.change_overlay, M.bounds, { opacity: 0.55, interactive: false }).addTo(missionMap));
-    scores[M.id] = Math.max(scores[M.id] || 0, M.points); store.set("scores", scores);
-    stars[M.id] = Math.max(stars[M.id] || 0, st); store.set("stars", stars); updateHud();
+    scores[M.id] = Math.max(scores[M.id] || 0, M.points); stars[M.id] = Math.max(stars[M.id] || 0, st);
+    savePlayer(); updateHud();
     if (st === 3) sfx("win");
     const cheer = st === 3 ? "Perfect! Amazing radar eyes! 🚀" : st === 2 ? "Great work, cadet! 👍" : st === 1 ? "Good start! 💪" : "Let's try again! 💪";
     $("#result").innerHTML = `<div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>
@@ -781,18 +867,17 @@
 
   // ---------- end ----------
   function finish() {
-    const board = store.get("board", []);
-    board.push({ name: player, score: total() });
-    board.sort((a, b) => b.score - a.score);
-    store.set("board", board.slice(0, 10));
-    $("#end-text").textContent = `${player}, you cleaned ${Object.keys(scores).length} of ${missions.length} places, earned ⭐ ${totalStars()} stars and ${total()} points.`;
+    if (M && M.cleanup) { M.cleanup(); M.cleanup = null; }
+    $("#end-text").textContent = `${player}, you cleaned ${missions.filter((m) => m.id in scores).length} of ${missions.length} places, earned ⭐ ${totalStars()} stars and ${total()} points.`;
     show("screen-end");
   }
   $("#btn-finish").addEventListener("click", finish);
+  $("#btn-world-finish").addEventListener("click", finish);
   $("#btn-again").addEventListener("click", () => {
-    scores = {}; stars = {}; store.set("scores", scores); store.set("stars", stars); updateHud(); openWorld();
+    scores = {}; stars = {}; savePlayer(); updateHud(); openWorld();
   });
 
-  updateHud();
+  if (player) usePlayer(player);
+  renderPlayers(); updateHud();
   if (location.hash.includes("debug")) window.SARBIT = { get M() { return M; }, get map() { return missionMap; }, openMission };
 })();

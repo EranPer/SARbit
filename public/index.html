@@ -9,10 +9,11 @@
 </head>
 <body>
   <header id="topbar">
-    <div class="brand"><span class="dot"></span> SARbit <small>radar cleanup</small></div>
+    <div class="brand"><img class="brand-ufo" src="art/ufo.webp" alt=""> SARbit <small>radar cleanup</small></div>
     <div id="hud" hidden>
-      <span id="hud-name"></span>
-      <span class="score">⭐ <b id="hud-stars">0</b> · <b id="hud-score">0</b> pts</span>
+      <button id="hud-name" class="ghost small" title="Switch player"></button>
+      <button id="btn-board" class="ghost small" title="Scoreboard">🏆</button>
+      <span class="score"><img class="ico" src="art/star-on.webp" alt="stars"> <b id="hud-stars">0</b> · <b id="hud-score">0</b> pts</span>
       <button id="btn-sound" class="ghost small" title="Sound on/off">🔊</button>
       <button id="btn-finish" class="ghost">Finish</button>
     </div>
@@ -20,6 +21,8 @@
 
   <!-- 1 · intro -->
   <section id="screen-intro" class="screen active">
+    <img class="deco earth" src="art/earth.webp" alt="">
+    <img class="deco dish" src="art/dish.webp" alt="">
     <div class="intro-card">
       <div id="alien-intro" class="alien big"></div>
       <div class="intro-text">
@@ -28,8 +31,9 @@
            Something changed down there: floods, cut forests, harvests, oil.</p>
         <p>I have <b>radar pictures</b> from <b>before</b> and <b>after</b>. Put them in two colours and
            everything that changed will <b>glow</b>. Then mark where it glows. Can you find all the changes?</p>
+        <div id="players" hidden><p class="muted">Who's playing? Tap your name:</p><div id="player-list"></div><p class="muted">New cadet? Type a name:</p></div>
         <form id="name-form">
-          <input id="name-input" maxlength="20" placeholder="Your cadet name" required autocomplete="off">
+          <input id="name-input" maxlength="20" placeholder="Your cadet name (a nickname)" required autocomplete="off">
           <button type="submit">Start mission</button>
         </form>
         <p class="credit">Real data: NASA-ISRO NISAR L-band radar, 2026.</p>
@@ -47,6 +51,8 @@
       <div id="board">
         <h3>Top cadets</h3>
         <ol id="board-list"></ol>
+        <p class="info-row"><button id="btn-world-board" class="ghost small">🏆 Full scoreboard</button>
+          <button id="btn-world-finish" class="ghost small">🏁 Finish</button></p>
       </div>
     </aside>
   </section>
@@ -60,16 +66,10 @@
       <p id="m-story" class="story"></p>
 
       <ol class="steps">
-        <li data-step="1">👀 Look</li><li data-step="2">✨ Glow</li><li data-step="3">🎯 Find</li><li data-step="4">⭐ Score</li>
+        <li data-step="1"><img class="ico" src="art/icon-look.webp" alt="">Look</li><li data-step="2"><img class="ico" src="art/icon-glow.webp" alt="">Glow</li><li data-step="3"><img class="ico" src="art/icon-find.webp" alt="">Find</li><li data-step="4"><img class="ico" src="art/icon-score.webp" alt="">Score</li>
       </ol>
 
       <p class="mission-pts">Mission points: <b id="m-points">0</b></p>
-      <div class="guide">
-        <div id="alien-guide" class="alien small"></div>
-        <p id="guide-text"></p>
-      </div>
-      <p class="info-row"><button class="info" data-info="radar">? What is radar</button>
-        <button class="info" data-info="swipe" data-step-only="1">? The slider</button></p>
       <div id="camera-kit" class="game-kit" hidden></div>
 
       <!-- step 2: two cards, two buckets -->
@@ -102,8 +102,6 @@
       <div id="game-kit" class="game-kit" hidden></div>
       <div id="result" hidden></div>
       <div id="playtest" hidden></div>
-      <section id="m-info" class="info-panel"></section>
-
       <div class="actions">
         <button id="btn-prev" class="ghost">Back</button>
         <button id="btn-next">Next</button>
@@ -118,19 +116,47 @@
         <span>before</span><input id="swipe" type="range" min="0" max="100" value="50"><span>after</span>
       </div>
     </div>
+
+    <!-- stand-alone panels: the alien's tips (bottom left of the map) and the news (top right) -->
+    <div id="guide-panel" class="float-panel">
+      <div class="guide">
+        <div id="alien-guide" class="alien small" title="Hide / show my tips"></div>
+        <div class="guide-body">
+          <p id="guide-text"></p>
+          <p class="info-row"><button class="info" data-info="radar"><img class="ico" src="art/badge-radar.webp" alt=""> What is radar?</button>
+            <button class="info" data-info="swipe" data-step-only="1">? The slider</button></p>
+        </div>
+        <button id="btn-guide-min" class="ghost small panel-x" title="Hide tips">–</button>
+      </div>
+    </div>
+    <aside id="news-panel" class="float-panel">
+      <button id="btn-news" class="ghost small">📰 What happened</button>
+      <section id="m-info" class="info-panel" hidden></section>
+    </aside>
   </section>
 
   <!-- 4 · end -->
   <section id="screen-end" class="screen">
+    <img class="deco earth" src="art/earth.webp" alt="">
     <div class="intro-card">
       <div id="alien-end" class="alien big"></div>
+      <img class="trophy" src="art/trophy.webp" alt="">
       <div class="intro-text">
         <h1>Mission log closed</h1>
         <p id="end-text"></p>
-        <button id="btn-again">Play again</button>
+        <div class="actions"><button id="btn-end-board">🏆 Scoreboard</button><button id="btn-switch" class="ghost">👤 Next player</button>
+          <button id="btn-again" class="ghost">Play again</button></div>
       </div>
     </div>
   </section>
+
+  <!-- the scoreboard: this device's players + the world board (api/scores.js, when it's switched on) -->
+  <dialog id="board-dialog">
+    <div class="board-head"><h2>🏆 Scoreboard</h2><button id="btn-board-close" class="ghost small">✕</button></div>
+    <div class="tabs"><button data-tab="device" class="on">On this device</button><button data-tab="world">🌍 World</button></div>
+    <div id="board-device"></div>
+    <div id="board-world" hidden></div>
+  </dialog>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/games/quiz.js"></script>

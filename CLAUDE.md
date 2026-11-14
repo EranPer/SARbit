@@ -40,6 +40,7 @@ If you are a Claude session: read this whole file before you change anything, th
 | `public/missions/index.json` | the list of missions on the world map | written by the scripts |
 | `public/missions/README.md` | the data contract in short | |
 | `pipeline/` | how the data is made: NISAR → GDAL clip → FME → `package.py`; plus `from_geotiff.py` for any other method | Yonatan (NISAR), Ben (Sentinel-2, InSAR) |
+| `public/art/` | the alien (6 faces + full body), icons, topic badges, mission cards, stars, trophy, Earth, dish, background. **Made with Grok Imagine (AI): list it in the AI disclosure.** Cut and shrunk to WebP from Grok's segment exports | Yonatan |
 | `pipeline/osm_layers.py` | OpenStreetMap towns, big roads, rivers, platforms → `public/missions/<ID>/osm.geojson` (run once per new mission) | anyone |
 
 ## 4 · The data contract: the only thing data and game must agree on
@@ -153,6 +154,16 @@ Flow: intro → world map (pins from `index.json`, stars per mission) → missio
 **🗺 Layers** (button on the map, every step): OSM towns & islands, roads, rivers (from `osm.geojson`), NASA camera
 photo (VIIRS; `camera.layer: "hls"` = sharp Landsat/Sentinel-2 for clear days, Jezreel), 💧 wet on each date
 (radar dark < −18 dB, white outline; the Salt Lake starts with June on), OSM street map. `content.json` `layers` says which start switched on.
+
+**Screens:** the mission screen is a narrow left panel (title, steps, the game's controls, Next) plus stand-alone panels
+over the map: 🗺 Layers (top left), 📰 What happened (top right; opens by itself on Look and Score), the alien's tips
+(bottom left; "–" shrinks it to the alien, a new tip makes it wiggle), the before/after slider (bottom right).
+On phones they stack: tips, mission, map, news.
+
+**Players and scores:** several cadets per device (`localStorage` `sarbit.players`); tap the name at the top to switch.
+🏆 opens the scoreboard: *On this device* and *🌍 World*. The world board is `api/scores.js` (Vercel Edge Function,
+best score per nickname, top 20). **To switch it on (Eran, Vercel owner):** Vercel → SARbit project → Storage →
+Upstash Redis → create + connect to the project → redeploy. Until then the World tab says it is off; nothing breaks.
 
 `grid.geojson` is no longer used by Easy mode (it stays the answer key for a future Hard mode).
 Easy mode (`MODE` in `app.js`): "?" explanations, hint ring, story line. Sounds are made in the browser (🔊 toggle).
