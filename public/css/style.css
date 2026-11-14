@@ -195,3 +195,25 @@ path.hint-pulse { animation: pulse 0.9s ease-in-out infinite; }
 .info-panel .news a { color: var(--accent); }
 .info-panel .news span { display: block; color: var(--muted); font-size: 12px; }
 .info-panel .small { font-size: 12px; }
+
+/* ---- games: quiz pins, time machine ---- */
+.game-kit { margin-top: 12px; }
+.quiz-q { font-size: 16px; font-weight: 700; line-height: 1.4; margin: 6px 0 10px; }
+.quiz-a { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.quiz-a button { font-size: 18px; padding: 14px 8px; }
+.quiz-pin { background: none; border: 0; }
+.quiz-pin span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; font-weight: 800;
+  background: #ffffff; color: #0b1020; border: 3px solid #0b1020; box-shadow: 0 0 0 2px #fff; }
+.quiz-pin.now span { background: #ffe14a; animation: pinpulse 0.9s ease-in-out infinite; }
+.quiz-pin.ok span { background: #4be08a; } .quiz-pin.bad span { background: #ff5a5a; color: #fff; }
+@keyframes pinpulse { 50% { transform: scale(1.25); } }
+.tm-clues { padding-left: 20px; font-size: 14px; line-height: 1.45; margin: 6px 0 10px; }
+.tm-deck, .tm-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0; }
+.tm-card { background: var(--panel2); border: 2px solid var(--line); border-radius: 10px; padding: 4px; text-align: center; cursor: pointer; }
+.tm-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; display: block; }
+.tm-card.picked { border-color: var(--accent); }
+.tm-slot { border: 2px dashed var(--line); border-radius: 12px; min-height: 96px; padding: 4px; text-align: center; font-size: 12px; color: var(--muted); }
+.tm-slot span { display: block; font-weight: 800; color: var(--text); }
+.tm-answer { padding-left: 18px; }
+.tm-answer li { display: flex; gap: 8px; align-items: center; margin: 6px 0; font-size: 13px; }
+.tm-answer img { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; }

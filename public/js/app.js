@@ -202,7 +202,9 @@
           best: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO",
           picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS,
           content: extra, rule: { sign: 0, db: CHANGE_DB, water_max: 99, ...((extra.game || {}).rule || {}) },
-          focus: (extra.game || {}).focus || [0, 0, 1, 1], anaCache: {} };
+          focus: (extra.game || {}).focus || [0, 0, 1, 1], anaCache: {}, game: extra.game || { type: "spots" }, result: null, onTap: null };
+    const STEP3 = { spots: "🎯 Find", quiz: "🔎 Inspect", order: "⏳ Order", lasso: "⭕ Circle" };
+    $('.steps li[data-step="3"]').textContent = STEP3[M.game.type] || "🎯 Play";
 
     $("#m-title").textContent = info.title || id;
     $("#m-place").textContent = info.place || "";
@@ -218,7 +220,7 @@
     if (!missionMap) {
       missionMap = L.map("mission-map", { zoomSnap: 0.25 });
       L.tileLayer(ESRI, { attribution: ESRI_ATTR, maxZoom: 18 }).addTo(missionMap);
-      missionMap.on("click", (ev) => M && M.step === 3 && tap(ev.latlng));
+      missionMap.on("click", (ev) => M && M.step === 3 && (M.onTap ? M.onTap(ev.latlng) : tap(ev.latlng)));
     }
     missionMap.eachLayer((l) => !(l instanceof L.TileLayer) && missionMap.removeLayer(l));
     M.overlay = null;
@@ -253,11 +255,14 @@
     document.querySelectorAll(".steps li").forEach((li) => {
       li.classList.toggle("now", +li.dataset.step === step); li.classList.toggle("past", +li.dataset.step < step);
     });
-    $("#glow-kit").hidden = step !== 2; $("#find-kit").hidden = step !== 3; $("#result").hidden = step !== 4;
+    const spots = M.game.type === "spots";
+    $("#glow-kit").hidden = step !== 2; $("#find-kit").hidden = !(step === 3 && spots); $("#result").hidden = step !== 4;
+    $("#game-kit").hidden = !(step === 3 && !spots); if (step !== 3) { $("#game-kit").innerHTML = ""; M.onTap = null; }
+    missionMap.dragging.enable(); if (M.cleanup) { M.cleanup(); M.cleanup = null; }
     $("#btn-prev").hidden = step !== 2;
     document.querySelectorAll("[data-step-only]").forEach((b) => (b.hidden = +b.dataset.stepOnly !== step));
     $("#btn-hint2").hidden = MODE !== "easy";
-    $("#map-hud").hidden = step !== 3;
+    $("#map-hud").hidden = !(step === 3 && spots);
     log("step", { step });
     $("#mission-map").classList.toggle("find-mode", step === 3);
     stopSwipe(); M.extra.forEach((l) => missionMap.removeLayer(l)); M.extra = []; M.foundLayer = null;
@@ -268,14 +273,16 @@
       next("Next: make it glow ✨", true);
     }
     if (step === 2) { refreshCards(); composite(); glowHint(); }
-    if (step === 3) startFind();
+    if (step === 3) (spots ? startFind() : startGame());
     if (step === 4) score();
     if (step !== 4) $("#playtest").hidden = true;
   }
 
+  const spots = () => M.game.type === "spots";
   function next(label, enabled) { const b = $("#btn-next"); b.textContent = label; b.disabled = !enabled; }
   $("#btn-next").addEventListener("click", () => {
     if (M.step === 2 && M.glasses === M.best) award("glasses", PTS.glasses);
+    if (M.step === 3 && !spots() && !M.result) return M.finishGame && M.finishGame();
     if (M.step === 4) return openWorld();
     goStep(M.step + 1);
   });
@@ -386,6 +393,39 @@
     else M.overlay = L.imageOverlay(url, M.bounds).addTo(missionMap);
   }
 
+  // ---------- step 3 · other games (public/js/games/<type>.js) ----------
+  // per-block mean dB of one channel, for games that ask about places (quiz, lasso…)
+  function blockStats(ch) {
+    const B = M.layers[`before_${ch}`].data, A = M.layers[`after_${ch}`].data, W = B.width, H = B.height;
+    const bw = Math.floor(W / BLOCK), bh = Math.floor(H / BLOCK);
+    const before = new Float32Array(bw * bh), after = new Float32Array(bw * bh), valid = new Uint8Array(bw * bh);
+    for (let by = 0; by < bh; by++) for (let bx = 0; bx < bw; bx++) {
+      let sb = 0, sa = 0, n = 0;
+      for (let y = by * BLOCK; y < (by + 1) * BLOCK; y++) for (let x = bx * BLOCK; x < (bx + 1) * BLOCK; x++) {
+        const i = (y * W + x) * 4;
+        if (!B.data[i + 3] || !A.data[i + 3]) continue;
+        sb += B.data[i]; sa += A.data[i]; n++;
+      }
+      const k = by * bw + bx;
+      if (n > (BLOCK * BLOCK) / 2) { valid[k] = 1; before[k] = sb / n / DB_PER_GREY - 35; after[k] = sa / n / DB_PER_GREY - 35; }
+    }
+    return { bw, bh, before, after, valid };
+  }
+  function startGame() {
+    const G = (window.SARbitGames || {})[M.game.type];
+    if (!G) { say(`This mission's game (${M.game.type}) isn't loaded.`); return next("Score it ⭐", true); }
+    composite();
+    M.ana = analysis();
+    const api = {
+      M, map: missionMap, kit: $("#game-kit"), cfg: M.game, say, award, floatText, sfx, react, next,
+      analysis, blockStats, toBlock, toLatLng, starText,
+      layer: (l) => { M.extra.push(l); return l.addTo(missionMap); },
+      done: (result) => { M.result = result; goStep(4); },
+    };
+    M.finishGame = () => G.finish && G.finish(api);
+    G.start(api);
+  }
+
   // ---------- step 3 · find the glowing spots ----------
   // The answer comes from the SAME layers the player sees, so whatever glows can be found.
   function analyse(ch) {
@@ -401,9 +441,9 @@
       if (n <= (BLOCK * BLOCK) / 2) continue;
       const fx = (bx + 0.5) / bw, fy = (by + 0.5) / bh, [fx0, fy0, fx1, fy1] = M.focus;
       if (fx < fx0 || fx > fx1 || fy < fy0 || fy > fy1) continue;   // outside the mission's focus area
-      const d = s / n / DB_PER_GREY, after = sa / n / DB_PER_GREY - 35, r = M.rule;
+      const d = s / n / DB_PER_GREY, after = sa / n / DB_PER_GREY - 35, before = after - d, r = M.rule;
       const strong = r.sign < 0 ? d <= -r.db : r.sign > 0 ? d >= r.db : Math.abs(d) >= r.db;
-      if (strong && after < r.water_max) changed[by * bw + bx] = 1;
+      if (strong && after < r.water_max && before < (r.before_max ?? 99)) changed[by * bw + bx] = 1;
     }
     const labels = new Int32Array(bw * bh), blobs = [];
     for (let i = 0; i < bw * bh; i++) {
@@ -538,23 +578,25 @@
 
   // ---------- step 4 · score ----------
   function score() {
-    const n = M.ana ? M.ana.targets.length : 0, f = M.found.size;
-    const st = !n ? 0 : f === n ? 3 : f >= n / 2 ? 2 : f >= 1 ? 1 : 0;
-    if (M.ana) drawFound(true);
+    const R = M.result;
+    const n = R ? R.total : M.ana ? M.ana.targets.length : 0, f = R ? R.got : M.found.size;
+    const st = R && R.stars != null ? R.stars : !n ? 0 : f === n ? 3 : f >= n / 2 ? 2 : f >= 1 ? 1 : 0;
+    if (M.ana && !R) drawFound(true);
     M.extra.push(L.imageOverlay(M.base + M.info.change_overlay, M.bounds, { opacity: 0.55, interactive: false }).addTo(missionMap));
     scores[M.id] = Math.max(scores[M.id] || 0, M.points); store.set("scores", scores);
     stars[M.id] = Math.max(stars[M.id] || 0, st); store.set("stars", stars); updateHud();
     if (st === 3) sfx("win");
     const cheer = st === 3 ? "Perfect! Amazing radar eyes! 🚀" : st === 2 ? "Great work, cadet! 👍" : st === 1 ? "Good start! 💪" : "Let's try again! 💪";
     $("#result").innerHTML = `<div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>
-      <p class="score-line"><b>${cheer}</b><br>You found <b>${f}</b> of <b>${n}</b> glowing spots${M.got.glasses ? ", and picked the best radar glasses" : ""}.</p>
-      <div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff2828"></i>what NISAR measured</span></div>
+      <p class="score-line"><b>${cheer}</b><br>${R ? R.line : `You found <b>${f}</b> of <b>${n}</b> glowing spots`}${M.got.glasses ? ", and picked the best radar glasses" : ""}.</p>
+      ${R ? "" : `<div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff2828"></i>what NISAR measured</span></div>`}
       <p class="muted">Why? ${WHY[M.info.topic] || ""}</p>
       <button id="btn-retry" class="ghost small">Play this mission again</button>`;
     $("#btn-retry").onclick = () => openMission(M.id);
     if (PLAYTEST) playtestNotes(n, f, st);
+    M.result = null;
     react(st >= 2 ? "happy" : "oops");
-    say((f < n ? "The yellow spots are the ones you missed: they glow too! " : "You found every spot! ") + (WHY[M.info.topic] || ""));
+    say((R ? "" : f < n ? "The yellow spots are the ones you missed: they glow too! " : "You found every spot! ") + (WHY[M.info.topic] || ""));
     next("Next mission 🌍", true);
   }
 

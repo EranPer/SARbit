@@ -2,75 +2,273 @@
  "_how": "Text and game settings per mission. Safe to edit without coding: change the words, add facts or news links. game.rule: sign -1 = only 'got darker' counts, 1 = only 'got brighter', 0 = both; db = how strong the change must be; water_max = after must be darker than this dB (99 = off). game.focus = [left, top, right, bottom] as fractions of the picture (optional): only change inside counts.",
  "W1": {
   "story": "In October 2026 a storm called DANA Adam poured rain on the coast near Gandia, Spain, and fields and streets filled with water.",
-  "facts": ["The storm hit eastern Spain on 17–19 October 2026.", "More than 1,000 people were rescued and about 2,000 were evacuated.", "Near Gandia, homes by the beach were flooded."],
-  "news": [
-   {"title": "Four deaths reported as DANA Adam flooding prompts more than 1,000 rescues in eastern Spain", "source": "Watchers", "date": "2026-10-20", "url": "https://watchers.news/2026/10/20/four-deaths-reported-as-dana-adam-flooding-prompts-more-than-1-000-rescues-in-eastern-spain/"},
-   {"title": "4 dead as severe floods hit eastern Spain, thousands evacuated", "source": "Anadolu Agency", "date": "2026-10", "url": "https://www.aa.com.tr/en/europe/4-dead-as-severe-floods-hit-eastern-spain-thousands-evacuated/4093292"}
+  "facts": [
+   "The storm hit eastern Spain on 17–19 October 2026.",
+   "More than 1,000 people were rescued and about 2,000 were evacuated.",
+   "Near Gandia, homes by the beach were flooded."
   ],
-  "game": {"type": "spots", "rule": {"sign": 0, "db": 3, "water_max": 99}}
+  "news": [
+   {
+    "title": "Four deaths reported as DANA Adam flooding prompts more than 1,000 rescues in eastern Spain",
+    "source": "Watchers",
+    "date": "2026-10-20",
+    "url": "https://watchers.news/2026/10/20/four-deaths-reported-as-dana-adam-flooding-prompts-more-than-1-000-rescues-in-eastern-spain/"
+   },
+   {
+    "title": "4 dead as severe floods hit eastern Spain, thousands evacuated",
+    "source": "Anadolu Agency",
+    "date": "2026-10",
+    "url": "https://www.aa.com.tr/en/europe/4-dead-as-severe-floods-hit-eastern-spain-thousands-evacuated/4093292"
+   }
+  ],
+  "game": {
+   "type": "spots",
+   "rule": {
+    "sign": 0,
+    "db": 3,
+    "water_max": 99
+   }
+  }
  },
  "W2": {
   "story": "In January 2026 weeks of heavy rain made the Limpopo River in Mozambique burst its banks and flood the valley around Chokwe.",
-  "facts": ["NASA used NISAR to compare the open water on 5 and 17 January 2026.", "Rain in December and January filled the rivers until they overflowed into towns and fields.", "Radar sees the flood even under thick rain clouds."],
-  "news": [
-   {"title": "NISAR Reveals Major Flooding in Mozambique", "source": "NASA Scientific Visualization Studio", "date": "2026-08-06", "url": "https://svs.gsfc.nasa.gov/5661"},
-   {"title": "Floods Inundate Southern Mozambique", "source": "NASA Earth Observatory", "date": "2026-01", "url": "https://science.nasa.gov/earth/earth-observatory/floods-inundate-southern-mozambique/"}
+  "facts": [
+   "NASA used NISAR to compare the open water on 5 and 17 January 2026.",
+   "Rain in December and January filled the rivers until they overflowed into towns and fields.",
+   "Radar sees the flood even under thick rain clouds."
   ],
-  "game": {"type": "spots", "rule": {"sign": -1, "db": 6, "water_max": 99}}
+  "news": [
+   {
+    "title": "NISAR Reveals Major Flooding in Mozambique",
+    "source": "NASA Scientific Visualization Studio",
+    "date": "2026-08-06",
+    "url": "https://svs.gsfc.nasa.gov/5661"
+   },
+   {
+    "title": "Floods Inundate Southern Mozambique",
+    "source": "NASA Earth Observatory",
+    "date": "2026-01",
+    "url": "https://science.nasa.gov/earth/earth-observatory/floods-inundate-southern-mozambique/"
+   }
+  ],
+  "game": {
+   "type": "spots",
+   "rule": {
+    "sign": -1,
+    "db": 6,
+    "water_max": 99
+   }
+  }
  },
  "D1": {
   "story": "Along the BR-163 highway in the Amazon rainforest, people cut down forest in the dry season of 2026.",
-  "facts": ["About 6,000 trucks drive the BR-163 every day.", "Forest disappears fastest right next to roads.", "Brazil tracks new clearing with satellites every few days."],
-  "news": [
-   {"title": "Crackdown lets rainforest reclaim illegal road in rare win for the Amazon", "source": "Mongabay", "date": "2026-07", "url": "https://news.mongabay.com/2026/07/crackdown-lets-rainforest-reclaim-illegal-road-in-rare-win-for-the-amazon/"},
-   {"title": "Deforestation surges in Xingu, one of Amazon's most important basins", "source": "Mongabay", "date": "2021-07", "url": "https://news.mongabay.com/2021/07/deforestation-surges-in-xingu-one-of-amazons-most-important-basins"}
+  "facts": [
+   "About 6,000 trucks drive the BR-163 every day.",
+   "Forest disappears fastest right next to roads.",
+   "Brazil tracks new clearing with satellites every few days.",
+   "Road map: © OpenStreetMap contributors."
   ],
-  "game": {"type": "spots", "rule": {"sign": 0, "db": 3, "water_max": 99}}
+  "news": [
+   {
+    "title": "Crackdown lets rainforest reclaim illegal road in rare win for the Amazon",
+    "source": "Mongabay",
+    "date": "2026-07",
+    "url": "https://news.mongabay.com/2026/07/crackdown-lets-rainforest-reclaim-illegal-road-in-rare-win-for-the-amazon/"
+   },
+   {
+    "title": "Deforestation surges in Xingu, one of Amazon's most important basins",
+    "source": "Mongabay",
+    "date": "2021-07",
+    "url": "https://news.mongabay.com/2021/07/deforestation-surges-in-xingu-one-of-amazons-most-important-basins"
+   }
+  ],
+  "game": {
+   "type": "lasso",
+   "loops": 3,
+   "roads": "roads.geojson",
+   "rule": {
+    "sign": -1,
+    "db": 3,
+    "water_max": 99
+   }
+  }
  },
  "D3": {
   "story": "A giant nickel mine in Weda Bay, Indonesia, clears rainforest to dig up metal used in electric-car batteries.",
-  "facts": ["Weda Bay is the world's biggest nickel mine.", "At least 5,331 hectares of forest were cleared for nickel mining on Halmahera island.", "In 2025 Indonesia took back part of the site for cutting forest without permission."],
-  "news": [
-   {"title": "Foreign-backed nickel hub in Indonesia causing mass deforestation – report", "source": "Mining.com", "date": "2024-01", "url": "https://mining.com/web/foreign-backed-nickel-hub-in-indonesia-causing-mass-deforestation-report"},
-   {"title": "Indonesia seizes part of nickel site over forest violations", "source": "The Jakarta Post", "date": "2025-09-12", "url": "https://www.thejakartapost.com/business/2025/09/12/indonesia-seizes-part-of-nickel-site-over-forest-violations-"},
-   {"title": "Photos: The lives and forests bound to Indonesia's nickel dreams", "source": "Mongabay", "date": "2024-12", "url": "https://news.mongabay.com/2024/12/photos-the-lives-and-forests-bound-to-indonesias-nickel-dreams/"}
+  "facts": [
+   "Weda Bay is the world's biggest nickel mine.",
+   "At least 5,331 hectares of forest were cleared for nickel mining on Halmahera island.",
+   "In 2025 Indonesia took back part of the site for cutting forest without permission."
   ],
-  "game": {"type": "spots", "rule": {"sign": 0, "db": 3, "water_max": 99}}
+  "news": [
+   {
+    "title": "Foreign-backed nickel hub in Indonesia causing mass deforestation – report",
+    "source": "Mining.com",
+    "date": "2024-01",
+    "url": "https://mining.com/web/foreign-backed-nickel-hub-in-indonesia-causing-mass-deforestation-report"
+   },
+   {
+    "title": "Indonesia seizes part of nickel site over forest violations",
+    "source": "The Jakarta Post",
+    "date": "2025-09-12",
+    "url": "https://www.thejakartapost.com/business/2025/09/12/indonesia-seizes-part-of-nickel-site-over-forest-violations-"
+   },
+   {
+    "title": "Photos: The lives and forests bound to Indonesia's nickel dreams",
+    "source": "Mongabay",
+    "date": "2024-12",
+    "url": "https://news.mongabay.com/2024/12/photos-the-lives-and-forests-bound-to-indonesias-nickel-dreams/"
+   }
+  ],
+  "game": {
+   "type": "spots",
+   "rule": {
+    "sign": 0,
+    "db": 3,
+    "water_max": 99
+   }
+  }
  },
  "A1": {
   "story": "In Punjab, India, farmers flood their rice fields in June, the rice grows tall, and it is harvested in autumn.",
-  "facts": ["After the harvest some farmers burn the leftover straw, which makes the air smoky as far as Delhi.", "By 4 November 2026 Punjab counted 2,347 straw fires.", "Burnt rice fields fell from 14.6 % in 2025 to 7.9 % in 2026."],
-  "news": [
-   {"title": "In Punjab and Haryana, tech is curbing stubble burning, but battle is far from over", "source": "Outlook India", "date": "2026-10", "url": "https://www.outlookindia.com/national/punjab-haryana-stubble-burning-technology"},
-   {"title": "Punjab records 2,347 stubble burning incidents", "source": "Republic World", "date": "2026-11-05", "url": "https://www.republicworld.com/india/punjab-records-2347-stubble-burning-incidents-imposes-4037-lakh-fine-delhi-minister-blames-bhagwant-mann-2026-11-05-140473"}
+  "facts": [
+   "After the harvest some farmers burn the leftover straw, which makes the air smoky as far as Delhi.",
+   "By 4 November 2026 Punjab counted 2,347 straw fires.",
+   "Burnt rice fields fell from 14.6 % in 2025 to 7.9 % in 2026."
   ],
-  "game": {"type": "spots", "rule": {"sign": 0, "db": 3, "water_max": 99}}
+  "news": [
+   {
+    "title": "In Punjab and Haryana, tech is curbing stubble burning, but battle is far from over",
+    "source": "Outlook India",
+    "date": "2026-10",
+    "url": "https://www.outlookindia.com/national/punjab-haryana-stubble-burning-technology"
+   },
+   {
+    "title": "Punjab records 2,347 stubble burning incidents",
+    "source": "Republic World",
+    "date": "2026-11-05",
+    "url": "https://www.republicworld.com/india/punjab-records-2347-stubble-burning-incidents-imposes-4037-lakh-fine-delhi-minister-blames-bhagwant-mann-2026-11-05-140473"
+   }
+  ],
+  "game": {
+   "type": "order",
+   "rule": {
+    "sign": 0,
+    "db": 3,
+    "water_max": 99
+   },
+   "frames": [
+    {
+     "date": "16 June 2026",
+     "image": "frame_20260616.png",
+     "clue": "Planting time: farmers flood the rice paddies. Water is smooth, so the fields look DARK."
+    },
+    {
+     "date": "2 October 2026",
+     "image": "frame_20261002.png",
+     "clue": "Growing time: the rice is tall and leafy. Plants send lots of echo back, so it looks BRIGHT."
+    },
+    {
+     "date": "7 November 2026",
+     "image": "frame_20261107.png",
+     "clue": "Harvest time: the rice is cut, only short straw is left. In between: medium and patchy."
+    }
+   ]
+  }
  },
  "A3": {
   "story": "In the Jezreel Valley in Israel, summer crops grow in June and are harvested by October.",
-  "facts": ["The Jezreel Valley is called the breadbasket of Israel.", "Farmers grow wheat, cotton, sunflowers, corn, chickpeas and watermelons.", "Summer crops need drip irrigation because the summer is dry."],
-  "news": [
-   {"title": "Jezreel Valley: The Breadbasket of Israel", "source": "WorldAtlas", "date": "", "url": "https://www.worldatlas.com/articles/jezreel-valley-the-breadbasket-of-israel.html"},
-   {"title": "Jezreel Valley", "source": "Wikipedia", "date": "", "url": "https://en.wikipedia.org/wiki/Jezreel_Valley"}
+  "facts": [
+   "The Jezreel Valley is called the breadbasket of Israel.",
+   "Farmers grow wheat, cotton, sunflowers, corn, chickpeas and watermelons.",
+   "Summer crops need drip irrigation because the summer is dry."
   ],
-  "game": {"type": "spots", "rule": {"sign": 0, "db": 3, "water_max": 99}}
+  "news": [
+   {
+    "title": "Jezreel Valley: The Breadbasket of Israel",
+    "source": "WorldAtlas",
+    "date": "",
+    "url": "https://www.worldatlas.com/articles/jezreel-valley-the-breadbasket-of-israel.html"
+   },
+   {
+    "title": "Jezreel Valley",
+    "source": "Wikipedia",
+    "date": "",
+    "url": "https://en.wikipedia.org/wiki/Jezreel_Valley"
+   }
+  ],
+  "game": {
+   "type": "quiz",
+   "kind": "harvest",
+   "pins": 8,
+   "rule": {
+    "sign": -1,
+    "db": 3,
+    "water_max": 99
+   }
+  }
  },
  "L3": {
-  "story": "The Great Salt Lake in Utah is shrinking. Between summer and autumn its marshes and shores change.",
-  "facts": ["The lake ended 2025 at its third-lowest level since 1903.", "When the lakebed dries out, wind blows its dust into nearby cities.", "On 8 July 2026 a dust storm made the air four times dirtier than the healthy limit."],
-  "news": [
-   {"title": "Great Salt Lake ends 2025 at its third-lowest level", "source": "Western Water", "date": "2026-01-14", "url": "https://www.western-water.com/2026/01/14/great-salt-lake-ends-2025-at-its-third-lowest-level/"},
-   {"title": "Researchers say they're getting closer to answers on Great Salt Lake dust", "source": "Idaho Capital Sun", "date": "2026-10-06", "url": "https://idahocapitalsun.com/2026/10/06/repub/researchers-say-theyre-getting-closer-to-answers-on-great-salt-lake-dust/"}
+  "story": "The Great Salt Lake in Utah is shrinking. Where water dries up, the lakebed is left bare, and the wind blows its dust into the cities. Find the newly dried lakebed!",
+  "facts": [
+   "The lake ended 2025 at its third-lowest level since 1903.",
+   "When the lakebed dries out, wind blows its dust into nearby cities.",
+   "On 8 July 2026 a dust storm made the air four times dirtier than the healthy limit."
   ],
-  "game": {"type": "spots", "rule": {"sign": 0, "db": 3, "water_max": 99}}
+  "news": [
+   {
+    "title": "Great Salt Lake ends 2025 at its third-lowest level",
+    "source": "Western Water",
+    "date": "2026-01-14",
+    "url": "https://www.western-water.com/2026/01/14/great-salt-lake-ends-2025-at-its-third-lowest-level/"
+   },
+   {
+    "title": "Researchers say they're getting closer to answers on Great Salt Lake dust",
+    "source": "Idaho Capital Sun",
+    "date": "2026-10-06",
+    "url": "https://idahocapitalsun.com/2026/10/06/repub/researchers-say-theyre-getting-closer-to-answers-on-great-salt-lake-dust/"
+   }
+  ],
+  "game": {
+   "type": "spots",
+   "rule": {
+    "sign": 1,
+    "db": 3,
+    "water_max": 99,
+    "before_max": -18
+   }
+  }
  },
  "M3": {
   "story": "In the Mississippi River Delta, the marshes along the coast are slowly turning into open water.",
-  "facts": ["On 29 November 2025 NISAR saw the delta clearly while clouds hid it from normal cameras.", "Louisiana loses coastal wetlands every year to rising seas and sinking land.", "Wetlands protect cities like New Orleans from storm waves."],
-  "news": [
-   {"title": "NASA-ISRO radar mission peers through clouds to see Mississippi River Delta", "source": "NASA JPL", "date": "2026-01", "url": "https://www.jpl.nasa.gov/news/nasa-isro-radar-mission-peers-through-clouds-to-see-mississippi-river-delta/"},
-   {"title": "Satellites help scientists track dramatic wetlands loss in Louisiana", "source": "NASA JPL", "date": "", "url": "https://www.jpl.nasa.gov/news/satellites-help-scientists-track-dramatic-wetlands-loss-in-louisiana/"}
+  "facts": [
+   "On 29 November 2025 NISAR saw the delta clearly while clouds hid it from normal cameras.",
+   "Louisiana loses coastal wetlands every year to rising seas and sinking land.",
+   "Wetlands protect cities like New Orleans from storm waves."
   ],
-  "game": {"type": "spots", "rule": {"sign": 0, "db": 3, "water_max": 99}}
+  "news": [
+   {
+    "title": "NASA-ISRO radar mission peers through clouds to see Mississippi River Delta",
+    "source": "NASA JPL",
+    "date": "2026-01",
+    "url": "https://www.jpl.nasa.gov/news/nasa-isro-radar-mission-peers-through-clouds-to-see-mississippi-river-delta/"
+   },
+   {
+    "title": "Satellites help scientists track dramatic wetlands loss in Louisiana",
+    "source": "NASA JPL",
+    "date": "",
+    "url": "https://www.jpl.nasa.gov/news/satellites-help-scientists-track-dramatic-wetlands-loss-in-louisiana/"
+   }
+  ],
+  "game": {
+   "type": "quiz",
+   "kind": "water",
+   "pins": 6,
+   "rule": {
+    "sign": -1,
+    "db": 3,
+    "water_max": 99
+   }
+  }
  }
 }

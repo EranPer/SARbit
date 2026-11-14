@@ -148,9 +148,21 @@ Flow: intro → world map (pins from `index.json`, stars per mission) → missio
 Easy mode (`MODE` in `app.js`): "?" explanations, hint ring, story line. Sounds are made in the browser (🔊 toggle).
 Open `/#debug` to get `window.SARBIT` (current mission, map, `openMission`) for scripted testing.
 
-**New mini-games** (minesweeper, snake, flappy…): put each in its own file `public/js/games/<name>.js` exposing
-`start(mission, map, done)` where `done(points)` returns the score. Add `"games": ["grid", "<name>"]` to the
-missions it suits. Hooking it into `app.js` is a few lines; ask the game owner before rewriting `app.js`.
+**Game types (step 3), chosen per mission in `public/missions/content.json`:**
+
+| type | file | missions | how it plays |
+|---|---|---|---|
+| `spots` | in `app.js` | W1 Valencia, W2 Limpopo, L3 Salt Lake | tap the 3–8 biggest glowing spots, 3 hearts |
+| `quiz` | `js/games/quiz.js` | A3 Jezreel (`kind: harvest`), M3 Mississippi (`kind: water`) | numbered pins; answer from the real dB at the pin |
+| `order` | `js/games/order.js` | A1 Punjab | put June / October / November pictures in time order with clues |
+| `lasso` | `js/games/lasso.js` | D1 Amazon (with OSM roads) | draw loops around the clearings; score = found × tidy |
+
+`content.json` per mission: `story`, `facts`, `news` (links), and `game`: `type`, `rule` (`sign` −1 darker / 1 brighter /
+0 both, `db`, `water_max`, `before_max`), optional `focus` [left, top, right, bottom] fractions, plus game options.
+**The rule decides both what glows and what counts**, so the glow never lies. A new game = one file in `js/games/`
+that registers `window.SARbitGames.<type> = { start(api), finish(api) }` (see quiz.js for the `api`), plus a
+`<script>` line in `index.html`. D3 Weda Bay is off the map (radar mode mismatch makes it sparkle; good candidate for
+Ben's Sentinel-2).
 
 ## 8 · To do (open: say in the chat which one you take)
 
