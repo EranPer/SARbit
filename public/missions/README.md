@@ -1,5 +1,7 @@
 # Mission data (NISAR, made by `pipeline/`)
 
+**Live URL:** Vercel serves `public/` as the site root, so the game fetches `/missions/index.json` and `/missions/<id>/mission.json` (e.g. https://sarbit-three.vercel.app/missions/W2/mission.json).
+
 `index.json` lists the missions (id, topic, title, lat, lon, difficulty). Each `<id>/` folder has:
 
 | File | What | Use in the game |
