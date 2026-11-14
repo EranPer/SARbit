@@ -40,6 +40,7 @@ If you are a Claude session: read this whole file before you change anything, th
 | `public/missions/index.json` | the list of missions on the world map | written by the scripts |
 | `public/missions/README.md` | the data contract in short | |
 | `pipeline/` | how the data is made: NISAR → GDAL clip → FME → `package.py`; plus `from_geotiff.py` for any other method | Yonatan (NISAR), Ben (Sentinel-2, InSAR) |
+| `pipeline/osm_layers.py` | OpenStreetMap towns, big roads, rivers, platforms → `public/missions/<ID>/osm.geojson` (run once per new mission) | anyone |
 
 ## 4 · The data contract: the only thing data and game must agree on
 
@@ -135,14 +136,20 @@ clearer in Sentinel-2 or InSAR coherence), **D2** Lábrea clearing, **M1 / M2** 
 ## 7 · The game today and how to add a mini-game
 
 Flow: intro → world map (pins from `index.json`, stars per mission) → mission in 4 steps → finish.
-1. **👀 Look:** before ⇄ after swipe.
+1. **👀 Look:** before ⇄ after swipe. Bonus +100: "📷 can a normal camera see the ground that day?" (NASA's
+   VIIRS photo of the same date from GIBS; the answer is `camera.clouds` in `content.json`, checked by eye).
 2. **✨ Glow:** drag BEFORE / AFTER cards into the red / blue-green buckets; radar glasses switch CO/CX.
    +50 for the first glow, +100 for leaving with the best glasses for the topic.
 3. **🎯 Find:** tap the glowing spots. The game works out the answer **in the browser from the same grey layers the
    player sees** (8 × 8-pixel blocks whose brightness moved ≥ 3 dB, darker or brighter, joined into spots; the 3–8
    biggest are the targets), so whatever glows can be found. +150 per spot + up to 50 speed bonus; tapping grey costs
    one of 3 hearts; tiny changes and found spots just say so.
+   Then a **⭐ bonus** if `content.json` has `bonus` (W1, W2, L3): "which town is next to the biggest change?" from the
+   OSM towns (`js/games/bonus.js`; the wrong choices are always clearly farther away).
 4. **⭐ Score:** stars (all spots ★★★, half ★★, one ★), found / missed spots, NISAR's own change map, a one-line "why".
+
+**🗺 Layers** (button on the map, every step): OSM towns & islands, roads, rivers (from `osm.geojson`), NASA camera
+photo of the after date, OSM street map. `content.json` `layers` says which start switched on.
 
 `grid.geojson` is no longer used by Easy mode (it stays the answer key for a future Hard mode).
 Easy mode (`MODE` in `app.js`): "?" explanations, hint ring, story line. Sounds are made in the browser (🔊 toggle).
@@ -153,12 +160,14 @@ Open `/#debug` to get `window.SARBIT` (current mission, map, `openMission`) for 
 | type | file | missions | how it plays |
 |---|---|---|---|
 | `spots` | in `app.js` | W1 Valencia, W2 Limpopo, L3 Salt Lake | tap the 3–8 biggest glowing spots, 3 hearts |
-| `quiz` | `js/games/quiz.js` | A3 Jezreel (`kind: harvest`), M3 Mississippi (`kind: water`) | numbered pins; answer from the real dB at the pin |
+| `quiz` | `js/games/quiz.js` | A3 Jezreel (`kind: harvest`), M3 Mississippi (`kind: ship`) | ring pins + 👀 peek glow / BEFORE / AFTER; answer from the real dB at the pin. `harvest`/`water` pins only where 3 × 3 blocks agree; `ship` finds super-bright dots on water: in both pictures = 🛢️ platform, in one = 🚢 ship |
 | `order` | `js/games/order.js` | A1 Punjab | put June / October / November pictures in time order with clues |
-| `lasso` | `js/games/lasso.js` | D1 Amazon (with OSM roads) | draw loops around the clearings; score = found × tidy |
+| `lasso` | `js/games/lasso.js` | D1 Amazon (with OSM roads) | each loop catches the clearings ≥ half inside it, right away; tidy loops +50; a giant loop doesn't count |
 
 `content.json` per mission: `story`, `facts`, `news` (links), and `game`: `type`, `rule` (`sign` −1 darker / 1 brighter /
-0 both, `db`, `water_max`, `before_max`), optional `focus` [left, top, right, bottom] fractions, plus game options.
+0 both, `db`, `water_max`, `before_max`), optional `focus` [left, top, right, bottom] fractions, `glow: "plain"` (show
+every change, don't grey), plus game options. Also per mission: `camera`, `layers`, `bonus`, `why` (see `_how` at the
+top of the file). Only the big spots glow strongly; small changes keep their plain colour.
 **The rule decides both what glows and what counts**, so the glow never lies. A new game = one file in `js/games/`
 that registers `window.SARbitGames.<type> = { start(api), finish(api) }` (see quiz.js for the `api`), plus a
 `<script>` line in `index.html`. D3 Weda Bay is off the map (radar mode mismatch makes it sparkle; good candidate for
@@ -189,4 +198,7 @@ Also open:
   frequency B (Cantarell) or HH only (one Weda Bay date).
 - Don't lower change thresholds below ~2 dB to "find" change: you get speckle, not events.
 - Swath edges and sea surface make fake change. Always look at the pictures before shipping a mission.
+- Salt Lake: to L-band radar, dry salty lakebed and calm water both look dark, so "the lake shrank" barely shows
+  between June and October. A third date or Sentinel-2 would tell the story better.
+- Overpass (OSM) servers are often busy: `osm_layers.py` retries and switches servers. Busy places keep only big roads.
 - CSS `display:` on an element overrides the `hidden` attribute; `public/css/style.css` has `[hidden]{display:none!important}`.

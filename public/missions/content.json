@@ -1,5 +1,5 @@
 {
- "_how": "Text and game settings per mission. Safe to edit without coding: change the words, add facts or news links. game.rule: sign -1 = only 'got darker' counts, 1 = only 'got brighter', 0 = both; db = how strong the change must be; water_max = after must be darker than this dB (99 = off). game.focus = [left, top, right, bottom] as fractions of the picture (optional): only change inside counts.",
+ "_how": "Text and game settings per mission. Safe to edit without coding: change the words, add facts or news links. game.rule: sign -1 = only 'got darker' counts, 1 = only 'got brighter', 0 = both; db = how strong the change must be; water_max = after must be darker than this dB (99 = off). game.focus = [left, top, right, bottom] as fractions of the picture (optional): only change inside counts. camera: {clouds: 'yes'|'no'} asks in step 1 whether a normal camera could see the ground that day (NASA GIBS photo); false hides the photo layer. layers: which map layers start switched on (towns, roads, rivers). bonus: {type: 'town', question, explain} asks after the spots which town is next to the biggest change ({town} and {km} are filled in). game.glow: 'plain' shows every change instead of greying what doesn't count. why: replaces the 'Why?' line on the score screen.",
  "W1": {
   "story": "In October 2026 a storm called DANA Adam poured rain on the coast near Gandia, Spain, and fields and streets filled with water.",
   "facts": [
@@ -28,6 +28,17 @@
     "db": 3,
     "water_max": 99
    }
+  },
+  "camera": {
+   "clouds": "yes"
+  },
+  "layers": [
+   "towns"
+  ],
+  "bonus": {
+   "type": "town",
+   "question": "🚁 Rescue time! Which town is right next to the biggest flood?",
+   "explain": "{town} is only {km} km from the biggest flood. Rescue teams use radar flood maps like yours to know where to send boats, even when it's cloudy."
   }
  },
  "W2": {
@@ -58,6 +69,19 @@
     "db": 6,
     "water_max": 99
    }
+  },
+  "camera": {
+   "clouds": "yes",
+   "note": "January is the rainy season in Mozambique."
+  },
+  "layers": [
+   "towns",
+   "rivers"
+  ],
+  "bonus": {
+   "type": "town",
+   "question": "🚁 Rescue time! Which town is closest to the biggest flood?",
+   "explain": "{town} is only {km} km from the biggest flood. The blue line is the Limpopo River: it spilled over into the fields around it."
   }
  },
  "D1": {
@@ -84,14 +108,21 @@
   ],
   "game": {
    "type": "lasso",
-   "loops": 3,
    "roads": "roads.geojson",
    "rule": {
     "sign": -1,
     "db": 3,
     "water_max": 99
-   }
-  }
+   },
+   "loops": 4
+  },
+  "camera": {
+   "clouds": "yes",
+   "note": "Over the rainforest there are clouds almost every day, so radar is super useful there."
+  },
+  "layers": [
+   "towns"
+  ]
  },
  "D3": {
   "story": "A giant nickel mine in Weda Bay, Indonesia, clears rainforest to dig up metal used in electric-car batteries.",
@@ -174,7 +205,9 @@
      "clue": "Harvest time: the rice is cut, only short straw is left. In between: medium and patchy."
     }
    ]
-  }
+  },
+  "camera": false,
+  "layers": []
  },
  "A3": {
   "story": "In the Jezreel Valley in Israel, summer crops grow in June and are harvested by October.",
@@ -206,7 +239,12 @@
     "db": 3,
     "water_max": 99
    }
-  }
+  },
+  "camera": {
+   "clouds": "no",
+   "note": "Summer in Israel is almost always sunny."
+  },
+  "layers": []
  },
  "L3": {
   "story": "The Great Salt Lake in Utah is shrinking. Where water dries up, the lakebed is left bare, and the wind blows its dust into the cities. Find the newly dried lakebed!",
@@ -236,14 +274,32 @@
     "db": 3,
     "water_max": 99,
     "before_max": -18
-   }
+   },
+   "focus": [
+    0.12,
+    0,
+    1,
+    1
+   ]
+  },
+  "camera": {
+   "clouds": "yes"
+  },
+  "layers": [
+   "towns"
+  ],
+  "bonus": {
+   "type": "town",
+   "question": "💨 Dust alert! Which town is closest to the biggest new dry patch?",
+   "explain": "{town} is only {km} km from it. When strong wind blows over dry lakebed, the dust can reach towns like this one."
   }
  },
  "M3": {
-  "story": "In the Mississippi River Delta, the marshes along the coast are slowly turning into open water.",
+  "story": "Barataria Bay in the Mississippi River Delta is full of oil and gas platforms and busy with boats. Metal on water makes a super-bright radar echo. But which bright dots stay put, and which sail away?",
   "facts": [
+   "Platforms stand on the sea floor, so they are in the same place in every radar picture. Ships move.",
    "On 29 November 2025 NISAR saw the delta clearly while clouds hid it from normal cameras.",
-   "Louisiana loses coastal wetlands every year to rising seas and sinking land.",
+   "Louisiana loses coastal wetlands every year to rising seas and sinking land: the marsh islands you see are shrinking.",
    "Wetlands protect cities like New Orleans from storm waves."
   ],
   "news": [
@@ -262,13 +318,21 @@
   ],
   "game": {
    "type": "quiz",
-   "kind": "water",
-   "pins": 6,
+   "kind": "ship",
+   "pins": 8,
+   "glow": "plain",
    "rule": {
-    "sign": -1,
+    "sign": 0,
     "db": 3,
     "water_max": 99
    }
-  }
+  },
+  "camera": {
+   "clouds": "some"
+  },
+  "layers": [
+   "towns"
+  ],
+  "why": "Metal ships and platforms have corners that bounce my radar straight back, like a mirror ball, so they shine super bright on the dark, smooth water."
  }
 }

@@ -12,6 +12,8 @@
 | `img3`–`img6.png` | grey layers: before co, before cross, after co, after cross | **drag-and-drop building blocks** |
 | `img7` / `img8.png` | grey layers: co − cross ratio, before / after | building block (surface vs canopy) |
 | `grid.geojson` | 12 × 12 cells: `hit` (1 = changed ≥ 20 %), `share` (0–1), `row`, `col` | answer key / scoring |
+| `osm.geojson` (optional) | OpenStreetMap towns, big roads, rivers, platforms; `properties.kind` = town / road / river / platform. Made by `pipeline/osm_layers.py`, © OpenStreetMap contributors | 🗺 Layers, ⭐ town bonus |
+| `content.json` (one file for all) | story, facts, news, game type + rule, camera answer, layers, bonus, why | text and game settings |
 
 **Placing images on a Leaflet map:** `L.imageOverlay(url, [[bbox[1], bbox[0]], [bbox[3], bbox[2]]])`
 (bbox = `[minLon, minLat, maxLon, maxLat]`, images are Web Mercator).

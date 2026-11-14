@@ -12,6 +12,10 @@
   };
   const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
   const ESRI_ATTR = "Imagery © Esri · Radar: NASA-ISRO NISAR (ASF DAAC)";
+  const OSM_ATTR = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  // NASA's everyday camera (VIIRS true colour, ~375 m) for one date, served by NASA GIBS without a key
+  const GIBS = (date) => "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/" +
+    `default/${date}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`;
 
   // ---------- small helpers ----------
   const $ = (s) => document.querySelector(s);
@@ -197,7 +201,9 @@
     const extra = (await content())[id] || {};
     const [w, s, e, n] = info.bbox;
     const { CO, CX } = info.channels;
+    if (M && M.mapLayers) Object.values(M.mapLayers).forEach((l) => l && missionMap.removeLayer(l));
     M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), step: 1, layers: {}, opened: Date.now(), log: [],
+          mapLayers: {}, on: new Set(extra.layers || ["towns"]), osmP: null, bonusDone: false, bonusLine: "",
           buckets: { red: null, cyan: null }, glasses: "CO",
           best: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO",
           picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS,
@@ -220,16 +226,21 @@
     if (!missionMap) {
       missionMap = L.map("mission-map", { zoomSnap: 0.25 });
       L.tileLayer(ESRI, { attribution: ESRI_ATTR, maxZoom: 18 }).addTo(missionMap);
-      missionMap.on("click", (ev) => M && M.step === 3 && (M.onTap ? M.onTap(ev.latlng) : tap(ev.latlng)));
+      missionMap.createPane("camera").style.zIndex = 420;   // above the radar pictures (400)
+      const osm = missionMap.createPane("osm"); osm.style.zIndex = 450; osm.style.pointerEvents = "none";
+      // only the find-the-spots game uses plain taps; other games set M.onTap (or nothing)
+      missionMap.on("click", (ev) => M && M.step === 3 && (M.onTap ? M.onTap(ev.latlng) : spots() && !M.bonusDone && tap(ev.latlng)));
     }
     missionMap.eachLayer((l) => !(l instanceof L.TileLayer) && missionMap.removeLayer(l));
     M.overlay = null;
     missionMap.fitBounds(M.bounds);
+    renderLayers();
 
     await Promise.all(["before", "after"].flatMap((d) => (CO === CX ? ["CO"] : ["CO", "CX"]).map(async (ch) => {
       const src = base + info.layers[d][ch];
       M.layers[`${d}_${ch}`] = { src, data: pixels(await loadImage(src)) };
     })));
+    setLayer();
     goStep(1);
   }
 
@@ -241,6 +252,85 @@
     $("#m-info").innerHTML = facts || news ? `<details open><summary>📰 What happened</summary>
       ${facts ? `<ul class="facts">${facts}</ul>` : ""}${news ? `<p class="muted">Read more:</p><ul class="news">${news}</ul>` : ""}
       <p class="muted small">Radar data: NASA-ISRO NISAR, ${esc(M.info.before.date)} and ${esc(M.info.after.date)}.</p></details>` : "";
+  }
+
+  // ---------- map layers: OpenStreetMap towns / roads / rivers, NASA's camera, a street map ----------
+  const LAYERS = {
+    towns: "🏘 Towns & islands", roads: "🛣 Roads", rivers: "🌊 Rivers",
+    camera: "📷 NASA camera photo", street: "🗺 Street map",
+  };
+  const osmData = () => (M.osmP = M.osmP || fetch(M.base + "osm.geojson").then((r) => (r.ok ? r.json() : null)).catch(() => null));
+  const ROAD_BIG = /motorway|trunk|primary/, OSM_KIND = { towns: "town", roads: "road", rivers: "river" };
+  async function makeLayer(key) {
+    if (key === "camera") return L.tileLayer(GIBS(M.content.camera.date || M.info.after.date),
+      { pane: "camera", maxNativeZoom: 9, maxZoom: 19, attribution: "Camera: NASA GIBS (VIIRS)" });
+    if (key === "street") return L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { pane: "camera", maxZoom: 19, attribution: OSM_ATTR });
+    const g = await osmData();
+    const kind = OSM_KIND[key];
+    let fs = (g ? g.features : []).filter((f) => f.properties.kind === kind);
+    if (fs.some((f) => f.properties.place !== "suburb")) fs = fs.filter((f) => f.properties.place !== "suburb");   // one town, not its 6 suburbs
+    if (fs.filter((f) => f.properties.place !== "hamlet").length >= 8) fs = fs.filter((f) => f.properties.place !== "hamlet");
+    const crowded = fs.length > 12, named = (f) => !crowded || /city|town|island/.test(f.properties.place);   // crowded: villages are dots
+    if (!fs.length) return null;
+    return L.geoJSON({ type: "FeatureCollection", features: fs }, {
+      pane: "osm", interactive: false, attribution: OSM_ATTR,
+      style: (f) => (f.properties.kind === "river" ? { color: "#5aa8ff", weight: 2.5, opacity: 0.9 }
+        : { color: ROAD_BIG.test(f.properties.highway) ? "#ffe14a" : "#ffffff", weight: ROAD_BIG.test(f.properties.highway) ? 3.5 : 1.5, opacity: 0.85 }),
+      pointToLayer: (f, ll) => {
+        const island = /island|islet/.test(f.properties.place);
+        const dot = L.circleMarker(ll, { pane: "osm", radius: island ? 0 : named(f) ? 3.5 : 2.5, color: "#0b1020", weight: 1.5, fillColor: "#fff", fillOpacity: 1, interactive: false });
+        return !named(f) ? dot : dot.bindTooltip(f.properties.name, { permanent: true, direction: island ? "center" : "right", offset: island ? [0, 0] : [6, 0],
+            className: `place-label${island ? " island" : ""}`, interactive: false });
+      },
+    });
+  }
+  async function setLayer(key, on) {   // no key: just (re)draw what M.on asks for
+    if (key) on ? M.on.add(key) : M.on.delete(key);
+    if (key === "camera" && on) M.on.delete("street");
+    if (key === "street" && on) M.on.delete("camera");
+    const mine = M, g = await osmData();
+    mine.osmKinds = new Set((g ? g.features : []).map((f) => f.properties.kind));
+    for (const k of Object.keys(LAYERS)) {
+      const want = mine.on.has(k);
+      if (want && !(k in mine.mapLayers)) mine.mapLayers[k] = await makeLayer(k);
+      if (mine !== M) return;   // the player opened another mission meanwhile
+      const l = mine.mapLayers[k];
+      if (l) want ? l.addTo(missionMap) : missionMap.removeLayer(l);
+    }
+    renderLayers();
+  }
+  function renderLayers() {
+    const box = $("#layer-list");
+    box.innerHTML = Object.entries(LAYERS)
+      .filter(([k]) => k !== "camera" || M.content.camera !== false)
+      .filter(([k]) => !OSM_KIND[k] || !M.osmKinds || M.osmKinds.has(OSM_KIND[k]))   // hide OSM layers this place has none of
+      .map(([k, label]) => `<label><input type="checkbox" data-layer="${k}" ${M.on.has(k) ? "checked" : ""}> ${label}</label>`).join("") +
+      `<p class="muted small">${M.on.has("camera") ? `Photo from ${M.content.camera?.date || M.info.after.date}. ` : ""}` +
+      `${M.on.has("camera") || M.on.has("street") ? "Untick it to see the radar again." : "Map data © OpenStreetMap"}</p>`;
+    box.querySelectorAll("input[data-layer]").forEach((c) => c.addEventListener("change", () => { log("layer", { k: c.dataset.layer, on: c.checked }); setLayer(c.dataset.layer, c.checked); }));
+  }
+  $("#btn-layers").addEventListener("click", () => ($("#layer-list").hidden = !$("#layer-list").hidden));
+
+  // step 1 bonus: could a normal camera see the ground that day? (content.json "camera": {"clouds": "yes" | "no"})
+  function cameraQuestion() {
+    const c = M.content.camera, box = $("#camera-kit");
+    box.hidden = !(c && (c.clouds === "yes" || c.clouds === "no") && !M.got.camera);
+    if (box.hidden) return;
+    const date = c.date || M.info.after.date;
+    box.innerHTML = `<p class="quiz-q">📷 Bonus: NASA's camera satellite flew over on ${date}. Can a normal camera see the ground?</p>
+      <button id="cam-show" class="ghost small">📷 Show me the camera photo</button>
+      <div class="quiz-a" hidden><button data-c="yes">☁️ No, clouds hide it</button><button data-c="no">🌍 Yes, I can see it</button></div>`;
+    $("#cam-show").onclick = () => { setLayer("camera", true); $("#cam-show").hidden = true; box.querySelector(".quiz-a").hidden = false;
+      say("This is a normal photo from space, taken the same day. Can you see the ground, or only clouds?"); };
+    box.querySelectorAll("button[data-c]").forEach((b) => (b.onclick = () => {
+      const ok = b.dataset.c === c.clouds;
+      if (ok) { award("camera", 100); sfx("hit"); react("happy"); } else { sfx("miss"); react("oops"); }
+      say((ok ? "Right! " : "Look again: ") + (c.clouds === "yes"
+        ? "Clouds hid everything from the camera. My radar waves fly right through clouds, so I could still see!"
+        : "It was sunny, so the camera sees it too. But at night or under clouds, only radar can look.") + (c.note ? " " + c.note : ""));
+      box.innerHTML = `<p class="muted">${ok ? `📷 +100! ` : "📷 "}${c.clouds === "yes" ? "Clouds for the camera, clear view for the radar." : "Sunny day: camera and radar both see."}</p>`;
+      setTimeout(() => M.step === 1 && setLayer("camera", false), 3500);
+    }));
   }
 
   function setPoints() { $("#m-points").textContent = M.points; }
@@ -266,9 +356,11 @@
     log("step", { step });
     $("#mission-map").classList.toggle("find-mode", step === 3);
     stopSwipe(); M.extra.forEach((l) => missionMap.removeLayer(l)); M.extra = []; M.foundLayer = null;
+    if (M.on.has("camera") || M.on.has("street")) { M.on.delete("camera"); M.on.delete("street"); setLayer(); }   // show the radar again
+    $("#camera-kit").hidden = true;
 
     if (step === 1) {
-      startSwipe();
+      startSwipe(); cameraQuestion();
       say("Slide the bar on the map: left = BEFORE, right = AFTER. Can you spot what changed? Tap a ? if you want me to explain.");
       next("Next: make it glow ✨", true);
     }
@@ -283,6 +375,7 @@
   $("#btn-next").addEventListener("click", () => {
     if (M.step === 2 && M.glasses === M.best) award("glasses", PTS.glasses);
     if (M.step === 3 && !spots() && !M.result) return M.finishGame && M.finishGame();
+    if (M.step === 3 && spots() && M.content.bonus && !M.bonusDone) return startBonus();
     if (M.step === 4) return openWorld();
     goStep(M.step + 1);
   });
@@ -373,15 +466,17 @@
     else {
       const W = any.width, H = any.height, out = new ImageData(W, H), o = out.data, k = 1.4;
       const st = (v) => { v = (v - 128) * k + 128; return v < 0 ? 0 : v > 255 ? 255 : v; };
-      const a = R && C ? analysis() : null;   // which blocks count for this mission
+      const a = R && C && M.game.glow !== "plain" ? analysis() : null;   // which blocks count ("plain": show every change as it is)
       for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
         const i = (y * W + x) * 4;
         let r = R ? st(R.data[i]) : 0, c = C ? st(C.data[i]) : 0;
         if (a) {
           const bx = Math.min(a.bw - 1, (x / BLOCK) | 0), by = Math.min(a.bh - 1, (y / BLOCK) | 0);
           const m = (r + c) / 2;
-          if (!a.changed[by * a.bw + bx]) r = c = m;   // doesn't count -> plain grey
-          else { r = Math.max(0, Math.min(255, m + (r - m) * 1.8)); c = Math.max(0, Math.min(255, m + (c - m) * 1.8)); }   // counts -> stronger glow
+          const k = by * a.bw + bx;
+          if (!a.changed[k]) r = c = m;   // doesn't count -> plain grey
+          else if (a.targetIds.has(a.labels[k])) { r = Math.max(0, Math.min(255, m + (r - m) * 1.8)); c = Math.max(0, Math.min(255, m + (c - m) * 1.8)); }   // a big spot -> strong glow
+          // a small change keeps its normal colour: it glows a little
         }
         o[i] = r; o[i + 1] = c; o[i + 2] = c;
         o[i + 3] = Math.max(R ? R.data[i + 3] : 0, C ? C.data[i + 3] : 0);
@@ -411,19 +506,31 @@
     }
     return { bw, bh, before, after, valid };
   }
+  const gameApi = (cfg) => ({
+    M, map: missionMap, kit: $("#game-kit"), cfg, say, award, floatText, sfx, react, next,
+    analysis, blockStats, toBlock, toLatLng, starText, osm: osmData, setLayer,
+    layer: (l) => { M.extra.push(l); return l.addTo(missionMap); },
+    done: (result) => { M.result = result; goStep(4); },
+  });
   function startGame() {
     const G = (window.SARbitGames || {})[M.game.type];
     if (!G) { say(`This mission's game (${M.game.type}) isn't loaded.`); return next("Score it ⭐", true); }
     composite();
     M.ana = analysis();
-    const api = {
-      M, map: missionMap, kit: $("#game-kit"), cfg: M.game, say, award, floatText, sfx, react, next,
-      analysis, blockStats, toBlock, toLatLng, starText,
-      layer: (l) => { M.extra.push(l); return l.addTo(missionMap); },
-      done: (result) => { M.result = result; goStep(4); },
-    };
+    const api = gameApi(M.game);
     M.finishGame = () => G.finish && G.finish(api);
     G.start(api);
+  }
+
+  // bonus round after finding the spots (content.json "bonus": {"type": "town", ...}, see js/games/bonus.js)
+  function startBonus() {
+    const B = (window.SARbitBonus || {})[M.content.bonus.type];
+    M.bonusDone = true;
+    if (!B) return goStep(4);
+    clearHint(); drawFound(true);
+    $("#find-kit").hidden = true; $("#map-hud").hidden = true; $("#game-kit").hidden = false;
+    log("bonus");
+    B.start({ ...gameApi(M.content.bonus), done: () => goStep(4) });
   }
 
   // ---------- step 3 · find the glowing spots ----------
@@ -588,15 +695,15 @@
     if (st === 3) sfx("win");
     const cheer = st === 3 ? "Perfect! Amazing radar eyes! 🚀" : st === 2 ? "Great work, cadet! 👍" : st === 1 ? "Good start! 💪" : "Let's try again! 💪";
     $("#result").innerHTML = `<div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>
-      <p class="score-line"><b>${cheer}</b><br>${R ? R.line : `You found <b>${f}</b> of <b>${n}</b> glowing spots`}${M.got.glasses ? ", and picked the best radar glasses" : ""}.</p>
+      <p class="score-line"><b>${cheer}</b><br>${R ? R.line : `You found <b>${f}</b> of <b>${n}</b> glowing spots`}${M.got.glasses ? ", and picked the best radar glasses" : ""}.${M.bonusLine ? `<br>${M.bonusLine}` : ""}${M.got.camera ? "<br>📷 You knew what the camera could see." : ""}</p>
       ${R ? "" : `<div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff2828"></i>what NISAR measured</span></div>`}
-      <p class="muted">Why? ${WHY[M.info.topic] || ""}</p>
+      <p class="muted">Why? ${M.content.why || WHY[M.info.topic] || ""}</p>
       <button id="btn-retry" class="ghost small">Play this mission again</button>`;
     $("#btn-retry").onclick = () => openMission(M.id);
     if (PLAYTEST) playtestNotes(n, f, st);
     M.result = null;
     react(st >= 2 ? "happy" : "oops");
-    say((R ? "" : f < n ? "The yellow spots are the ones you missed: they glow too! " : "You found every spot! ") + (WHY[M.info.topic] || ""));
+    say((R ? "" : f < n ? "The yellow spots are the ones you missed: they glow too! " : "You found every spot! ") + (M.content.why || WHY[M.info.topic] || ""));
     next("Next mission 🌍", true);
   }
 
