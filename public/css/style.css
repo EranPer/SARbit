@@ -240,3 +240,4 @@ path.hint-pulse { animation: pulse 0.9s ease-in-out infinite; }
   border-radius: 999px; background: #fff; color: #0b1020; font: 800 14px system-ui, sans-serif; border: 3px solid #0b1020; cursor: pointer; }
 .town-pin.ok b { background: #4be08a; } .town-pin.bad b { background: #ff5a5a; color: #fff; }
 @media (max-width: 820px) { #layers { left: 50px; } }
+.quiz-a button.ok { background: #4be08a; opacity: 1; } .quiz-a button.bad { background: #ff5a5a; color: #fff; opacity: 1; }

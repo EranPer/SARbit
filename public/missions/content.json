@@ -1,5 +1,5 @@
 {
- "_how": "Text and game settings per mission. Safe to edit without coding: change the words, add facts or news links. game.rule: sign -1 = only 'got darker' counts, 1 = only 'got brighter', 0 = both; db = how strong the change must be; water_max = after must be darker than this dB (99 = off). game.focus = [left, top, right, bottom] as fractions of the picture (optional): only change inside counts. camera: {clouds: 'yes'|'no'} asks in step 1 whether a normal camera could see the ground that day (NASA GIBS photo); false hides the photo layer. layers: which map layers start switched on (towns, roads, rivers). bonus: {type: 'town', question, explain} asks after the spots which town is next to the biggest change ({town} and {km} are filled in). game.glow: 'plain' shows every change instead of greying what doesn't count. why: replaces the 'Why?' line on the score screen.",
+ "_how": "Text and game settings per mission. Safe to edit without coding: change the words, add facts or news links. game.rule: sign -1 = only 'got darker' counts, 1 = only 'got brighter', 0 = both; db = how strong the change must be; water_max = after must be darker than this dB (99 = off). game.focus = [left, top, right, bottom] as fractions of the picture (optional): only change inside counts. camera: {clouds: 'yes'|'no'} asks in step 1 whether a normal camera could see the ground that day (NASA GIBS photo); false hides the photo layer. layers: which map layers start switched on (towns, roads, rivers). bonus: a list of questions asked after the game, answers worked out from the radar + OpenStreetMap: {type: town|river|area|share, question, explain, of (share: change|land|wet)}; see js/games/bonus.js. camera.layer 'hls' = the sharp Landsat/Sentinel-2 photo (needs a clear date). say: {glow, find} replace the guide's text in steps 2 and 3. game.glow: 'plain' shows every change instead of greying what doesn't count. why: replaces the 'Why?' line on the score screen.",
  "W1": {
   "story": "In October 2026 a storm called DANA Adam poured rain on the coast near Gandia, Spain, and fields and streets filled with water.",
   "facts": [
@@ -35,11 +35,22 @@
   "layers": [
    "towns"
   ],
-  "bonus": {
-   "type": "town",
-   "question": "🚁 Rescue time! Which town is right next to the biggest flood?",
-   "explain": "{town} is only {km} km from the biggest flood. Rescue teams use radar flood maps like yours to know where to send boats, even when it's cloudy."
-  }
+  "bonus": [
+   {
+    "type": "town",
+    "question": "🚁 Rescue time! Which town is right next to the biggest flood?",
+    "explain": "{town} is only {km} km from the biggest flood. Rescue teams use radar flood maps like yours to know where to send boats, even when it's cloudy."
+   },
+   {
+    "type": "river",
+    "question": "🌊 Which river is right next to the biggest flood?",
+    "explain": "{river} runs only {km} km from it. In a storm, rivers and gullies fill up fast and spill over into fields and streets."
+   },
+   {
+    "type": "area",
+    "explain": "That's the kind of number rescue teams and insurance need after a flood."
+   }
+  ]
  },
  "W2": {
   "story": "In January 2026 weeks of heavy rain made the Limpopo River in Mozambique burst its banks and flood the valley around Chokwe.",
@@ -78,11 +89,22 @@
    "towns",
    "rivers"
   ],
-  "bonus": {
-   "type": "town",
-   "question": "🚁 Rescue time! Which town is closest to the biggest flood?",
-   "explain": "{town} is only {km} km from the biggest flood. The blue line is the Limpopo River: it spilled over into the fields around it."
-  }
+  "bonus": [
+   {
+    "type": "river",
+    "question": "🌊 Which river burst its banks?",
+    "explain": "{river} is only {km} km from the biggest flood. After weeks of rain it spilled over into the fields around it."
+   },
+   {
+    "type": "town",
+    "question": "🚁 Rescue time! Which town is closest to the biggest flood?",
+    "explain": "{town} is only {km} km from the biggest flood. Radar flood maps like yours show rescuers where the water is, even under clouds."
+   },
+   {
+    "type": "area",
+    "explain": "And that's only inside this picture: the whole flood was even bigger."
+   }
+  ]
  },
  "D1": {
   "story": "Along the BR-163 highway in the Amazon rainforest, people cut down forest in the dry season of 2026.",
@@ -122,6 +144,19 @@
   },
   "layers": [
    "towns"
+  ],
+  "bonus": [
+   {
+    "type": "area",
+    "question": "How much forest was cut, all together? The yellow square is 1 km × 1 km.",
+    "explain": "All of that was rainforest in June."
+   },
+   {
+    "type": "share",
+    "of": "change",
+    "question": "What part of this whole picture is new clearing?",
+    "explain": "My radar measured {pct} % of the picture, cut in just four months."
+   }
   ]
  },
  "D3": {
@@ -207,7 +242,20 @@
    ]
   },
   "camera": false,
-  "layers": []
+  "layers": [],
+  "bonus": [
+   {
+    "type": "share",
+    "of": "change",
+    "question": "What part of these farms changed a lot between June and November?",
+    "explain": "My radar measured {pct} %. Almost all of Punjab's farmland is rice in the summer, so the whole picture changes with the seasons."
+   },
+   {
+    "type": "town",
+    "question": "Which village is right next to the biggest change?",
+    "explain": "{town} is only {km} km from it. Its farmers flooded, grew and harvested rice there."
+   }
+  ]
  },
  "A3": {
   "story": "In the Jezreel Valley in Israel, summer crops grow in June and are harvested by October.",
@@ -242,13 +290,29 @@
   },
   "camera": {
    "clouds": "no",
-   "note": "Summer in Israel is almost always sunny."
+   "layer": "hls",
+   "date": "2026-10-23",
+   "note": "This sharp photo is from the Sentinel-2 satellite, one day before my radar pass. Summer in Israel is almost always sunny."
   },
-  "layers": []
+  "layers": [],
+  "bonus": [
+   {
+    "type": "town",
+    "question": "🚜 Which village is right next to the biggest harvested field?",
+    "explain": "{town} is only {km} km from it. Farmers there harvested their summer crop between June and October."
+   },
+   {
+    "type": "area",
+    "question": "How much farmland was harvested, all together? The yellow square is 1 km × 1 km.",
+    "explain": "Radar can count harvests for a whole country, even at night."
+   }
+  ]
  },
  "L3": {
   "story": "The Great Salt Lake in Utah is shrinking. Where water dries up, the lakebed is left bare, and the wind blows its dust into the cities. Find the newly dried lakebed!",
   "facts": [
+   "The white lines (🗺 Layers → 💧 Wet) show where my radar saw water or wet mud in June: smooth and wet looks dark to radar.",
+   "Blue-green inside the lines means it got brighter by October: the mud dried and cracked, so it's rougher.",
    "The lake ended 2025 at its third-lowest level since 1903.",
    "When the lakebed dries out, wind blows its dust into nearby cities.",
    "On 8 July 2026 a dust storm made the air four times dirtier than the healthy limit."
@@ -286,18 +350,30 @@
    "clouds": "yes"
   },
   "layers": [
-   "towns"
+   "towns",
+   "wet_before"
   ],
-  "bonus": {
-   "type": "town",
-   "question": "💨 Dust alert! Which town is closest to the biggest new dry patch?",
-   "explain": "{town} is only {km} km from it. When strong wind blows over dry lakebed, the dust can reach towns like this one."
+  "bonus": [
+   {
+    "type": "town",
+    "question": "💨 Dust alert! Which town is closest to the biggest new dry patch?",
+    "explain": "{town} is only {km} km from it. When strong wind blows over dry lakebed, the dust can reach towns like this one."
+   },
+   {
+    "type": "area",
+    "question": "How much new dry lakebed glows, all together? The yellow square is 1 km × 1 km.",
+    "explain": "Every bit of new dry lakebed is a place where wind can pick up dust."
+   }
+  ],
+  "say": {
+   "glow": "It glows! The WHITE lines show where it was WET (dark) in June. BLUE-GREEN inside them = it got brighter = it dried out: new dry lakebed! Grey = it doesn't count.",
+   "find": "Inside the white lines it was wet in June. Find the {n} big BLUE-GREEN patches there: lakebed that dried out! Tap right on them!"
   }
  },
  "M3": {
-  "story": "Barataria Bay in the Mississippi River Delta is full of oil and gas platforms and busy with boats. Metal on water makes a super-bright radar echo. But which bright dots stay put, and which sail away?",
+  "story": "Barataria Bay in the Mississippi River Delta has oil and gas platforms standing in the water. Metal makes a super-bright radar echo, like a tiny star on the dark water. Can you find them all?",
   "facts": [
-   "Platforms stand on the sea floor, so they are in the same place in every radar picture. Ships move.",
+   "Platforms stand on the sea floor, so they're in the same place in every radar picture. Ships come and go.",
    "On 29 November 2025 NISAR saw the delta clearly while clouds hid it from normal cameras.",
    "Louisiana loses coastal wetlands every year to rising seas and sinking land: the marsh islands you see are shrinking.",
    "Wetlands protect cities like New Orleans from storm waves."
@@ -317,9 +393,8 @@
    }
   ],
   "game": {
-   "type": "quiz",
-   "kind": "ship",
-   "pins": 8,
+   "type": "hunt",
+   "hearts": 4,
    "glow": "plain",
    "rule": {
     "sign": 0,
@@ -333,6 +408,14 @@
   "layers": [
    "towns"
   ],
-  "why": "Metal ships and platforms have corners that bounce my radar straight back, like a mirror ball, so they shine super bright on the dark, smooth water."
+  "why": "Metal ships and platforms have corners that bounce my radar straight back, like a mirror ball, so they shine super bright on the dark, smooth water.",
+  "bonus": [
+   {
+    "type": "share",
+    "of": "land",
+    "question": "🌿 How much of this picture is still marsh and land, not open water?",
+    "explain": "My radar measured {pct} % land; the rest is open water. Louisiana loses about a football pitch of wetland every 100 minutes, so the water keeps growing."
+   }
+  ]
  }
 }

@@ -144,12 +144,15 @@ Flow: intro → world map (pins from `index.json`, stars per mission) → missio
    player sees** (8 × 8-pixel blocks whose brightness moved ≥ 3 dB, darker or brighter, joined into spots; the 3–8
    biggest are the targets), so whatever glows can be found. +150 per spot + up to 50 speed bonus; tapping grey costs
    one of 3 hearts; tiny changes and found spots just say so.
-   Then a **⭐ bonus** if `content.json` has `bonus` (W1, W2, L3): "which town is next to the biggest change?" from the
-   OSM towns (`js/games/bonus.js`; the wrong choices are always clearly farther away).
+   Then **⭐ bonus questions** after every game (`content.json` `bonus`, a list; `js/games/bonus.js`), worked out from
+   the radar + OSM, never typed in: `town` (closest to the biggest change), `river` (same, canals only as wrong
+   choices), `area` (km² that glow, with a 1 km square to compare and football pitches), `share` (% of the picture
+   that changed / is land / was wet). Wrong choices are always clearly off.
 4. **⭐ Score:** stars (all spots ★★★, half ★★, one ★), found / missed spots, NISAR's own change map, a one-line "why".
 
 **🗺 Layers** (button on the map, every step): OSM towns & islands, roads, rivers (from `osm.geojson`), NASA camera
-photo of the after date, OSM street map. `content.json` `layers` says which start switched on.
+photo (VIIRS; `camera.layer: "hls"` = sharp Landsat/Sentinel-2 for clear days, Jezreel), 💧 wet on each date
+(radar dark < −18 dB, white outline; the Salt Lake starts with June on), OSM street map. `content.json` `layers` says which start switched on.
 
 `grid.geojson` is no longer used by Easy mode (it stays the answer key for a future Hard mode).
 Easy mode (`MODE` in `app.js`): "?" explanations, hint ring, story line. Sounds are made in the browser (🔊 toggle).
@@ -160,7 +163,8 @@ Open `/#debug` to get `window.SARBIT` (current mission, map, `openMission`) for 
 | type | file | missions | how it plays |
 |---|---|---|---|
 | `spots` | in `app.js` | W1 Valencia, W2 Limpopo, L3 Salt Lake | tap the 3–8 biggest glowing spots, 3 hearts |
-| `quiz` | `js/games/quiz.js` | A3 Jezreel (`kind: harvest`), M3 Mississippi (`kind: ship`) | ring pins + 👀 peek glow / BEFORE / AFTER; answer from the real dB at the pin. `harvest`/`water` pins only where 3 × 3 blocks agree; `ship` finds super-bright dots on water: in both pictures = 🛢️ platform, in one = 🚢 ship |
+| `quiz` | `js/games/quiz.js` | A3 Jezreel (`kind: harvest`) | ring pins + 👀 peek glow / BEFORE / AFTER; answer from the real dB at the pin, only where 3 × 3 blocks agree |
+| `hunt` | `js/games/hunt.js` | M3 Mississippi | find the 7 oil platforms: super-bright dots on open water that are in both pictures; 4 hearts, hint, land taps are free |
 | `order` | `js/games/order.js` | A1 Punjab | put June / October / November pictures in time order with clues |
 | `lasso` | `js/games/lasso.js` | D1 Amazon (with OSM roads) | each loop catches the clearings ≥ half inside it, right away; tidy loops +50; a giant loop doesn't count |
 
@@ -200,5 +204,7 @@ Also open:
 - Swath edges and sea surface make fake change. Always look at the pictures before shipping a mission.
 - Salt Lake: to L-band radar, dry salty lakebed and calm water both look dark, so "the lake shrank" barely shows
   between June and October. A third date or Sentinel-2 would tell the story better.
+- Mississippi: every bright dot in the bay is in BOTH pictures (platforms). There are no ships in this pair, so a
+  "ship or platform" game was wrong; it is a platform hunt now. Check crops of before and after before claiming motion.
 - Overpass (OSM) servers are often busy: `osm_layers.py` retries and switches servers. Busy places keep only big roads.
 - CSS `display:` on an element overrides the `hidden` attribute; `public/css/style.css` has `[hidden]{display:none!important}`.

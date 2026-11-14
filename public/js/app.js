@@ -16,6 +16,9 @@
   // NASA's everyday camera (VIIRS true colour, ~375 m) for one date, served by NASA GIBS without a key
   const GIBS = (date) => "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/" +
     `default/${date}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`;
+  // the sharp one (Landsat + Sentinel-2, 30 m) for clear days: content.json "camera": {"layer": "hls", "date": ...}
+  const HLS = (date) => "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/HLS_S30_Nadir_BRDF_Adjusted_Reflectance/" +
+    `default/${date}/GoogleMapsCompatible_Level12/{z}/{y}/{x}.png`;
 
   // ---------- small helpers ----------
   const $ = (s) => document.querySelector(s);
@@ -203,13 +206,13 @@
     const { CO, CX } = info.channels;
     if (M && M.mapLayers) Object.values(M.mapLayers).forEach((l) => l && missionMap.removeLayer(l));
     M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), step: 1, layers: {}, opened: Date.now(), log: [],
-          mapLayers: {}, on: new Set(extra.layers || ["towns"]), osmP: null, bonusDone: false, bonusLine: "",
+          mapLayers: {}, on: new Set(extra.layers || ["towns"]), osmP: null, bonusQueue: null, inBonus: false, bonusAsked: 0, bonusRight: 0,
           buckets: { red: null, cyan: null }, glasses: "CO",
           best: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO",
           picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS,
           content: extra, rule: { sign: 0, db: CHANGE_DB, water_max: 99, ...((extra.game || {}).rule || {}) },
           focus: (extra.game || {}).focus || [0, 0, 1, 1], anaCache: {}, game: extra.game || { type: "spots" }, result: null, onTap: null };
-    const STEP3 = { spots: "🎯 Find", quiz: "🔎 Inspect", order: "⏳ Order", lasso: "⭕ Circle" };
+    const STEP3 = { spots: "🎯 Find", quiz: "🔎 Inspect", order: "⏳ Order", lasso: "⭕ Circle", hunt: "🛢️ Hunt" };
     $('.steps li[data-step="3"]').textContent = STEP3[M.game.type] || "🎯 Play";
 
     $("#m-title").textContent = info.title || id;
@@ -229,7 +232,7 @@
       missionMap.createPane("camera").style.zIndex = 420;   // above the radar pictures (400)
       const osm = missionMap.createPane("osm"); osm.style.zIndex = 450; osm.style.pointerEvents = "none";
       // only the find-the-spots game uses plain taps; other games set M.onTap (or nothing)
-      missionMap.on("click", (ev) => M && M.step === 3 && (M.onTap ? M.onTap(ev.latlng) : spots() && !M.bonusDone && tap(ev.latlng)));
+      missionMap.on("click", (ev) => M && M.step === 3 && (M.onTap ? M.onTap(ev.latlng) : spots() && !M.inBonus && tap(ev.latlng)));
     }
     missionMap.eachLayer((l) => !(l instanceof L.TileLayer) && missionMap.removeLayer(l));
     M.overlay = null;
@@ -257,13 +260,19 @@
   // ---------- map layers: OpenStreetMap towns / roads / rivers, NASA's camera, a street map ----------
   const LAYERS = {
     towns: "🏘 Towns & islands", roads: "🛣 Roads", rivers: "🌊 Rivers",
+    wet_before: "💧 Wet on {before}", wet_after: "💧 Wet on {after}",
     camera: "📷 NASA camera photo", street: "🗺 Street map",
   };
   const osmData = () => (M.osmP = M.osmP || fetch(M.base + "osm.geojson").then((r) => (r.ok ? r.json() : null)).catch(() => null));
   const ROAD_BIG = /motorway|trunk|primary/, OSM_KIND = { towns: "town", roads: "road", rivers: "river" };
   async function makeLayer(key) {
-    if (key === "camera") return L.tileLayer(GIBS(M.content.camera.date || M.info.after.date),
-      { pane: "camera", maxNativeZoom: 9, maxZoom: 19, attribution: "Camera: NASA GIBS (VIIRS)" });
+    if (key === "camera") {
+      const c = M.content.camera, date = c.date || M.info.after.date;
+      return c.layer === "hls"
+        ? L.tileLayer(HLS(date), { pane: "camera", maxNativeZoom: 12, maxZoom: 19, attribution: "Camera: NASA HLS, Landsat + Sentinel-2 (GIBS)" })
+        : L.tileLayer(GIBS(date), { pane: "camera", maxNativeZoom: 9, maxZoom: 19, attribution: "Camera: NASA GIBS (VIIRS)" });
+    }
+    if (key === "wet_before" || key === "wet_after") return wetLayer(key.slice(4));
     if (key === "street") return L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { pane: "camera", maxZoom: 19, attribution: OSM_ATTR });
     const g = await osmData();
     const kind = OSM_KIND[key];
@@ -283,6 +292,31 @@
             className: `place-label${island ? " island" : ""}`, interactive: false });
       },
     });
+  }
+  // where the radar saw water or wet ground (dark: HH / VV below −18 dB) on one date: white outline, light blue inside
+  function wetLayer(date) {
+    const img = M.layers[`${date}_CO`].data, W = img.width, d = img.data, B = 4;
+    const bw = Math.floor(W / B), bh = Math.floor(img.height / B), lim = (35 - 18) * DB_PER_GREY;
+    const raw = new Uint8Array(bw * bh), wet = new Uint8Array(bw * bh);
+    for (let by = 0; by < bh; by++) for (let bx = 0; bx < bw; bx++) {
+      let s = 0, n = 0;
+      for (let y = by * B; y < by * B + B; y++) for (let x = bx * B; x < bx * B + B; x++) { const i = (y * W + x) * 4; if (d[i + 3]) { s += d[i]; n++; } }
+      raw[by * bw + bx] = n > B * B / 2 && s / n < lim;
+    }
+    for (let y = 1; y < bh - 1; y++) for (let x = 1; x < bw - 1; x++) {   // 3 x 3 majority: no speckle
+      let n = 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) n += raw[(y + dy) * bw + x + dx];
+      wet[y * bw + x] = n >= 5;
+    }
+    const cv = el("canvas"); cv.width = bw; cv.height = bh;
+    const g = cv.getContext("2d"), out = g.createImageData(bw, bh);
+    for (let y = 1; y < bh - 1; y++) for (let x = 1; x < bw - 1; x++) {
+      const k = y * bw + x;
+      if (!wet[k]) continue;
+      const edge = !wet[k - 1] || !wet[k + 1] || !wet[k - bw] || !wet[k + bw];
+      out.data.set(edge ? [255, 255, 255, 230] : [90, 168, 255, 40], k * 4);   // white edge: not the blue-green of the glow
+    }
+    g.putImageData(out, 0, 0);
+    return L.imageOverlay(cv.toDataURL(), M.bounds, { pane: "osm", interactive: false });
   }
   async function setLayer(key, on) {   // no key: just (re)draw what M.on asks for
     if (key) on ? M.on.add(key) : M.on.delete(key);
@@ -304,7 +338,8 @@
     box.innerHTML = Object.entries(LAYERS)
       .filter(([k]) => k !== "camera" || M.content.camera !== false)
       .filter(([k]) => !OSM_KIND[k] || !M.osmKinds || M.osmKinds.has(OSM_KIND[k]))   // hide OSM layers this place has none of
-      .map(([k, label]) => `<label><input type="checkbox" data-layer="${k}" ${M.on.has(k) ? "checked" : ""}> ${label}</label>`).join("") +
+      .map(([k, label]) => `<label><input type="checkbox" data-layer="${k}" ${M.on.has(k) ? "checked" : ""}> ${label
+        .replace("{before}", M.info.before.date).replace("{after}", M.info.after.date)}</label>`).join("") +
       `<p class="muted small">${M.on.has("camera") ? `Photo from ${M.content.camera?.date || M.info.after.date}. ` : ""}` +
       `${M.on.has("camera") || M.on.has("street") ? "Untick it to see the radar again." : "Map data © OpenStreetMap"}</p>`;
     box.querySelectorAll("input[data-layer]").forEach((c) => c.addEventListener("change", () => { log("layer", { k: c.dataset.layer, on: c.checked }); setLayer(c.dataset.layer, c.checked); }));
@@ -321,7 +356,7 @@
       <button id="cam-show" class="ghost small">📷 Show me the camera photo</button>
       <div class="quiz-a" hidden><button data-c="yes">☁️ No, clouds hide it</button><button data-c="no">🌍 Yes, I can see it</button></div>`;
     $("#cam-show").onclick = () => { setLayer("camera", true); $("#cam-show").hidden = true; box.querySelector(".quiz-a").hidden = false;
-      say("This is a normal photo from space, taken the same day. Can you see the ground, or only clouds?"); };
+      say(`This is a normal photo from space, taken on ${date}. Can you see the ground, or only clouds?`); };
     box.querySelectorAll("button[data-c]").forEach((b) => (b.onclick = () => {
       const ok = b.dataset.c === c.clouds;
       if (ok) { award("camera", 100); sfx("hit"); react("happy"); } else { sfx("miss"); react("oops"); }
@@ -374,8 +409,9 @@
   function next(label, enabled) { const b = $("#btn-next"); b.textContent = label; b.disabled = !enabled; }
   $("#btn-next").addEventListener("click", () => {
     if (M.step === 2 && M.glasses === M.best) award("glasses", PTS.glasses);
+    if (M.step === 3 && M.inBonus) return nextBonus();
     if (M.step === 3 && !spots() && !M.result) return M.finishGame && M.finishGame();
-    if (M.step === 3 && spots() && M.content.bonus && !M.bonusDone) return startBonus();
+    if (M.step === 3 && spots() && !M.bonusQueue) return startBonuses();
     if (M.step === 4) return openWorld();
     goStep(M.step + 1);
   });
@@ -430,7 +466,7 @@
       return next("Next: find the glowing spots 🎯", false);
     }
     award("glow", PTS.glow);
-    say((red === "before"
+    say(((M.content.say || {}).glow && red === "before" ? M.content.say.glow : red === "before"
       ? "It glows! RED = it got darker, BLUE-GREEN = it got brighter, GREY = nothing changed."
       : "It glows! BLUE-GREEN = it got darker, RED = it got brighter, GREY = nothing changed.") + glassesTip());
     next("Next: find the glowing spots 🎯", true);
@@ -510,7 +546,7 @@
     M, map: missionMap, kit: $("#game-kit"), cfg, say, award, floatText, sfx, react, next,
     analysis, blockStats, toBlock, toLatLng, starText, osm: osmData, setLayer,
     layer: (l) => { M.extra.push(l); return l.addTo(missionMap); },
-    done: (result) => { M.result = result; goStep(4); },
+    done: (result) => { M.result = result; startBonuses(); },
   });
   function startGame() {
     const G = (window.SARbitGames || {})[M.game.type];
@@ -522,15 +558,27 @@
     G.start(api);
   }
 
-  // bonus round after finding the spots (content.json "bonus": {"type": "town", ...}, see js/games/bonus.js)
-  function startBonus() {
-    const B = (window.SARbitBonus || {})[M.content.bonus.type];
-    M.bonusDone = true;
-    if (!B) return goStep(4);
-    clearHint(); drawFound(true);
+  // bonus questions after the game, about the real places around the change (content.json "bonus": a list,
+  // see js/games/bonus.js), then the score
+  function startBonuses() {
+    if (M.bonusQueue) return goStep(4);
+    M.bonusQueue = [].concat(M.content.bonus || []);
+    if (M.cleanup) { M.cleanup(); M.cleanup = null; }
+    M.onTap = null; clearHint();
+    M.extra.forEach((l) => missionMap.removeLayer(l)); M.extra = []; M.foundLayer = null;   // the game's pins and loops
+    if (spots()) drawFound(true);
+    nextBonus();
+  }
+  function nextBonus() {
+    (M.bonusLayers || []).forEach((l) => missionMap.removeLayer(l)); M.bonusLayers = [];
+    const b = M.bonusQueue.shift(), B = b && (window.SARbitBonus || {})[b.type];
+    if (!b) { M.inBonus = false; return goStep(4); }
+    if (!B) return nextBonus();
+    M.inBonus = true;
     $("#find-kit").hidden = true; $("#map-hud").hidden = true; $("#game-kit").hidden = false;
-    log("bonus");
-    B.start({ ...gameApi(M.content.bonus), done: () => goStep(4) });
+    log("bonus", { type: b.type });
+    B.start({ ...gameApi(b), more: M.bonusQueue.length > 0, done: nextBonus,
+      layer: (l) => { M.bonusLayers.push(l); return l.addTo(missionMap); } });
   }
 
   // ---------- step 3 · find the glowing spots ----------
@@ -599,7 +647,8 @@
     $("#targets").textContent = $("#hud-targets").textContent = M.ana.targets.length;
     if (window.innerWidth <= 820) setTimeout(() => $(".mission-map-wrap").scrollIntoView({ behavior: "smooth" }), 600);
     drawFound(false); updateFind();
-    say(`I can see ${M.ana.targets.length} big glowing spots. Tap right on them! Careful: tapping where nothing glows costs a heart.` +
+    say(((M.content.say || {}).find || `I can see {n} big glowing spots. Tap right on them!`).replace("{n}", M.ana.targets.length) +
+        " Careful: tapping where nothing glows costs a heart." +
         (MODE === "easy" ? " Stuck? Press 💡 Hint." : ""));
     next("Score it ⭐", true);
   }
@@ -695,7 +744,7 @@
     if (st === 3) sfx("win");
     const cheer = st === 3 ? "Perfect! Amazing radar eyes! 🚀" : st === 2 ? "Great work, cadet! 👍" : st === 1 ? "Good start! 💪" : "Let's try again! 💪";
     $("#result").innerHTML = `<div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>
-      <p class="score-line"><b>${cheer}</b><br>${R ? R.line : `You found <b>${f}</b> of <b>${n}</b> glowing spots`}${M.got.glasses ? ", and picked the best radar glasses" : ""}.${M.bonusLine ? `<br>${M.bonusLine}` : ""}${M.got.camera ? "<br>📷 You knew what the camera could see." : ""}</p>
+      <p class="score-line"><b>${cheer}</b><br>${R ? R.line : `You found <b>${f}</b> of <b>${n}</b> glowing spots`}${M.got.glasses ? ", and picked the best radar glasses" : ""}.${M.bonusAsked ? `<br>⭐ Bonus questions: <b>${M.bonusRight}</b> of <b>${M.bonusAsked}</b> right` : ""}${M.got.camera ? "<br>📷 You knew what the camera could see." : ""}</p>
       ${R ? "" : `<div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff2828"></i>what NISAR measured</span></div>`}
       <p class="muted">Why? ${M.content.why || WHY[M.info.topic] || ""}</p>
       <button id="btn-retry" class="ghost small">Play this mission again</button>`;
