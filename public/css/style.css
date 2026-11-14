@@ -140,3 +140,25 @@ button.info:hover { background: var(--panel2); }
 .guide.flash { border-color: var(--accent); }
 path.hint-pulse { animation: pulse 0.9s ease-in-out infinite; }
 @keyframes pulse { 50% { stroke-opacity: .2; fill-opacity: .05; } }
+
+/* ---- find the glowing spots ---- */
+.mission-pts { margin: 8px 0 0; font-size: 14px; color: var(--muted); }
+.mission-pts b { color: var(--agriculture); font-size: 16px; }
+.hearts { font-size: 24px; letter-spacing: 4px; margin: 4px 0; }
+.pixel-layer { image-rendering: pixelated; }
+#mission-map.find-mode { cursor: crosshair; }
+.float-pts { position: absolute; z-index: 800; pointer-events: none; font-weight: 800; font-size: 22px;
+  text-shadow: 0 2px 6px rgba(0,0,0,.7); transform: translate(-50%, -50%); animation: floatup 1.2s ease-out forwards; }
+.float-pts.good { color: #7cf3c7; } .float-pts.bad { color: #ff5a5a; } .float-pts.meh { color: #ffe14a; font-size: 16px; }
+@keyframes floatup { to { transform: translate(-50%, -150%); opacity: 0; } }
+.shake { animation: shake .35s; }
+@keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+.alien.happy svg { animation: jump .6s; }
+.alien.oops svg { animation: wobble .6s; }
+@keyframes jump { 40% { transform: translateY(-14px) scale(1.08); } }
+@keyframes wobble { 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
+.hint-ring { animation: ring 1s ease-in-out infinite; }
+@keyframes ring { 50% { stroke-opacity: .15; fill-opacity: .02; } }
+.stars { color: var(--agriculture); letter-spacing: 2px; }
+.stars .off { color: var(--line); }
+#result .stars { font-size: 30px; }

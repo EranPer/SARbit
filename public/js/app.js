@@ -1,4 +1,5 @@
-/* SARbit · radar cleanup. Plain JS + Leaflet. Data: /missions/ (made by pipeline/, see public/missions/README.md). */
+/* SARbit · radar cleanup. Plain JS + Leaflet. Data: /missions/ (made by pipeline/, see public/missions/README.md).
+   A mission = 1 Look (swipe) · 2 Glow (before/after into red/blue-green) · 3 Find (tap the glowing spots) · 4 Score. */
 (() => {
   "use strict";
 
@@ -6,10 +7,9 @@
     floods: { color: "#5aa8ff", label: "Floods & water" },
     forest: { color: "#4be08a", label: "Forests" },
     agriculture: { color: "#ffc24a", label: "Agriculture" },
-    land: { color: "#ff8a3d", label: "Land & fire" },
+    land: { color: "#ff8a3d", label: "Land & shores" },
     marine: { color: "#c08cff", label: "Oceans & coasts" },
   };
-  const GRID = 12;
   const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
   const ESRI_ATTR = "Imagery © Esri · Radar: NASA-ISRO NISAR (ASF DAAC)";
 
@@ -37,6 +37,28 @@
     const g = c.getContext("2d", { willReadFrequently: true }); g.drawImage(img, 0, 0);
     return g.getImageData(0, 0, c.width, c.height);
   };
+  const starText = (n) => "★".repeat(n) + `<span class="off">${"★".repeat(3 - n)}</span>`;
+
+  // ---------- sound (made in the browser, no files) ----------
+  let muted = store.get("muted", false), actx = null;
+  const SFX = { hit: [[660, .09], [990, .16]], miss: [[170, .25, "square"]], glow: [[520, .08], [780, .14]],
+                meh: [[440, .12, "triangle"]], win: [[523, .1], [659, .1], [784, .1], [1047, .3]] };
+  function sfx(name) {
+    if (muted) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      let t = actx.currentTime;
+      SFX[name].forEach(([f, d, type]) => {
+        const o = actx.createOscillator(), g = actx.createGain();
+        o.type = type || "sine"; o.frequency.value = f;
+        g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
+        o.connect(g).connect(actx.destination); o.start(t); o.stop(t + d); t += d * 0.85;
+      });
+    } catch { /* no audio */ }
+  }
+  const soundBtn = () => ($("#btn-sound").textContent = muted ? "🔇" : "🔊");
+  $("#btn-sound").addEventListener("click", () => { muted = !muted; store.set("muted", muted); soundBtn(); });
+  soundBtn();
 
   // ---------- the alien (SVG, swap for illustrated art later) ----------
   const ALIEN = `
@@ -53,19 +75,25 @@
     <circle cx="52" cy="152" r="4" fill="#ffc24a"/><circle cx="100" cy="160" r="4" fill="#ff5a5a"/><circle cx="148" cy="152" r="4" fill="#4be08a"/>
   </g></svg>`;
   ["#alien-intro", "#alien-guide", "#alien-end"].forEach((s) => ($(s).innerHTML = ALIEN));
+  function react(kind) {
+    const a = $("#alien-guide"); a.classList.remove("happy", "oops"); void a.offsetWidth; a.classList.add(kind);
+  }
 
   // ---------- state ----------
   let missions = [];
   let player = store.get("player", "");
   let scores = store.get("scores", {});   // { missionId: best points }
+  let stars = store.get("stars", {});     // { missionId: best stars 0-3 }
   let worldMap = null, missionMap = null;
   let M = null;                            // the open mission
 
   const total = () => Object.values(scores).reduce((a, b) => a + b, 0);
+  const totalStars = () => Object.values(stars).reduce((a, b) => a + b, 0);
   const updateHud = () => {
     $("#hud").hidden = !player;
     $("#hud-name").textContent = player;
     $("#hud-score").textContent = total();
+    $("#hud-stars").textContent = totalStars();
   };
 
   // ---------- intro ----------
@@ -89,14 +117,15 @@
     const list = $("#mission-list"); list.innerHTML = "";
     missions.forEach((m) => {
       const t = TOPICS[m.topic] || { color: "#fff", label: m.topic };
-      const done = m.id in scores;
-      L.circleMarker([m.lat, m.lon], { radius: 9, color: "#fff", weight: 2, fillColor: t.color, fillOpacity: done ? .4 : .95 })
-        .addTo(worldMap).bindTooltip(`${m.title} · ${t.label}`).on("click", () => openMission(m.id));
+      const done = m.id in scores, st = stars[m.id] || 0;
+      L.circleMarker([m.lat, m.lon], { radius: 9, color: "#fff", weight: 2, fillColor: t.color, fillOpacity: done ? .45 : .95 })
+        .addTo(worldMap).bindTooltip(`${m.title} · ${t.label}${done ? ` · ${"★".repeat(st)}` : ""}`).on("click", () => openMission(m.id));
       const li = el("li", { class: done ? "done" : "" }, [
         el("span", { class: "chip", style: `background:${t.color}` }),
         el("span", { text: m.title }),
-        el("span", { class: "pts", text: done ? `★ ${scores[m.id]}` : "" }),
       ]);
+      const s = el("span", { class: "pts stars" }); s.innerHTML = done ? starText(st) : "";
+      li.appendChild(s);
       li.addEventListener("click", () => openMission(m.id));
       list.appendChild(li);
     });
@@ -110,9 +139,14 @@
       : "<li>No finished runs yet</li>";
   }
 
-  // ---------- mission: 1 look · 2 glow · 3 mark · 4 check ----------
-  // Easy mode explains everything and gives hints; a Hard mode (no hints, 12 × 12 board) comes later.
+  // ---------- mission: 1 look · 2 glow · 3 find · 4 score ----------
+  // Easy mode explains everything and gives hints; a Hard mode (no hints, fine grid) comes later.
   const MODE = store.get("mode", "easy");
+  const BLOCK = 8;           // the answer is worked out on 8 × 8-pixel blocks (≈ 150-300 m on the ground)
+  const DB_PER_GREY = 6.375; // grey layers: 6.375 grey levels per dB (see public/missions/README.md)
+  const CHANGE_DB = 3;       // a block changed if its brightness moved ≥ 3 dB, darker or brighter
+  const MAX_TARGETS = 8, MIN_TARGETS = 3, HEARTS = 3, TAP_REACH = 3;   // reach in blocks, forgiving for fingers
+  const PTS = { glow: 50, glasses: 100, spot: 150, speed: 50 };
   const STORIES = {   // one line per mission until the team's texts land in mission.json (story)
     W2: "In January 2026 heavy rain made the Limpopo River in Mozambique burst its banks and flood the valley.",
     W1: "In October 2026 storms poured rain on the coast near Gandia, Spain, and fields filled with water.",
@@ -124,6 +158,13 @@
     M3: "In the Mississippi River Delta, the marshes along the coast are slowly turning into open water.",
   };
   const WATERY = { floods: true, marine: true, land: true };   // topics the co-pol (HH / VV) glasses see best
+  const WHY = {
+    floods: "Water is smooth like a mirror, so the radar bounces away and flooded places turn dark.",
+    forest: "Trees scatter the radar back to me. Where trees were cut, the signal drops and it gets darker.",
+    agriculture: "Growing crops scatter lots of radar; after the harvest the field is flat and the echo changes.",
+    land: "When a shore or a marsh turns from wet to dry, or dry to wet, its radar brightness changes.",
+    marine: "Calm water and oil make the sea smoother, so it turns darker to my radar.",
+  };
   const INFO = {
     radar: () => "My radar sends invisible waves down to Earth and listens for the echo, like a bat. " +
       "Strong echo = bright, weak echo = dark. It even works at night and through clouds!",
@@ -141,44 +182,24 @@
           `water bounces it away, so water looks dark. Great for floods! ${CX} = sent flat, heard standing up ` +
           `(V = vertical): only leaves and branches twist the wave like that, so it's great for trees and crops.`;
     },
-    squares: () => "Paint every square where you see glow. Right squares earn points, wrong squares cost a little." +
-      (MODE === "easy" ? " Stuck? Press 💡 Hint." : ""),
+    spots: () => `Tap the places that glow. Each glowing spot you find = ${PTS.spot} points, and the faster the better. ` +
+      `Tapping where nothing changed costs a heart ❤️.` + (MODE === "easy" ? " Stuck? Press 💡 Hint." : ""),
   };
+  const say = (t) => ($("#guide-text").textContent = t);
   document.querySelectorAll("button.info").forEach((b) => b.addEventListener("click", () => {
     say(INFO[b.dataset.info]()); const g = $(".guide"); g.classList.add("flash"); setTimeout(() => g.classList.remove("flash"), 600);
   }));
-  const KID = 6;   // the kids' board: 6 × 6 squares, each = 2 × 2 cells of the 12 × 12 answer key
-  const WHY = {
-    floods: "Water is smooth like a mirror, so the radar bounces away and flooded places turn dark.",
-    forest: "Trees scatter the radar back to me. Where trees were cut, the signal drops and it gets darker.",
-    agriculture: "Growing crops scatter lots of radar; after the harvest the field is flat and gets darker.",
-    land: "When a shore or a marsh turns from wet to dry, or dry to wet, its radar brightness changes.",
-    marine: "Calm water and oil make the sea smoother, so it turns darker to my radar.",
-  };
 
   async function openMission(id) {
     show("screen-mission");
     const base = `missions/${id}/`;
     const info = await (await fetch(base + "mission.json")).json();
-    const grid = await (await fetch(base + "grid.geojson")).json();
     const [w, s, e, n] = info.bbox;
     const { CO, CX } = info.channels;
     M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), step: 1, layers: {},
-          buckets: { red: null, cyan: null }, glasses: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO",
-          picked: null, overlay: null, swipe: null, cells: [], marked: new Set(), extra: [] };
-
-    // 12 × 12 answer key -> 6 × 6 kids' board (a square changed if ≥ 20 % of it changed)
-    const big = {};
-    grid.features.forEach((f) => {
-      const p = f.properties, k = `${Math.floor(p.row / 2)},${Math.floor(p.col / 2)}`;
-      const b = L.geoJSON(f).getBounds();
-      big[k] = big[k] ? { bounds: big[k].bounds.extend(b), share: big[k].share + (p.share || 0) / 4 } : { bounds: b, share: (p.share || 0) / 4 };
-    });
-    M.truth = new Set(Object.keys(big).filter((k) => big[k].share >= 0.2));
-    if (!M.truth.size) {   // tiny change: take the most-changed squares
-      Object.keys(big).sort((a, b) => big[b].share - big[a].share).slice(0, 3).forEach((k) => M.truth.add(k));
-    }
-    M.big = big;
+          buckets: { red: null, cyan: null }, glasses: "CO",
+          best: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO",
+          picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS };
 
     $("#m-title").textContent = info.title || id;
     $("#m-place").textContent = info.place || "";
@@ -188,14 +209,16 @@
       bt.textContent = bt.dataset.ch === "CO" ? `${CO} 💧 water` : `${CX} 🌿 plants`;
       bt.hidden = bt.dataset.ch === "CX" && CO === CX;
     });
+    setPoints();
 
     if (!missionMap) {
       missionMap = L.map("mission-map", { zoomSnap: 0.25 });
       L.tileLayer(ESRI, { attribution: ESRI_ATTR, maxZoom: 18 }).addTo(missionMap);
+      missionMap.on("click", (ev) => M && M.step === 3 && tap(ev.latlng));
     }
     missionMap.eachLayer((l) => !(l instanceof L.TileLayer) && missionMap.removeLayer(l));
+    M.overlay = null;
     missionMap.fitBounds(M.bounds);
-    missionMap.dragging.enable();
 
     await Promise.all(["before", "after"].flatMap((d) => (CO === CX ? ["CO"] : ["CO", "CX"]).map(async (ch) => {
       const src = base + info.layers[d][ch];
@@ -204,43 +227,45 @@
     goStep(1);
   }
 
+  function setPoints() { $("#m-points").textContent = M.points; }
+  function award(key, pts, at) {
+    if (M.got[key]) return;
+    M.got[key] = true; M.points += pts; setPoints();
+    if (at) floatText(at, `+${pts}`, "good");
+  }
+
   function goStep(step) {
     M.step = step;
     document.querySelectorAll(".steps li").forEach((li) => {
       li.classList.toggle("now", +li.dataset.step === step); li.classList.toggle("past", +li.dataset.step < step);
     });
-    $("#glow-kit").hidden = step !== 2; $("#mark-kit").hidden = step !== 3; $("#result").hidden = step !== 4;
-    $("#btn-prev").hidden = step === 1 || step === 4;
+    $("#glow-kit").hidden = step !== 2; $("#find-kit").hidden = step !== 3; $("#result").hidden = step !== 4;
+    $("#btn-prev").hidden = step !== 2;
     document.querySelectorAll("[data-step-only]").forEach((b) => (b.hidden = +b.dataset.stepOnly !== step));
     $("#btn-hint").hidden = MODE !== "easy";
-    stopSwipe(); clearCells(); M.extra.forEach((l) => missionMap.removeLayer(l)); M.extra = [];
-    missionMap.dragging.enable();
+    $("#mission-map").classList.toggle("find-mode", step === 3);
+    stopSwipe(); M.extra.forEach((l) => missionMap.removeLayer(l)); M.extra = []; M.foundLayer = null;
 
     if (step === 1) {
       startSwipe();
       say("Slide the bar on the map: left = BEFORE, right = AFTER. Can you spot what changed? Tap a ? if you want me to explain.");
       next("Next: make it glow ✨", true);
     }
-    if (step === 2) {
-      refreshCards(); composite(); glowHint();
-    }
-    if (step === 3) {
-      composite(); drawCells();
-      missionMap.dragging.disable();
-      say("Paint the squares where it glows: click and drag, or tap. Tap a square again to un-mark it." +
-          (MODE === "easy" ? " Not sure? Press 💡 Hint and I'll blink a square for you." : ""));
-      updateMarked();
-    }
-    if (step === 4) check();
+    if (step === 2) { refreshCards(); composite(); glowHint(); }
+    if (step === 3) startFind();
+    if (step === 4) score();
   }
 
   function next(label, enabled) { const b = $("#btn-next"); b.textContent = label; b.disabled = !enabled; }
-  const say = (t) => ($("#guide-text").textContent = t);
-  $("#btn-next").addEventListener("click", () => (M.step === 4 ? openWorld() : goStep(M.step + 1)));
+  $("#btn-next").addEventListener("click", () => {
+    if (M.step === 2 && M.glasses === M.best) award("glasses", PTS.glasses);
+    if (M.step === 4) return openWorld();
+    goStep(M.step + 1);
+  });
   $("#btn-prev").addEventListener("click", () => goStep(Math.max(1, M.step - 1)));
   $("#btn-back").addEventListener("click", openWorld);
 
-  // step 1 · before ⇄ after swipe with the ready-made pictures
+  // ---------- step 1 · before ⇄ after swipe ----------
   function startSwipe() {
     const after = L.imageOverlay(M.base + M.info.after.image, M.bounds).addTo(missionMap);
     const before = L.imageOverlay(M.base + M.info.before.image, M.bounds).addTo(missionMap);
@@ -257,7 +282,7 @@
     if (M && M.overlay) M.overlay.setOpacity(1);
   }
 
-  // step 2 · two cards into two buckets
+  // ---------- step 2 · two cards into two buckets ----------
   function refreshCards() {
     document.querySelectorAll(".card").forEach((c) => {
       c.querySelector("img").src = M.layers[`${c.dataset.date}_${M.glasses}`].src;
@@ -272,11 +297,12 @@
     document.querySelectorAll(".glasses button[data-ch]").forEach((bt) => bt.classList.toggle("on", bt.dataset.ch === M.glasses));
   }
   function glassesTip() {
-    const { CO, CX } = M.info.channels, watery = WATERY[M.info.topic];
-    const best = watery ? `${CO} 💧` : `${CX} 🌿`, now = M.glasses === "CO" ? `${CO} 💧` : `${CX} 🌿`;
+    const { CO, CX } = M.info.channels;
     if (CO === CX) return "";
-    return best === now ? ` Your ${now} glasses are the best ones for this mission.`
-      : ` Tip: this mission is about ${watery ? "water" : "plants"}, so try the ${best} glasses!`;
+    const label = (c) => (c === "CO" ? `${CO} 💧` : `${CX} 🌿`);
+    return M.glasses === M.best
+      ? ` Your ${label(M.best)} glasses are the best ones here: +${PTS.glasses} bonus when you go on!`
+      : ` Tip: this mission is about ${WATERY[M.info.topic] ? "water" : "plants"}. Which glasses make more of it glow? (+${PTS.glasses} bonus for the best ones)`;
   }
   function glowHint() {
     const { red, cyan } = M.buckets;
@@ -284,19 +310,21 @@
       say(!red && !cyan
         ? "Drag the BEFORE card into the RED bucket. (Or tap the card, then tap the bucket.)"
         : "Now drag the other card into the empty bucket.");
-      return next("Next: mark the glow ✏️", false);
+      return next("Next: find the glowing spots 🎯", false);
     }
+    award("glow", PTS.glow);
     say((red === "before"
       ? "It glows! RED = it got darker, BLUE-GREEN = it got brighter, GREY = nothing changed."
       : "It glows! BLUE-GREEN = it got darker, RED = it got brighter, GREY = nothing changed.") + glassesTip());
-    next("Next: mark the glow ✏️", true);
+    next("Next: find the glowing spots 🎯", true);
   }
   function drop(bucket, date) {
     if (!date) return;
-    const other = bucket === "red" ? "cyan" : "red";
+    const other = bucket === "red" ? "cyan" : "red", first = !(M.buckets.red && M.buckets.cyan);
     if (M.buckets[other] === date) M.buckets[other] = null;   // a card can only be in one bucket
     M.buckets[bucket] = date; M.picked = null;
     refreshCards(); composite(); glowHint();
+    if (first && M.buckets.red && M.buckets.cyan) { sfx("glow"); react("happy"); }
   }
   document.querySelectorAll(".card").forEach((c) => {
     c.addEventListener("dragstart", (e) => e.dataTransfer.setData("text/plain", c.dataset.date));
@@ -333,61 +361,163 @@
     else M.overlay = L.imageOverlay(url, M.bounds).addTo(missionMap);
   }
 
-  // step 3 · paint squares
-  let painting = false, paintTo = true;
-  document.addEventListener("mouseup", () => (painting = false));
-  document.addEventListener("touchend", () => (painting = false));
-  const cellStyle = (on) => ({ color: on ? "#ffe14a" : "#ffffff", weight: on ? 2 : 0.6, opacity: on ? 1 : 0.5,
-                               fillColor: "#ffe14a", fillOpacity: on ? 0.35 : 0.01 });
-  function drawCells() {
-    Object.entries(M.big).forEach(([k, c]) => {
-      const r = L.rectangle(c.bounds, cellStyle(M.marked.has(k))).addTo(missionMap);
-      const set = (on) => {
-        on ? M.marked.add(k) : M.marked.delete(k); r.setStyle(cellStyle(on)); updateMarked();
-        r.getElement() && r.getElement().classList.remove("hint-pulse");
-      };
-      r.on("mousedown", (e) => { L.DomEvent.stop(e); painting = true; paintTo = !M.marked.has(k); set(paintTo); });
-      r.on("mouseover", () => painting && set(paintTo));
-      M.cells.push(r);
-    });
+  // ---------- step 3 · find the glowing spots ----------
+  // The answer comes from the SAME layers the player sees, so whatever glows can be found.
+  function analyse(ch) {
+    const B = M.layers[`before_${ch}`].data, A = M.layers[`after_${ch}`].data, W = B.width, H = B.height;
+    const bw = Math.floor(W / BLOCK), bh = Math.floor(H / BLOCK), changed = new Uint8Array(bw * bh);
+    for (let by = 0; by < bh; by++) for (let bx = 0; bx < bw; bx++) {
+      let s = 0, n = 0;
+      for (let y = by * BLOCK; y < (by + 1) * BLOCK; y++) for (let x = bx * BLOCK; x < (bx + 1) * BLOCK; x++) {
+        const i = (y * W + x) * 4;
+        if (!B.data[i + 3] || !A.data[i + 3]) continue;
+        s += A.data[i] - B.data[i]; n++;
+      }
+      if (n > (BLOCK * BLOCK) / 2 && Math.abs(s / n) / DB_PER_GREY >= CHANGE_DB) changed[by * bw + bx] = 1;
+    }
+    const labels = new Int32Array(bw * bh), blobs = [];
+    for (let i = 0; i < bw * bh; i++) {
+      if (!changed[i] || labels[i]) continue;
+      const id = blobs.length + 1, stack = [i], cells = []; labels[i] = id;
+      let sx = 0, sy = 0;
+      while (stack.length) {
+        const j = stack.pop(), x = j % bw, y = (j / bw) | 0;
+        cells.push(j); sx += x; sy += y;
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const xx = x + dx, yy = y + dy;
+          if (xx < 0 || yy < 0 || xx >= bw || yy >= bh) continue;
+          const k = yy * bw + xx;
+          if (changed[k] && !labels[k]) { labels[k] = id; stack.push(k); }
+        }
+      }
+      blobs.push({ id, cells, size: cells.length, cx: sx / cells.length, cy: sy / cells.length });
+    }
+    blobs.sort((a, b) => b.size - a.size);
+    const minSize = Math.max(6, Math.round(bw * bh * 0.0015));
+    let targets = blobs.filter((b) => b.size >= minSize).slice(0, MAX_TARGETS);
+    if (targets.length < MIN_TARGETS) targets = blobs.slice(0, MIN_TARGETS);
+    return { W, H, bw, bh, labels, targets, targetIds: new Set(targets.map((t) => t.id)) };
   }
-  function clearCells() { M.cells.forEach((r) => missionMap.removeLayer(r)); M.cells = []; }
-  $("#btn-hint").addEventListener("click", () => {
-    const keys = Object.keys(M.big), left = [...M.truth].filter((k) => !M.marked.has(k));
-    M.cells.forEach((r) => r.getElement() && r.getElement().classList.remove("hint-pulse"));
-    if (!left.length) return say("You found every changed square! Press Check ✅ (and un-mark squares that don't glow).");
-    const k = left.sort((a, b) => M.big[b].share - M.big[a].share)[0];
-    const r = M.cells[keys.indexOf(k)];
-    r.setStyle({ color: "#7cf3c7", weight: 4, opacity: 1, fillOpacity: 0.15, fillColor: "#7cf3c7" });
-    r.getElement().classList.add("hint-pulse");
-    say(`Look at the blinking square: it glows, so something changed there. Paint it! (${left.length} changed ${left.length === 1 ? "square" : "squares"} still to find)`);
-  });
-  function updateMarked() { $("#marked").textContent = M.marked.size; next("Check! ✅", M.marked.size > 0); }
-  $("#btn-clear").addEventListener("click", () => { M.marked.clear(); clearCells(); drawCells(); updateMarked(); });
 
-  // step 4 · check: points come from the squares
-  function check() {
-    const found = [...M.marked].filter((k) => M.truth.has(k)).length;
-    const wrong = M.marked.size - found, total = M.truth.size;
-    const points = Math.max(0, Math.round((1000 * (found - 0.5 * wrong)) / total));
-    M.extra.push(L.imageOverlay(M.base + M.info.change_overlay, M.bounds, { opacity: 0.9 }).addTo(missionMap));
-    Object.entries(M.big).forEach(([k, c]) => {
-      const hit = M.truth.has(k), mine = M.marked.has(k);
-      if (!hit && !mine) return;
-      const color = hit && mine ? "#4be08a" : hit ? "#ffe14a" : "#ff5a5a";
-      M.extra.push(L.rectangle(c.bounds, { color, weight: 3, fillColor: color, fillOpacity: hit && mine ? 0.25 : 0.08 }).addTo(missionMap));
+  const mercY = (lat) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
+  function toBlock(ll) {
+    const b = M.bounds, a = M.ana;
+    const fx = (ll.lng - b.getWest()) / (b.getEast() - b.getWest());
+    const fy = (mercY(b.getNorth()) - mercY(ll.lat)) / (mercY(b.getNorth()) - mercY(b.getSouth()));
+    return [Math.floor(fx * a.bw), Math.floor(fy * a.bh)];
+  }
+  function toLatLng(bx, by) {   // block coordinates (may be fractional) -> lat/lng
+    const b = M.bounds, a = M.ana, n = mercY(b.getNorth()), s = mercY(b.getSouth());
+    const lng = b.getWest() + (bx / a.bw) * (b.getEast() - b.getWest());
+    const my = n - (by / a.bh) * (n - s);
+    return L.latLng(((Math.atan(Math.exp(my)) - Math.PI / 4) * 360) / Math.PI, lng);
+  }
+
+  function startFind() {
+    composite();
+    M.ana = analyse(M.glasses);
+    M.found = new Set(); M.hearts = HEARTS; M.t0 = Date.now(); M.hintLayer = null;
+    $("#targets").textContent = M.ana.targets.length;
+    drawFound(false); updateFind();
+    say(`I can see ${M.ana.targets.length} big glowing spots. Tap right on them! Careful: tapping where nothing glows costs a heart.` +
+        (MODE === "easy" ? " Stuck? Press 💡 Hint." : ""));
+    next("Score it ⭐", true);
+  }
+  function updateFind() {
+    $("#found").textContent = M.found.size;
+    $("#hearts").textContent = "❤️".repeat(M.hearts) + "🤍".repeat(HEARTS - M.hearts);
+  }
+
+  // a pixel-y layer showing found spots (green) and, at the end, missed ones (yellow)
+  function drawFound(showMissed) {
+    const a = M.ana, cv = el("canvas"); cv.width = a.bw; cv.height = a.bh;
+    const g = cv.getContext("2d"), img = g.createImageData(a.bw, a.bh);
+    a.targets.forEach((t) => {
+      const got = M.found.has(t.id);
+      if (!got && !showMissed) return;
+      const [r, gr, b] = got ? [75, 224, 138] : [255, 225, 74];
+      t.cells.forEach((j) => { const i = j * 4; img.data[i] = r; img.data[i + 1] = gr; img.data[i + 2] = b; img.data[i + 3] = 150; });
     });
-    scores[M.id] = Math.max(scores[M.id] || 0, points); store.set("scores", scores); updateHud();
-    const cheer = points >= 800 ? "Amazing radar eyes! 🚀" : points >= 400 ? "Nice work, cadet! 👍" : "Good try! Look for the glow and try again. 💪";
-    $("#result").innerHTML = `<div class="big">★ ${points}</div>
-      <p class="score-line"><b>${cheer}</b><br>You found <b>${found}</b> of <b>${total}</b> changed squares${wrong ? `, and <b>${wrong}</b> ${wrong === 1 ? "square was" : "squares were"} wrong` : ""}.</p>
-      <div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff5a5a"></i>wrong</span><span><i style="background:#ff2828"></i>real change</span></div>
+    g.putImageData(img, 0, 0);
+    if (M.foundLayer) missionMap.removeLayer(M.foundLayer);
+    M.foundLayer = L.imageOverlay(cv.toDataURL(), M.bounds, { className: "pixel-layer", interactive: false }).addTo(missionMap);
+    M.extra.push(M.foundLayer);
+  }
+
+  function tap(ll) {
+    if (M.hearts <= 0) return;
+    const a = M.ana, [bx, by] = toBlock(ll);
+    let best = null, bestD = 1e9, nearChange = false, nearFound = false;
+    for (let dy = -TAP_REACH; dy <= TAP_REACH; dy++) for (let dx = -TAP_REACH; dx <= TAP_REACH; dx++) {
+      const x = bx + dx, y = by + dy;
+      if (x < 0 || y < 0 || x >= a.bw || y >= a.bh) continue;
+      const id = a.labels[y * a.bw + x];
+      if (!id) continue;
+      nearChange = true;
+      if (!a.targetIds.has(id)) continue;
+      if (M.found.has(id)) { nearFound = true; continue; }
+      const d = dx * dx + dy * dy;
+      if (d < bestD) { bestD = d; best = id; }
+    }
+    if (best) {
+      M.found.add(best);
+      const secs = (Date.now() - M.t0) / 1000, speed = Math.round(PTS.speed * Math.max(0, 1 - secs / 90));
+      award(`spot${best}`, PTS.spot + speed, ll);
+      sfx("hit"); react("happy"); drawFound(false); clearHint(); updateFind();
+      const left = a.targets.length - M.found.size;
+      say(left ? `Got it! ${left} more glowing ${left === 1 ? "spot" : "spots"} to find.` : "You found them all! Amazing radar eyes! Press Score it ⭐");
+      if (!left) sfx("win");
+    } else if (nearFound) {
+      floatText(ll, "already found", "meh"); sfx("meh");
+    } else if (nearChange) {
+      floatText(ll, "tiny change", "meh"); sfx("meh");
+      say("That glows a little, but it's a tiny change. Look for the BIG glowing spots!");
+    } else {
+      M.hearts -= 1; updateFind(); floatText(ll, "−❤️", "bad"); sfx("miss"); react("oops");
+      const map = $("#mission-map"); map.classList.remove("shake"); void map.offsetWidth; map.classList.add("shake");
+      say(M.hearts ? "Nothing changed there: it's grey. Look for strong red or blue-green!" : "Out of hearts! Let's see how you did.");
+      if (!M.hearts) setTimeout(() => M.step === 3 && goStep(4), 900);
+    }
+  }
+
+  function floatText(ll, text, cls) {
+    const p = missionMap.latLngToContainerPoint(ll), d = el("div", { class: `float-pts ${cls}` });
+    d.textContent = text; d.style.left = `${p.x}px`; d.style.top = `${p.y}px`;
+    $(".mission-map-wrap").appendChild(d); setTimeout(() => d.remove(), 1300);
+  }
+
+  function clearHint() { if (M.hintLayer) { missionMap.removeLayer(M.hintLayer); M.hintLayer = null; } }
+  $("#btn-hint").addEventListener("click", () => {
+    if (!M || M.step !== 3) return;
+    const left = M.ana.targets.filter((t) => !M.found.has(t.id));
+    if (!left.length) return say("You found every glowing spot! Press Score it ⭐");
+    const t = left[0];   // biggest spot still hidden
+    clearHint();
+    const c = toLatLng(t.cx + 0.5, t.cy + 0.5), edge = toLatLng(t.cx + 0.5 + Math.sqrt(t.size) / 1.6 + 2, t.cy + 0.5);
+    M.hintLayer = L.circle(c, { radius: Math.max(150, c.distanceTo(edge)), color: "#7cf3c7", weight: 4, fillOpacity: 0.08,
+                                className: "hint-ring", interactive: false }).addTo(missionMap);
+    M.extra.push(M.hintLayer);
+    say("Look inside the blinking circle: something glows there. Tap it!");
+  });
+
+  // ---------- step 4 · score ----------
+  function score() {
+    const n = M.ana ? M.ana.targets.length : 0, f = M.found.size;
+    const st = !n ? 0 : f === n ? 3 : f >= n / 2 ? 2 : f >= 1 ? 1 : 0;
+    if (M.ana) drawFound(true);
+    M.extra.push(L.imageOverlay(M.base + M.info.change_overlay, M.bounds, { opacity: 0.55, interactive: false }).addTo(missionMap));
+    scores[M.id] = Math.max(scores[M.id] || 0, M.points); store.set("scores", scores);
+    stars[M.id] = Math.max(stars[M.id] || 0, st); store.set("stars", stars); updateHud();
+    if (st === 3) sfx("win");
+    const cheer = st === 3 ? "Perfect! Amazing radar eyes! 🚀" : st === 2 ? "Great work, cadet! 👍" : st === 1 ? "Good start! 💪" : "Let's try again! 💪";
+    $("#result").innerHTML = `<div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>
+      <p class="score-line"><b>${cheer}</b><br>You found <b>${f}</b> of <b>${n}</b> glowing spots${M.got.glasses ? ", and picked the best radar glasses" : ""}.</p>
+      <div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff2828"></i>what NISAR measured</span></div>
       <p class="muted">Why? ${WHY[M.info.topic] || ""}</p>
-      <button id="btn-retry" class="ghost small">Try again</button>`;
-    $("#btn-retry").onclick = () => { M.marked.clear(); goStep(3); };
-    const missed = total - found;
-    say((missed ? `The yellow squares are changes you missed: look, they glow too! ` : "You found every change! ") +
-        `${WHY[M.info.topic] || ""}`);
+      <button id="btn-retry" class="ghost small">Play this mission again</button>`;
+    $("#btn-retry").onclick = () => openMission(M.id);
+    react(st >= 2 ? "happy" : "oops");
+    say((f < n ? "The yellow spots are the ones you missed: they glow too! " : "You found every spot! ") + (WHY[M.info.topic] || ""));
     next("Next mission 🌍", true);
   }
 
@@ -397,11 +527,14 @@
     board.push({ name: player, score: total() });
     board.sort((a, b) => b.score - a.score);
     store.set("board", board.slice(0, 10));
-    $("#end-text").textContent = `${player}, you cleaned ${Object.keys(scores).length} of ${missions.length} places and scored ★ ${total()}.`;
+    $("#end-text").textContent = `${player}, you cleaned ${Object.keys(scores).length} of ${missions.length} places, earned ⭐ ${totalStars()} stars and ${total()} points.`;
     show("screen-end");
   }
   $("#btn-finish").addEventListener("click", finish);
-  $("#btn-again").addEventListener("click", () => { scores = {}; store.set("scores", scores); updateHud(); openWorld(); });
+  $("#btn-again").addEventListener("click", () => {
+    scores = {}; stars = {}; store.set("scores", scores); store.set("stars", stars); updateHud(); openWorld();
+  });
 
   updateHud();
+  if (location.hash === "#debug") window.SARBIT = { get M() { return M; }, get map() { return missionMap; }, openMission };
 })();

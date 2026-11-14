@@ -134,12 +134,19 @@ clearer in Sentinel-2 or InSAR coherence), **D2** Lábrea clearing, **M1 / M2** 
 
 ## 7 · The game today and how to add a mini-game
 
-Flow: intro → world map (pins from `index.json`) → mission in 4 steps → finish.
-1. **👀 Look:** before ⇄ after swipe. 2. **✨ Glow:** drag BEFORE / AFTER cards into the red / blue-green buckets;
-radar glasses switch CO/CX. 3. **✏️ Mark:** paint squares on a 6 × 6 board (made from the 12 × 12 answer key).
-4. **✅ Check:** points = 1000 × (found − ½ × wrong) ÷ changed squares.
+Flow: intro → world map (pins from `index.json`, stars per mission) → mission in 4 steps → finish.
+1. **👀 Look:** before ⇄ after swipe.
+2. **✨ Glow:** drag BEFORE / AFTER cards into the red / blue-green buckets; radar glasses switch CO/CX.
+   +50 for the first glow, +100 for leaving with the best glasses for the topic.
+3. **🎯 Find:** tap the glowing spots. The game works out the answer **in the browser from the same grey layers the
+   player sees** (8 × 8-pixel blocks whose brightness moved ≥ 3 dB, darker or brighter, joined into spots; the 3–8
+   biggest are the targets), so whatever glows can be found. +150 per spot + up to 50 speed bonus; tapping grey costs
+   one of 3 hearts; tiny changes and found spots just say so.
+4. **⭐ Score:** stars (all spots ★★★, half ★★, one ★), found / missed spots, NISAR's own change map, a one-line "why".
 
-Easy mode (`MODE` in `app.js`): "?" explanations, hint button, story line. Hard mode (no hints, 12 × 12) is planned.
+`grid.geojson` is no longer used by Easy mode (it stays the answer key for a future Hard mode).
+Easy mode (`MODE` in `app.js`): "?" explanations, hint ring, story line. Sounds are made in the browser (🔊 toggle).
+Open `/#debug` to get `window.SARBIT` (current mission, map, `openMission`) for scripted testing.
 
 **New mini-games** (minesweeper, snake, flappy…): put each in its own file `public/js/games/<name>.js` exposing
 `start(mission, map, done)` where `done(points)` returns the score. Add `"games": ["grid", "<name>"]` to the

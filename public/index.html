@@ -12,7 +12,8 @@
     <div class="brand"><span class="dot"></span> SARbit <small>radar cleanup</small></div>
     <div id="hud" hidden>
       <span id="hud-name"></span>
-      <span class="score">★ <b id="hud-score">0</b></span>
+      <span class="score">⭐ <b id="hud-stars">0</b> · <b id="hud-score">0</b> pts</span>
+      <button id="btn-sound" class="ghost small" title="Sound on/off">🔊</button>
       <button id="btn-finish" class="ghost">Finish</button>
     </div>
   </header>
@@ -59,9 +60,10 @@
       <p id="m-story" class="story"></p>
 
       <ol class="steps">
-        <li data-step="1">👀 Look</li><li data-step="2">✨ Glow</li><li data-step="3">✏️ Mark</li><li data-step="4">✅ Check</li>
+        <li data-step="1">👀 Look</li><li data-step="2">✨ Glow</li><li data-step="3">🎯 Find</li><li data-step="4">⭐ Score</li>
       </ol>
 
+      <p class="mission-pts">Mission points: <b id="m-points">0</b></p>
       <div class="guide">
         <div id="alien-guide" class="alien small"></div>
         <p id="guide-text"></p>
@@ -89,12 +91,12 @@
         </div>
       </div>
 
-      <!-- step 3: marking -->
-      <div id="mark-kit" hidden>
-        <p class="counter">Marked: <b id="marked">0</b> squares <button class="info" data-info="squares">?</button></p>
+      <!-- step 3: find the glowing spots -->
+      <div id="find-kit" hidden>
+        <p class="counter">Found <b id="found">0</b> of <b id="targets">0</b> glowing spots <button class="info" data-info="spots">?</button></p>
+        <p id="hearts" class="hearts"></p>
         <div class="actions">
           <button id="btn-hint" class="ghost small">💡 Hint</button>
-          <button id="btn-clear" class="ghost small">Clear all</button>
         </div>
       </div>
 
