@@ -47,7 +47,7 @@ input { font: inherit; }
 
 /* world */
 #world-map { flex: 1; }
-.world-panel { width: 320px; background: var(--panel); border-left: 1px solid var(--line); padding: 16px; overflow: auto; }
+.world-panel { width: 320px; background: var(--panel); border-right: 1px solid var(--line); padding: 16px; overflow: auto; }
 .world-panel h2 { margin: 0 0 4px; }
 #mission-list { list-style: none; padding: 0; margin: 12px 0; }
 #mission-list li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; cursor: pointer;
@@ -342,3 +342,70 @@ table.board tr.me td { color: var(--accent); font-weight: 700; }
 img.medal { height: 28px; vertical-align: middle; }
 .mission-pts .ico { height: 22px; }
 .player span { display: flex; align-items: center; }
+
+/* ---- start screen: a living sky ---- */
+#screen-intro { background: radial-gradient(ellipse at 20% 15%, #3b1d6e 0%, transparent 45%),
+  radial-gradient(ellipse at 85% 80%, #0f5a6e 0%, transparent 50%), radial-gradient(ellipse at 60% 30%, #1a2f7a 0%, transparent 55%),
+  #0b1020 url(../art/space.webp) center / cover; }
+.sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.starfield { position: absolute; inset: -50%; background-repeat: repeat; animation: drift 120s linear infinite; }
+.starfield.s1 { background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent), radial-gradient(1.5px 1.5px at 140px 80px, #cfe8ff, transparent),
+  radial-gradient(2px 2px at 260px 160px, #fff, transparent), radial-gradient(1px 1px at 90px 210px, #fff, transparent),
+  radial-gradient(1.5px 1.5px at 330px 40px, #ffe9b0, transparent); background-size: 360px 260px; animation-duration: 160s; }
+.starfield.s2 { background-image: radial-gradient(1px 1px at 60px 120px, #fff, transparent), radial-gradient(2.5px 2.5px at 200px 20px, #7cf3c7, transparent),
+  radial-gradient(1px 1px at 300px 200px, #fff, transparent), radial-gradient(2px 2px at 380px 110px, #c08cff, transparent);
+  background-size: 420px 300px; animation: drift 90s linear infinite, twinkle 3s ease-in-out infinite alternate; }
+.nebula { position: absolute; inset: 0; background: radial-gradient(circle at 75% 20%, rgba(192, 140, 255, .25), transparent 35%),
+  radial-gradient(circle at 15% 85%, rgba(124, 243, 199, .18), transparent 40%); animation: breathe 9s ease-in-out infinite alternate; }
+@keyframes drift { to { transform: translate(180px, 90px); } }
+@keyframes twinkle { from { opacity: .35; } to { opacity: 1; } }
+@keyframes breathe { from { opacity: .6; } to { opacity: 1; } }
+.saucer-fly { top: 6px; left: -260px; width: min(200px, 28vw); animation: flyby 22s ease-in-out infinite; z-index: 2; }   /* above the card */
+.saucer-fly img { width: 100%; display: block; animation: float 2.4s ease-in-out infinite; }
+.saucer-fly .beam { position: absolute; left: 38%; top: 82%; width: 24%; height: 90px; transform-origin: top center;
+  background: linear-gradient(rgba(124, 243, 199, .55), rgba(124, 243, 199, 0)); clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%);
+  animation: beam 22s ease-in-out infinite; }
+@keyframes flyby { 0% { transform: translateX(0) rotate(-4deg); } 30% { transform: translateX(28vw) rotate(0); }
+  55% { transform: translateX(32vw) translateY(10px); } 85% { transform: translateX(calc(100vw + 300px)) rotate(4deg); }
+  86%, 100% { transform: translateX(calc(100vw + 300px)); } }   /* slows down mid-sky to beam, then zooms off */
+@keyframes beam { 0%, 30%, 58%, 100% { opacity: 0; } 36%, 52% { opacity: 1; } }
+.deco.earth { animation: float 7s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .starfield, .nebula, .saucer-fly, .saucer-fly img, .saucer-fly .beam, .deco { animation: none !important; } .saucer-fly { display: none; } }
+
+/* ---- world: finished missions are closed ---- */
+#mission-list li.done { cursor: default; opacity: .6; }
+#mission-list li.done .tick { color: var(--green); font-weight: 800; margin-left: 4px; }
+.world-note { background: var(--panel2); border: 1px solid var(--accent); border-radius: 10px; padding: 8px 10px; font-size: 14px; margin: 0 0 8px; }
+@media (max-width: 820px) { .world-panel { order: 2; } }
+
+/* ---- glow-o-meter (step 2) ---- */
+.glow-meter { margin-top: 10px; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; }
+.gm-title { margin: 0 0 6px; font-weight: 700; font-size: 14px; }
+.gm-row { display: grid; grid-template-columns: 70px 1fr 44px 18px; gap: 6px; align-items: center; margin: 4px 0; font-size: 14px; }
+.gm-row.now .gm-label { color: var(--accent); font-weight: 700; }
+.gm-bar { height: 14px; background: #0b1020; border-radius: 7px; overflow: hidden; border: 1px solid var(--line); }
+.gm-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ff5a5a, #4fe3e0); transition: width .6s; }
+.gm-row.win .gm-bar { box-shadow: 0 0 10px rgba(124, 243, 199, .6); }
+.gm-row b { text-align: right; }
+
+/* ---- Radar Lab ---- */
+#lab h3 { margin: 14px 0 2px; } #lab h3 small { color: var(--muted); font-weight: 400; font-size: 12px; }
+#lab-list { list-style: none; padding: 0; margin: 8px 0; }
+#lab-list li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; cursor: pointer; border: 1px dashed var(--line); margin-bottom: 6px; }
+#lab-list li:hover { background: var(--panel2); border-color: var(--accent); }
+#lab-list li small { display: block; color: var(--muted); font-size: 12px; }
+#lab-list li.done { opacity: .6; cursor: default; }
+#lab-list .lab-ico { font-size: 22px; }
+#lab-list .pts { margin-left: auto; font-size: 13px; }
+#screen-mission.lab .steps, #screen-mission.lab .glasses, #screen-mission.lab #glow-meter { display: none; }
+.lab-chips, .lab-pots { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; margin: 8px 0; }
+.lab-chip { background: var(--panel2); color: var(--text); border: 2px solid var(--line); text-align: left; display: flex; flex-direction: column; gap: 2px; }
+.lab-chip small { color: var(--muted); font-weight: 400; font-size: 11px; line-height: 1.3; }
+.lab-chip.picked { border-color: var(--accent); } .lab-chip.used { opacity: .5; }
+.lab-pot { border: 3px dashed; background: transparent; min-height: 70px; display: flex; flex-direction: column; gap: 4px; align-items: center; justify-content: center; }
+.lab-pot.r { border-color: #ff5a5a; color: #ff5a5a; } .lab-pot.g { border-color: #4be08a; color: #4be08a; } .lab-pot.b { border-color: #5aa8ff; color: #5aa8ff; }
+.lab-pot b { color: var(--text); } .lab-pot em { color: var(--muted); font-size: 12px; font-weight: 400; }
+.lab-result { padding-left: 4px; list-style: none; margin: 8px 0; }
+.lab-slider { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
+.lab-slider input { flex: 1; accent-color: var(--accent); }
+.lab-big { font-size: 16px; margin: 6px 0; } .lab-big b { color: var(--accent); }

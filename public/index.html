@@ -21,6 +21,8 @@
 
   <!-- 1 · intro -->
   <section id="screen-intro" class="screen active">
+    <div class="sky" aria-hidden="true"><div class="starfield s1"></div><div class="starfield s2"></div><div class="nebula"></div></div>
+    <div class="deco saucer-fly" aria-hidden="true"><img src="art/saucer.webp" alt=""><i class="beam"></i></div>
     <img class="deco earth" src="art/earth.webp" alt="">
     <img class="deco dish" src="art/dish.webp" alt="">
     <div class="intro-card">
@@ -45,11 +47,16 @@
 
   <!-- 2 · world map -->
   <section id="screen-world" class="screen">
-    <div id="world-map"></div>
     <aside class="world-panel">
+      <p id="world-note" class="world-note" hidden></p>
       <h2>Pick a mission</h2>
       <p class="muted">Each pin is a real event NISAR saw from space.</p>
       <ul id="mission-list"></ul>
+      <div id="lab">
+        <h3>🧪 Radar Lab <small>bonus games</small></h3>
+        <p class="muted small">Learn the tricks radar scientists use, and earn extra points.</p>
+        <ul id="lab-list"></ul>
+      </div>
       <div id="board">
         <h3>Top cadets</h3>
         <ol id="board-list"></ol>
@@ -57,6 +64,7 @@
           <button id="btn-world-finish" class="ghost small"><img class="ico" src="art/ui-finish.webp" alt="">Finish</button></p>
       </div>
     </aside>
+    <div id="world-map"></div>
   </section>
 
   <!-- 3 · mission: 4 simple steps -->
@@ -92,6 +100,7 @@
           <button class="ghost small" data-ch="CX"></button>
           <button class="info" data-info="glasses">?</button>
         </div>
+        <div id="glow-meter" class="glow-meter" hidden></div>
       </div>
 
       <!-- step 3: find the glowing spots -->
@@ -168,6 +177,7 @@
   <script src="js/games/lasso.js"></script>
   <script src="js/games/hunt.js"></script>
   <script src="js/games/bonus.js"></script>
+  <script src="js/games/lab.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

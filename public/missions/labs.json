@@ -1,0 +1,38 @@
+[
+ {
+  "id": "paint",
+  "type": "paint",
+  "mission": "D1",
+  "icon": "🎨",
+  "title": "Paint with radar",
+  "blurb": "Radar has no colours. Scientists put three radar layers into red, green and blue to see forest, clearings and rivers at a glance. Make your own radar painting of the Amazon!",
+  "why": "Each radar layer shows something different: HH bounces off the ground, HV is twisted by leaves, and HH÷HV is big where leaves are gone. Mixed as red, green and blue, they paint the forest green and the clearings purple."
+ },
+ {
+  "id": "detector",
+  "type": "detector",
+  "mission": "W2",
+  "icon": "🎚",
+  "title": "Flood detector",
+  "blurb": "Every radar picture is a bit grainy, so everything changes a little between two dates. How much darker must a place get before we call it flooded? Tune the detector like NISAR's scientists did for the Limpopo flood.",
+  "why": "Choosing the threshold is a real science decision: too low and radar noise looks like flood, too high and real water is missed."
+ },
+ {
+  "id": "speckle",
+  "type": "speckle",
+  "mission": "M3",
+  "icon": "✨",
+  "title": "Speckle cleaner",
+  "blurb": "Radar echoes from many tiny things mix, so every pixel flickers: that's called speckle. Clean the Mississippi Delta picture so the water and the marsh are clear, without blurring the shore.",
+  "why": "Averaging neighbouring pixels (scientists call it multi-looking) removes speckle, but too much makes the edges fuzzy. The best picture is in between."
+ },
+ {
+  "id": "echo",
+  "type": "echo",
+  "mission": "A3",
+  "icon": "🔊",
+  "title": "Echo sorter",
+  "blurb": "Different places send back different echoes. Listen to four places in the Jezreel Valley and sort them from the weakest echo to the strongest.",
+  "why": "Smooth surfaces send the wave away (weak echo), rough ones scatter some back, and buildings act like corner mirrors (strongest echo)."
+ }
+]

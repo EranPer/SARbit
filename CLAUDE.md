@@ -160,10 +160,20 @@ over the map: 🗺 Layers (top left), 📰 What happened (top right; opens by it
 (bottom left; "–" shrinks it to the alien, a new tip makes it wiggle), the before/after slider (bottom right).
 On phones they stack: tips, mission, map, news.
 
+**🧪 Radar Lab** (world screen, under the missions): extra games that teach how radar works, each at the mission
+where it shows best (`public/missions/labs.json`, `js/games/lab.js`). They skip Look/Glow, score once (`lab-<id>`):
+*Paint with radar* (Amazon: HH/HV/HH÷HV into red/green/blue → forest green, clearings purple), *Flood detector*
+(Limpopo: dB threshold slider vs the science team's change map, best ≈ 3.5–4 dB), *Speckle cleaner* (Mississippi:
+averaging window, grainy dots vs shore width, best 5 × 5), *Echo sorter* (Jezreel: four places, weakest → strongest
+HH echo, as beeps). Step 2 also has a **glow-o-meter**: how much glows through each pair of glasses; the measured
+winner is the "best glasses" (HH on all seven pairs, because of L-band double bounce on trunks and stems).
+
 **Players and scores:** several cadets per device (`localStorage` `sarbit.players`); tap the name at the top to switch.
-🏆 opens the scoreboard: *On this device* and *🌍 World*. The world board is `api/scores.js` (Vercel Edge Function,
-best score per nickname, top 20). **To switch it on (Eran, Vercel owner):** Vercel → SARbit project → Storage →
-Upstash Redis → create + connect to the project → redeploy. Until then the World tab says it is off; nothing breaks.
+🏆 opens the scoreboard: *On this device* and *🌍 World*. A finished mission is closed (its points count once);
+"Play again" on the end screen starts that player over. The world board is `api/scores.js` (Vercel Node function,
+no packages, best score per nickname, top 20). It works with any Redis from Vercel → Storage: Upstash/KV (REST
+address + token) or plain Redis (`REDIS_URL`). **To switch it on:** connect the database to the SARbit project for
+**Production**, then redeploy. Until then `/api/scores` answers 503 and lists the storage setting names it sees.
 
 `grid.geojson` is no longer used by Easy mode (it stays the answer key for a future Hard mode).
 Easy mode (`MODE` in `app.js`): "?" explanations, hint ring, story line. Sounds are made in the browser (🔊 toggle).

@@ -138,7 +138,7 @@
 
   // ---------- world map ----------
   async function openWorld() {
-    show("screen-world");
+    show("screen-world"); $("#world-note").hidden = true;
     if (!missions.length) missions = await (await fetch("missions/index.json")).json();
     if (!worldMap) {
       worldMap = L.map("world-map", { worldCopyJump: true, minZoom: 2 }).setView([20, 20], 2);
@@ -154,17 +154,47 @@
         html: `<div class="mp${done ? " done" : ""}" style="border-color:${t.color}"><img src="art/card-${m.topic}.webp" alt=""></div>` +
               `<i style="border-top-color:${t.color}"></i>${done ? `<span class="stars">${starText(st)}</span>` : ""}` });
       L.marker([m.lat, m.lon], { icon: pin, title: m.title, riseOnHover: true })
-        .addTo(worldMap).bindTooltip(`${m.title} · ${t.label}`, { direction: "top" }).on("click", () => openMission(m.id));
+        .addTo(worldMap).bindTooltip(`${m.title} · ${t.label}${done ? " · done ✓" : ""}`, { direction: "top" }).on("click", () => pick(m));
       const li = el("li", { class: done ? "done" : "" }, [
         el("span", { class: "chip", style: `background:${t.color}` }),
         el("span", { text: m.title }),
       ]);
       const s = el("span", { class: "pts stars" }); s.innerHTML = done ? starText(st) : "";
       li.appendChild(s);
-      li.addEventListener("click", () => openMission(m.id));
+      if (done) li.querySelector("span:nth-child(2)").insertAdjacentHTML("beforeend", ' <span class="tick">✓</span>');
+      li.addEventListener("click", () => pick(m));
       list.appendChild(li);
     });
-    drawBoard();
+    drawBoard(); drawLabs();
+  }
+
+  // the Radar Lab: extra games, each set at the mission where its idea shows best; closed once played, like missions
+  let labs = null;
+  async function drawLabs() {
+    if (!labs) labs = await fetch("missions/labs.json").then((r) => r.json()).catch(() => []);
+    $("#lab-list").innerHTML = labs.map((l) => {
+      const m = missions.find((x) => x.id === l.mission), done = `lab-${l.id}` in scores;
+      return `<li class="${done ? "done" : ""}" data-lab="${l.id}"><span class="lab-ico">${l.icon}</span>
+        <span>${esc(l.title)}<small>${m ? esc(m.title) : ""}${done ? ' <span class="tick">✓</span>' : ""}</small></span>
+        <span class="pts stars">${done ? starText(stars[`lab-${l.id}`] || 0) : ""}</span></li>`;
+    }).join("");
+    $("#lab-list").querySelectorAll("li").forEach((li) => li.addEventListener("click", () => {
+      const l = labs.find((x) => x.id === li.dataset.lab);
+      if (`lab-${l.id}` in scores) {
+        $("#world-note").hidden = false;
+        $("#world-note").innerHTML = `🧪 <b>${esc(l.title)}</b> is done ✓ <span class="stars">${starText(stars[`lab-${l.id}`] || 0)}</span> Try another lab!`;
+        return sfx("meh");
+      }
+      openMission(l.mission, l);
+    }));
+  }
+
+  // a finished mission is closed: its points count once (Play again on the end screen starts everyone's run over)
+  function pick(m) {
+    $("#world-note").hidden = !(m.id in scores);
+    if (!(m.id in scores)) return openMission(m.id);
+    $("#world-note").innerHTML = `${ART("star-on")}<b>${esc(m.title)}</b> is done ✓ <span class="stars">${starText(stars[m.id] || 0)}</span> Pick a mission you haven't played yet!`;
+    sfx("meh");
   }
 
   // top cadets on this device (the full scoreboard is a dialog)
@@ -276,8 +306,9 @@
     say(INFO[b.dataset.info]()); const g = $(".guide"); g.classList.add("flash"); setTimeout(() => g.classList.remove("flash"), 600);
   }));
 
-  async function openMission(id) {
+  async function openMission(id, lab = null) {
     show("screen-mission");
+    $("#screen-mission").classList.toggle("lab", !!lab);
     const base = `missions/${id}/`;
     const info = await (await fetch(base + "mission.json")).json();
     const extra = (await content())[id] || {};
@@ -287,16 +318,17 @@
     M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), step: 1, layers: {}, opened: Date.now(), log: [],
           mapLayers: {}, on: new Set(extra.layers || ["towns"]), osmP: null, bonusQueue: null, inBonus: false, bonusAsked: 0, bonusRight: 0,
           buckets: { red: null, cyan: null }, glasses: "CO",
-          best: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO",
+          best: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO", tried: new Set(), measured: false,
           picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS,
           content: extra, rule: { sign: 0, db: CHANGE_DB, water_max: 99, ...((extra.game || {}).rule || {}) },
-          focus: (extra.game || {}).focus || [0, 0, 1, 1], anaCache: {}, game: extra.game || { type: "spots" }, result: null, onTap: null };
+          focus: (extra.game || {}).focus || [0, 0, 1, 1], anaCache: {}, game: extra.game || { type: "spots" }, result: null, onTap: null,
+          lab, key: lab ? `lab-${lab.id}` : id };
     const STEP3 = { spots: ART("icon-find") + "Find", quiz: ART("icon-inspect") + "Inspect", order: ART("ui-undo") + "Order", lasso: ART("icon-circle") + "Circle", hunt: ART("icon-rig") + "Hunt" };
     $('.steps li[data-step="3"]').innerHTML = STEP3[M.game.type] || "🎯 Play";
 
-    $("#m-title").textContent = info.title || id;
-    $("#m-place").textContent = info.place || "";
-    $("#m-story").textContent = extra.story || info.story || "";
+    $("#m-title").textContent = lab ? `🧪 ${lab.title}` : info.title || id;
+    $("#m-place").textContent = lab ? `Radar Lab · ${info.title}, ${info.place || ""}` : info.place || "";
+    $("#m-story").textContent = lab ? lab.blurb : extra.story || info.story || "";
     renderInfo(extra);
     $(".d-before").textContent = info.before.date; $(".d-after").textContent = info.after.date;
     document.querySelectorAll(".glasses button[data-ch]").forEach((bt) => {
@@ -323,7 +355,7 @@
       M.layers[`${d}_${ch}`] = { src, data: pixels(await loadImage(src)) };
     })));
     setLayer();
-    goStep(1);
+    lab ? startLab() : goStep(1);
   }
 
   function renderInfo(c) {
@@ -496,7 +528,7 @@
     if (step !== 4) $("#playtest").hidden = true;
   }
 
-  const spots = () => M.game.type === "spots";
+  const spots = () => !M.lab && M.game.type === "spots";
   function next(label, enabled) { const b = $("#btn-next"); b.textContent = label; b.disabled = !enabled; }
   $("#btn-next").addEventListener("click", () => {
     if (M.step === 2 && M.glasses === M.best) award("glasses", PTS.glasses);
@@ -544,10 +576,45 @@
     const { CO, CX } = M.info.channels;
     if (CO === CX) return "";
     const label = (c) => (c === "CO" ? `${CO} 💧` : `${CX} 🌿`);
-    return M.glasses === M.best
-      ? ` Your ${label(M.best)} glasses are the best ones here: +${PTS.glasses} bonus when you go on!`
-      : ` Tip: this mission is about ${WATERY[M.info.topic] ? "water" : "plants"}. Which glasses make more of it glow? (+${PTS.glasses} bonus for the best ones)`;
+    return M.tried.size < 2 ? ` Now switch your radar glasses and watch the glow-o-meter!`
+      : M.glasses === M.best ? ` Your ${label(M.best)} glasses are the best ones here: +${PTS.glasses} bonus when you go on!`
+      : ` Try both radar glasses: the glow-o-meter shows which one lights up more. (+${PTS.glasses} bonus for the best ones)`;
   }
+  // ---------- the glow-o-meter: how much of the picture glows through each pair of radar glasses ----------
+  // Each bar shows only after the player has tried those glasses. The pair that lights up more is this mission's best
+  // (measured from the same layers the player sees, so the bonus always agrees with the meter).
+  function glowShare(ch) {
+    const a = (M.anaCache[ch] = M.anaCache[ch] || analyse(ch));
+    return a.changed.reduce((n, v) => n + v, 0) / (a.bw * a.bh);
+  }
+  function glassesWhy() {   // explains whichever pair really won here (the meter measures the same layers the player sees)
+    const { CO, CX } = M.info.channels, water = WATERY[M.info.topic];
+    if (M.best === "CX") return `${CX} wins! Only leaves, branches and crops twist my wave the other way, so plants that grew or were cut change the most in ${CX}.`;
+    return water
+      ? `${CO} wins! Smooth water bounces my wave away like a mirror, so wet and flooded ground changes a lot in ${CO}. ${CX} changes less: there are few leaves to twist the wave.`
+      : `${CO} wins here! My long L-band wave bounces off the ground and up the tree trunks or crop stems, then straight back: a "double bounce". ` +
+        `Cut the trees or the crop and that bounce is gone, so ${CO} changes the most. ${CX} (twisted by leaves) changed too, just less.`;
+  }
+  function glowMeter() {
+    const box = $("#glow-meter"), { CO, CX } = M.info.channels;
+    box.hidden = CO === CX || !(M.buckets.red && M.buckets.cyan);
+    if (box.hidden) return;
+    const first = !M.tried.has(M.glasses) && M.tried.size === 1, shown = M.tried.size === 0;
+    M.tried.add(M.glasses);
+    if (shown) setTimeout(() => box.scrollIntoView({ block: "nearest", behavior: "smooth" }), 300);   // it sits below the buckets
+    const share = { CO: glowShare("CO"), CX: glowShare("CX") }, top = Math.max(share.CO, share.CX) || 1, both = M.tried.size === 2;
+    const row = (ch) => {
+      const tried = M.tried.has(ch);
+      return `<div class="gm-row${ch === M.glasses ? " now" : ""}${both && ch === M.best ? " win" : ""}">
+        <span class="gm-label">${ART(ch === "CO" ? "badge-water" : "badge-leaf")}${ch === "CO" ? CO : CX}</span>
+        <span class="gm-bar"><i style="width:${tried ? Math.max(3, (100 * share[ch]) / top) : 0}%"></i></span>
+        <b>${tried ? `${Math.round(share[ch] * 100)} %` : "?"}</b>${both && ch === M.best ? ART("star-on") : ""}</div>`;
+    };
+    box.innerHTML = `<p class="gm-title">Glow-o-meter: how much of the picture glows?</p>${row("CO")}${row("CX")}
+      <p class="muted small">${both ? glassesWhy() : "Now try the other glasses and compare!"}</p>`;
+    if (first) { sfx("glow"); react("happy"); log("meter", { best: M.best }); }
+  }
+
   function glowHint() {
     const { red, cyan } = M.buckets;
     if (!red || !cyan) {
@@ -557,6 +624,12 @@
       return next("Next: find the glowing spots 🎯", false);
     }
     award("glow", PTS.glow);
+    if (!M.measured && M.info.channels.CO !== M.info.channels.CX) { M.best = glowShare("CX") > glowShare("CO") ? "CX" : "CO"; M.measured = true; }
+    glowMeter();
+    if (M.tried.size === 2) {
+      next("Next: find the glowing spots 🎯", true);
+      return say(glassesWhy() + (M.glasses === M.best ? ` You're wearing them: +${PTS.glasses} bonus when you go on!` : " Switch to them for a bonus!"));
+    }
     say(((M.content.say || {}).glow && red === "before" ? M.content.say.glow : red === "before"
       ? "It glows! RED = it got darker, BLUE-GREEN = it got brighter, GREY = nothing changed."
       : "It glows! BLUE-GREEN = it got darker, RED = it got brighter, GREY = nothing changed.") + glassesTip());
@@ -636,6 +709,7 @@
   const gameApi = (cfg) => ({
     M, map: missionMap, kit: $("#game-kit"), cfg, say, award, floatText, sfx, react, next,
     analysis, blockStats, toBlock, toLatLng, starText, osm: osmData, setLayer,
+    glasses: (ch) => { if (M.glasses !== ch && M.layers[`before_${ch}`]) { M.glasses = ch; composite(); M.ana = analysis(); } },
     layer: (l) => { M.extra.push(l); return l.addTo(missionMap); },
     done: (result) => { M.result = result; startBonuses(); },
   });
@@ -649,10 +723,26 @@
     G.start(api);
   }
 
+  // ---------- Radar Lab: extra games (missions/labs.json, js/games/lab.js) ----------
+  // They skip Look and Glow: the lab is the whole game, then the score. Points are kept under "lab-<id>".
+  function startLab() {
+    const G = (window.SARbitLab || {})[M.lab.type];
+    M.step = 3; stopSwipe(); setCalm("think");
+    ["#glow-kit", "#find-kit", "#result", "#camera-kit", "#map-hud", "#btn-prev"].forEach((sel) => ($(sel).hidden = true));
+    $("#game-kit").hidden = false; $("#game-kit").innerHTML = "";
+    newsOpen(false);
+    if (!G) { say(`This lab (${M.lab.type}) isn't loaded.`); return next("Score it ⭐", true); }
+    M.ana = analysis();
+    const api = gameApi(M.lab);
+    M.finishGame = () => G.finish && G.finish(api);
+    log("lab", { id: M.lab.id });
+    G.start(api);
+  }
+
   // bonus questions after the game, about the real places around the change (content.json "bonus": a list,
   // see js/games/bonus.js), then the score
   function startBonuses() {
-    if (M.bonusQueue) return goStep(4);
+    if (M.bonusQueue || M.lab) return goStep(4);
     M.bonusQueue = [].concat(M.content.bonus || []);
     M.townsOn = M.on.has("towns");   // a bonus may hide the town names while it asks; they come back after
     if (M.cleanup) { M.cleanup(); M.cleanup = null; }
@@ -832,20 +922,19 @@
     const st = R && R.stars != null ? R.stars : !n ? 0 : f === n ? 3 : f >= n / 2 ? 2 : f >= 1 ? 1 : 0;
     if (M.ana && !R) drawFound(true);
     M.extra.push(L.imageOverlay(M.base + M.info.change_overlay, M.bounds, { opacity: 0.55, interactive: false }).addTo(missionMap));
-    scores[M.id] = Math.max(scores[M.id] || 0, M.points); stars[M.id] = Math.max(stars[M.id] || 0, st);
+    scores[M.key] = Math.max(scores[M.key] || 0, M.points); stars[M.key] = Math.max(stars[M.key] || 0, st);
     savePlayer(); updateHud();
     if (st === 3) sfx("win");
     const cheer = st === 3 ? "Perfect! Amazing radar eyes! 🚀" : st === 2 ? "Great work, cadet! 👍" : st === 1 ? "Good start! 💪" : "Let's try again! 💪";
     $("#result").innerHTML = `<div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>
       <p class="score-line"><b>${cheer}</b><br>${R ? R.line : `You found <b>${f}</b> of <b>${n}</b> glowing spots`}${M.got.glasses ? ", and picked the best radar glasses" : ""}.${M.bonusAsked ? `<br>⭐ Bonus questions: <b>${M.bonusRight}</b> of <b>${M.bonusAsked}</b> right` : ""}${M.got.camera ? "<br>📷 You knew what the camera could see." : ""}</p>
       ${R ? "" : `<div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff2828"></i>what NISAR measured</span></div>`}
-      <p class="muted">Why? ${M.content.why || WHY[M.info.topic] || ""}</p>
-      <button id="btn-retry" class="ghost small">Play this mission again</button>`;
-    $("#btn-retry").onclick = () => openMission(M.id);
+      <p class="muted">Why? ${(M.lab && M.lab.why) || M.content.why || WHY[M.info.topic] || ""}</p>
+      <p class="muted small">Mission done ✓ Each mission counts once.</p>`;
     if (PLAYTEST) playtestNotes(n, f, st);
     M.result = null;
     react(st >= 2 ? "happy" : "oops");
-    say((R ? "" : f < n ? "The yellow spots are the ones you missed: they glow too! " : "You found every spot! ") + (M.content.why || WHY[M.info.topic] || ""));
+    say((R ? "" : f < n ? "The yellow spots are the ones you missed: they glow too! " : "You found every spot! ") + ((M.lab && M.lab.why) || M.content.why || WHY[M.info.topic] || ""));
     next("Next mission 🌍", true);
   }
 

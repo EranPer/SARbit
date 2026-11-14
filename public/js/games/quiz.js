@@ -67,6 +67,8 @@
   (window.SARbitGames = window.SARbitGames || {}).quiz = {
     start(api) {
       const kind = KINDS[api.cfg.kind] || KINDS.harvest, M = api.M, count = api.cfg.pins || 8;
+      const switched = kind.channel === "CX" && M.glasses !== "CX" && M.info.channels.CO !== M.info.channels.CX;
+      if (switched) api.glasses("CX");   // the answers are read in the plants channel, so the player looks through it too
       const { s, pins } = pickBlocks(api, kind, count), size = 22;
       let i = 0, right = 0, peek = null, view = "glow";
       M.quiz = { right: 0, total: pins.length };
@@ -113,6 +115,7 @@
       if (!pins.length) { api.say("I couldn't find good places to ask about here."); return api.next("Score it ⭐", true); }
       api.next("Finish early ⭐", true);
       show();
+      if (switched) api.say(`I put on my ${M.info.channels.CX} glasses for this quiz: only leaves and crops twist my wave, so a field that went dark in ${M.info.channels.CX} lost its plants. ` + kind.question.replace("{n}", 1));
     },
     finish(api) {
       const q = api.M.quiz || { right: 0, total: api.cfg.pins || 8 };
