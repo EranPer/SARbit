@@ -186,6 +186,11 @@
       `Tapping where nothing changed costs a heart ❤️.` + (MODE === "easy" ? " Stuck? Press 💡 Hint." : ""),
   };
   const say = (t) => ($("#guide-text").textContent = t);
+  const PLAYTEST = location.hash.includes("playtest");
+  function log(ev, data = {}) {
+    if (!PLAYTEST || !M) return;
+    (M.log = M.log || []).push({ t: Math.round((Date.now() - M.opened) / 100) / 10, ev, ...data });
+  }
   document.querySelectorAll("button.info").forEach((b) => b.addEventListener("click", () => {
     say(INFO[b.dataset.info]()); const g = $(".guide"); g.classList.add("flash"); setTimeout(() => g.classList.remove("flash"), 600);
   }));
@@ -196,7 +201,7 @@
     const info = await (await fetch(base + "mission.json")).json();
     const [w, s, e, n] = info.bbox;
     const { CO, CX } = info.channels;
-    M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), step: 1, layers: {},
+    M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), step: 1, layers: {}, opened: Date.now(), log: [],
           buckets: { red: null, cyan: null }, glasses: "CO",
           best: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO",
           picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS };
@@ -242,7 +247,9 @@
     $("#glow-kit").hidden = step !== 2; $("#find-kit").hidden = step !== 3; $("#result").hidden = step !== 4;
     $("#btn-prev").hidden = step !== 2;
     document.querySelectorAll("[data-step-only]").forEach((b) => (b.hidden = +b.dataset.stepOnly !== step));
-    $("#btn-hint").hidden = MODE !== "easy";
+    $("#btn-hint2").hidden = MODE !== "easy";
+    $("#map-hud").hidden = step !== 3;
+    log("step", { step });
     $("#mission-map").classList.toggle("find-mode", step === 3);
     stopSwipe(); M.extra.forEach((l) => missionMap.removeLayer(l)); M.extra = []; M.foundLayer = null;
 
@@ -254,6 +261,7 @@
     if (step === 2) { refreshCards(); composite(); glowHint(); }
     if (step === 3) startFind();
     if (step === 4) score();
+    if (step !== 4) $("#playtest").hidden = true;
   }
 
   function next(label, enabled) { const b = $("#btn-next"); b.textContent = label; b.disabled = !enabled; }
@@ -322,7 +330,7 @@
     if (!date) return;
     const other = bucket === "red" ? "cyan" : "red", first = !(M.buckets.red && M.buckets.cyan);
     if (M.buckets[other] === date) M.buckets[other] = null;   // a card can only be in one bucket
-    M.buckets[bucket] = date; M.picked = null;
+    M.buckets[bucket] = date; M.picked = null; log("drop", { bucket, date });
     refreshCards(); composite(); glowHint();
     if (first && M.buckets.red && M.buckets.cyan) { sfx("glow"); react("happy"); }
   }
@@ -337,7 +345,7 @@
     b.addEventListener("click", () => M.picked && drop(b.dataset.bucket, M.picked));
   });
   document.querySelectorAll(".glasses button[data-ch]").forEach((bt) => bt.addEventListener("click", () => {
-    M.glasses = bt.dataset.ch; refreshCards(); composite(); glowHint();
+    M.glasses = bt.dataset.ch; log("glasses", { ch: bt.dataset.ch }); refreshCards(); composite(); glowHint();
   }));
 
   // the glow picture: red = the card in the red bucket, green + blue = the card in the blue-green bucket
@@ -417,15 +425,17 @@
     composite();
     M.ana = analyse(M.glasses);
     M.found = new Set(); M.hearts = HEARTS; M.t0 = Date.now(); M.hintLayer = null;
-    $("#targets").textContent = M.ana.targets.length;
+    $("#targets").textContent = $("#hud-targets").textContent = M.ana.targets.length;
+    if (window.innerWidth <= 820) setTimeout(() => $(".mission-map-wrap").scrollIntoView({ behavior: "smooth" }), 600);
     drawFound(false); updateFind();
     say(`I can see ${M.ana.targets.length} big glowing spots. Tap right on them! Careful: tapping where nothing glows costs a heart.` +
         (MODE === "easy" ? " Stuck? Press 💡 Hint." : ""));
     next("Score it ⭐", true);
   }
   function updateFind() {
-    $("#found").textContent = M.found.size;
-    $("#hearts").textContent = "❤️".repeat(M.hearts) + "🤍".repeat(HEARTS - M.hearts);
+    const hearts = "❤️".repeat(M.hearts) + "🤍".repeat(HEARTS - M.hearts);
+    $("#found").textContent = $("#hud-found").textContent = M.found.size;
+    $("#hearts").textContent = $("#hud-hearts").textContent = hearts;
   }
 
   // a pixel-y layer showing found spots (green) and, at the end, missed ones (yellow)
@@ -459,6 +469,7 @@
       const d = dx * dx + dy * dy;
       if (d < bestD) { bestD = d; best = id; }
     }
+    log("tap", { result: best ? "hit" : nearFound ? "again" : nearChange ? "tiny" : "miss" });
     if (best) {
       M.found.add(best);
       const secs = (Date.now() - M.t0) / 1000, speed = Math.round(PTS.speed * Math.max(0, 1 - secs / 90));
@@ -487,8 +498,9 @@
   }
 
   function clearHint() { if (M.hintLayer) { missionMap.removeLayer(M.hintLayer); M.hintLayer = null; } }
-  $("#btn-hint").addEventListener("click", () => {
+  $("#btn-hint2").addEventListener("click", () => {
     if (!M || M.step !== 3) return;
+    log("hint");
     const left = M.ana.targets.filter((t) => !M.found.has(t.id));
     if (!left.length) return say("You found every glowing spot! Press Score it ⭐");
     const t = left[0];   // biggest spot still hidden
@@ -516,9 +528,31 @@
       <p class="muted">Why? ${WHY[M.info.topic] || ""}</p>
       <button id="btn-retry" class="ghost small">Play this mission again</button>`;
     $("#btn-retry").onclick = () => openMission(M.id);
+    if (PLAYTEST) playtestNotes(n, f, st);
     react(st >= 2 ? "happy" : "oops");
     say((f < n ? "The yellow spots are the ones you missed: they glow too! " : "You found every spot! ") + (WHY[M.info.topic] || ""));
     next("Next mission 🌍", true);
+  }
+
+  // one line per mission, kept on this device until copied
+  function playtestNotes(n, f, st) {
+    const L_ = M.log, at = (s) => (L_.find((e) => e.ev === "step" && e.step === s) || {}).t;
+    const taps = (r) => L_.filter((e) => e.ev === "tap" && e.result === r).length;
+    const line = `${new Date().toLocaleTimeString()} ${M.id}: ${st}★ ${M.points}pts, found ${f}/${n}, ` +
+      `taps hit ${taps("hit")} miss ${taps("miss")} tiny ${taps("tiny")} again ${taps("again")}, ` +
+      `hints ${L_.filter((e) => e.ev === "hint").length}, glasses switches ${L_.filter((e) => e.ev === "glasses").length}` +
+      ` (best ${M.glasses === M.best ? "yes" : "no"}), drops ${L_.filter((e) => e.ev === "drop").length}, ` +
+      `time look ${at(2) ?? "-"}s, glow ${at(3) != null && at(2) != null ? (at(3) - at(2)).toFixed(1) : "-"}s, ` +
+      `find ${at(4) != null && at(3) != null ? (at(4) - at(3)).toFixed(1) : "-"}s, hearts left ${M.hearts}`;
+    const all = store.get("playtest", []); all.push(line); store.set("playtest", all);
+    const box = $("#playtest"); box.hidden = false;
+    box.innerHTML = `<b>Playtest notes (${all.length} missions)</b><textarea readonly>${all.join("\n")}</textarea>
+      <button id="btn-pt-copy" class="ghost small">📋 Copy playtest notes</button>
+      <button id="btn-pt-clear" class="ghost small">Clear</button>`;
+    $("#btn-pt-copy").onclick = () => { const ta = box.querySelector("textarea"); ta.select();
+      (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).catch(() => document.execCommand("copy"));
+      $("#btn-pt-copy").textContent = "Copied ✓"; };
+    $("#btn-pt-clear").onclick = () => { store.set("playtest", []); box.hidden = true; };
   }
 
   // ---------- end ----------
@@ -536,5 +570,5 @@
   });
 
   updateHud();
-  if (location.hash === "#debug") window.SARBIT = { get M() { return M; }, get map() { return missionMap; }, openMission };
+  if (location.hash.includes("debug")) window.SARBIT = { get M() { return M; }, get map() { return missionMap; }, openMission };
 })();

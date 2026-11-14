@@ -95,12 +95,11 @@
       <div id="find-kit" hidden>
         <p class="counter">Found <b id="found">0</b> of <b id="targets">0</b> glowing spots <button class="info" data-info="spots">?</button></p>
         <p id="hearts" class="hearts"></p>
-        <div class="actions">
-          <button id="btn-hint" class="ghost small">💡 Hint</button>
-        </div>
+
       </div>
 
       <div id="result" hidden></div>
+      <div id="playtest" hidden></div>
 
       <div class="actions">
         <button id="btn-prev" class="ghost">Back</button>
@@ -109,6 +108,8 @@
     </aside>
     <div class="mission-map-wrap">
       <div id="mission-map"></div>
+      <div id="map-hud" hidden>🎯 <b id="hud-found">0</b>/<b id="hud-targets">0</b> · <span id="hud-hearts"></span>
+        <button id="btn-hint2" class="ghost small">💡 Hint</button></div>
       <div id="swipe-bar" hidden>
         <span>before</span><input id="swipe" type="range" min="0" max="100" value="50"><span>after</span>
       </div>

@@ -162,3 +162,26 @@ path.hint-pulse { animation: pulse 0.9s ease-in-out infinite; }
 .stars { color: var(--agriculture); letter-spacing: 2px; }
 .stars .off { color: var(--line); }
 #result .stars { font-size: 30px; }
+
+/* ---- status on the map (find step) ---- */
+#map-hud { position: absolute; top: 10px; right: 10px; z-index: 600; background: rgba(18, 26, 51, .92);
+  border: 1px solid var(--line); border-radius: 12px; padding: 6px 10px; font-size: 16px; display: flex; gap: 8px; align-items: center; }
+#map-hud b { color: var(--accent); }
+#playtest { margin-top: 12px; font-size: 13px; }
+#playtest textarea { width: 100%; height: 120px; background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; font: 12px monospace; }
+
+/* ---- phones: page scrolls, Next/Back stay at the bottom, map is big ---- */
+@media (max-width: 820px) {
+  html, body { height: auto; }
+  .screen.active { height: auto; min-height: calc(100vh - 52px); }
+  .mixer { overflow: visible; padding-bottom: 8px; }
+  #screen-mission { padding-bottom: 72px; }
+  .mixer .actions { position: fixed; left: 0; right: 0; bottom: 0; z-index: 900; margin: 0; padding: 10px 14px;
+    background: var(--panel); border-top: 1px solid var(--line); }
+  .mission-map-wrap { min-height: 70vh; }
+  #world-map { min-height: 60vh; }
+  .brand small, #hud-name { display: none; }
+  #hud { gap: 8px; }
+  #topbar { padding: 0 10px; }
+  #map-hud { top: auto; bottom: 12px; right: 50%; transform: translateX(50%); }
+}
