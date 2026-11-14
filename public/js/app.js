@@ -563,6 +563,7 @@
   function startBonuses() {
     if (M.bonusQueue) return goStep(4);
     M.bonusQueue = [].concat(M.content.bonus || []);
+    M.townsOn = M.on.has("towns");   // a bonus may hide the town names while it asks; they come back after
     if (M.cleanup) { M.cleanup(); M.cleanup = null; }
     M.onTap = null; clearHint();
     M.extra.forEach((l) => missionMap.removeLayer(l)); M.extra = []; M.foundLayer = null;   // the game's pins and loops
@@ -571,6 +572,7 @@
   }
   function nextBonus() {
     (M.bonusLayers || []).forEach((l) => missionMap.removeLayer(l)); M.bonusLayers = [];
+    if (M.townsOn && !M.on.has("towns")) setLayer("towns", true);
     const b = M.bonusQueue.shift(), B = b && (window.SARbitBonus || {})[b.type];
     if (!b) { M.inBonus = false; return goStep(4); }
     if (!B) return nextBonus();
