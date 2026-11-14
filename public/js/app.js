@@ -110,24 +110,47 @@
       : "<li>No finished runs yet</li>";
   }
 
-  // ---------- mission ----------
+  // ---------- mission: 1 look · 2 glow · 3 mark · 4 check ----------
+  const KID = 6;   // the kids' board: 6 × 6 squares, each = 2 × 2 cells of the 12 × 12 answer key
+  const WHY = {
+    floods: "Water is smooth like a mirror, so the radar bounces away and flooded places turn dark.",
+    forest: "Trees scatter the radar back to me. Where trees were cut, the signal drops and it gets darker.",
+    agriculture: "Growing crops scatter lots of radar; after the harvest the field is flat and gets darker.",
+    land: "When a shore or a marsh turns from wet to dry, or dry to wet, its radar brightness changes.",
+    marine: "Calm water and oil make the sea smoother, so it turns darker to my radar.",
+  };
+
   async function openMission(id) {
     show("screen-mission");
     const base = `missions/${id}/`;
     const info = await (await fetch(base + "mission.json")).json();
     const grid = await (await fetch(base + "grid.geojson")).json();
     const [w, s, e, n] = info.bbox;
-    M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), slots: [null, null, null], layers: {},
-          picked: null, overlay: null, swipe: null, reveal: null, revealed: false,
-          hits: new Set(grid.features.filter((f) => f.properties.hit === 1).map((f) => `${f.properties.row},${f.properties.col}`)),
-          share: Object.fromEntries(grid.features.map((f) => [`${f.properties.row},${f.properties.col}`, f.properties.share || 0])),
-          grid };
+    const { CO, CX } = info.channels;
+    M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), step: 1, layers: {},
+          buckets: { red: null, cyan: null }, glasses: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO",
+          picked: null, overlay: null, swipe: null, cells: [], marked: new Set(), extra: [] };
+
+    // 12 × 12 answer key -> 6 × 6 kids' board (a square changed if ≥ 20 % of it changed)
+    const big = {};
+    grid.features.forEach((f) => {
+      const p = f.properties, k = `${Math.floor(p.row / 2)},${Math.floor(p.col / 2)}`;
+      const b = L.geoJSON(f).getBounds();
+      big[k] = big[k] ? { bounds: big[k].bounds.extend(b), share: big[k].share + (p.share || 0) / 4 } : { bounds: b, share: (p.share || 0) / 4 };
+    });
+    M.truth = new Set(Object.keys(big).filter((k) => big[k].share >= 0.2));
+    if (!M.truth.size) {   // tiny change: take the most-changed squares
+      Object.keys(big).sort((a, b) => big[b].share - big[a].share).slice(0, 3).forEach((k) => M.truth.add(k));
+    }
+    M.big = big;
 
     $("#m-title").textContent = info.title || id;
     $("#m-place").textContent = info.place || "";
-    $("#m-dates").textContent = `Before ${info.before.date} · After ${info.after.date} · channels ${info.channels.CO}/${info.channels.CX}`;
-    $("#result").hidden = true; $("#btn-reveal").disabled = false;
-    setGuide("Drag a radar layer into a colour slot (or tap a layer, then tap a slot).");
+    $(".d-before").textContent = info.before.date; $(".d-after").textContent = info.after.date;
+    document.querySelectorAll(".glasses button").forEach((bt) => {
+      bt.textContent = bt.dataset.ch === "CO" ? `A · ${CO}` : `B · ${CX}`;
+      bt.hidden = bt.dataset.ch === "CX" && CO === CX;
+    });
 
     if (!missionMap) {
       missionMap = L.map("mission-map", { zoomSnap: 0.25 });
@@ -135,172 +158,174 @@
     }
     missionMap.eachLayer((l) => !(l instanceof L.TileLayer) && missionMap.removeLayer(l));
     missionMap.fitBounds(M.bounds);
-    stopSwipe();
+    missionMap.dragging.enable();
 
-    // the building blocks: grey layers from mission.json
-    const { CO, CX } = info.channels;
-    const grey = CO === CX;
-    const defs = [
-      ["before", "CO", `Before · ${CO}`], ["before", "CX", `Before · ${CX}`], ["before", "RATIO", `Before · ${CO}−${CX}`],
-      ["after", "CO", `After · ${CO}`], ["after", "CX", `After · ${CX}`], ["after", "RATIO", `After · ${CO}−${CX}`],
-    ].filter(([, k]) => !grey || k === "CO");
-    const pal = $("#palette"); pal.innerHTML = "";
-    await Promise.all(defs.map(async ([date, kind, label]) => {
-      const key = `${date}_${kind}`, src = base + info.layers[date][kind];
-      M.layers[key] = { key, label, date, src, data: pixels(await loadImage(src)) };
-    }));
-    defs.forEach(([date, kind]) => pal.appendChild(tile(M.layers[`${date}_${kind}`])));
-    document.querySelectorAll(".slot").forEach((s) => renderSlot(+s.dataset.ch));
-    composite();
+    await Promise.all(["before", "after"].flatMap((d) => (CO === CX ? ["CO"] : ["CO", "CX"]).map(async (ch) => {
+      const src = base + info.layers[d][ch];
+      M.layers[`${d}_${ch}`] = { src, data: pixels(await loadImage(src)) };
+    })));
+    goStep(1);
   }
 
-  function tile(layer) {
-    const t = el("div", { class: "tile", draggable: "true", "data-key": layer.key }, [
-      el("img", { src: layer.src, alt: layer.label }), el("span", { text: layer.label }),
-    ]);
-    t.addEventListener("dragstart", (e) => e.dataTransfer.setData("text/plain", layer.key));
-    t.addEventListener("click", () => {
-      M.picked = M.picked === layer.key ? null : layer.key;
-      document.querySelectorAll(".tile").forEach((x) => x.classList.toggle("picked", x.dataset.key === M.picked));
-      if (M.picked) setGuide(`Now tap a colour slot for “${layer.label}”.`);
+  function goStep(step) {
+    M.step = step;
+    document.querySelectorAll(".steps li").forEach((li) => {
+      li.classList.toggle("now", +li.dataset.step === step); li.classList.toggle("past", +li.dataset.step < step);
     });
-    return t;
-  }
+    $("#glow-kit").hidden = step !== 2; $("#mark-kit").hidden = step !== 3; $("#result").hidden = step !== 4;
+    $("#btn-prev").hidden = step === 1 || step === 4;
+    stopSwipe(); clearCells(); M.extra.forEach((l) => missionMap.removeLayer(l)); M.extra = [];
+    missionMap.dragging.enable();
 
-  document.querySelectorAll(".slot").forEach((slot) => {
-    const ch = +slot.dataset.ch;
-    slot.addEventListener("dragover", (e) => { e.preventDefault(); slot.classList.add("over"); });
-    slot.addEventListener("dragleave", () => slot.classList.remove("over"));
-    slot.addEventListener("drop", (e) => {
-      e.preventDefault(); slot.classList.remove("over");
-      assign(ch, e.dataTransfer.getData("text/plain"));
-    });
-    slot.addEventListener("click", () => {
-      if (M && M.picked) { assign(ch, M.picked); M.picked = null; document.querySelectorAll(".tile").forEach((x) => x.classList.remove("picked")); }
-      else if (M && M.slots[ch]) assign(ch, null);   // tap a filled slot to empty it
-    });
-  });
-
-  function assign(ch, key) {
-    if (!M || (key && !M.layers[key])) return;
-    M.slots[ch] = key; renderSlot(ch); composite(); coach();
-  }
-
-  function renderSlot(ch) {
-    const body = document.querySelector(`.slot[data-ch="${ch}"] .slot-body`);
-    const key = M && M.slots[ch];
-    body.innerHTML = key ? `<img src="${M.layers[key].src}" alt=""><div>${M.layers[key].label}</div>` : "drop here";
-    document.querySelectorAll(".tile").forEach((t) => t.classList.toggle("used", M.slots.includes(t.dataset.key)));
-  }
-
-  function coach() {
-    const used = M.slots.filter(Boolean).map((k) => M.layers[k].date);
-    if (!used.length) return setGuide("Drag a radar layer into a colour slot.");
-    if (new Set(used).size === 1)
-      return setGuide("All your colours come from the same date, so nothing can glow yet. Put one BEFORE and one AFTER layer in different colours.");
-    setGuide("See the colours? Places that changed between the two dates glow. Try the contrast slider, then reveal!");
-  }
-  const setGuide = (t) => ($("#guide-text").textContent = t);
-
-  // the player's mix: each slot's grey layer becomes one colour channel
-  function composite() {
-    const first = Object.values(M.layers)[0].data;
-    const W = first.width, H = first.height, out = new ImageData(W, H), o = out.data;
-    const k = +$("#contrast").value;
-    const src = M.slots.map((key) => (key ? M.layers[key].data.data : null));
-    for (let i = 0; i < W * H * 4; i += 4) {
-      let a = 0;
-      for (let c = 0; c < 3; c++) {
-        const s = src[c];
-        if (!s) { o[i + c] = 0; continue; }
-        const v = (s[i] - 128) * k + 128;
-        o[i + c] = v < 0 ? 0 : v > 255 ? 255 : v;
-        if (s[i + 3] > a) a = s[i + 3];
-      }
-      o[i + 3] = a;
+    if (step === 1) {
+      startSwipe();
+      say("Slide the bar on the map. Left side = BEFORE, right side = AFTER. Can you spot what changed?");
+      next("Next: make it glow ✨", true);
     }
-    M.mix = out;
-    const cv = el("canvas"); cv.width = W; cv.height = H; cv.getContext("2d").putImageData(out, 0, 0);
-    const url = cv.toDataURL("image/png");
-    if (M.overlay) M.overlay.setUrl(url);
-    else M.overlay = L.imageOverlay(url, M.bounds, { opacity: 1 }).addTo(missionMap);
-  }
-  $("#contrast").addEventListener("input", () => M && composite());
-
-  // score: does the player's mix glow WHERE the change really is? Pearson r between the mix's colourfulness per
-  // grid cell and the real changed share per cell (from the answer key). Scale-free, so contrast can't game it.
-  function score() {
-    const { width: W, height: H, data: d } = M.mix;
-    const sum = {}, cnt = {};
-    for (let y = 0; y < H; y++) {
-      const r = Math.min(GRID - 1, Math.floor((y * GRID) / H));
-      for (let x = 0; x < W; x++) {
-        const i = (y * W + x) * 4;
-        if (!d[i + 3]) continue;
-        const c = Math.min(GRID - 1, Math.floor((x * GRID) / W)), key = `${r},${c}`;
-        const sat = Math.max(d[i], d[i + 1], d[i + 2]) - Math.min(d[i], d[i + 1], d[i + 2]);
-        sum[key] = (sum[key] || 0) + sat; cnt[key] = (cnt[key] || 0) + 1;
-      }
+    if (step === 2) {
+      refreshCards(); composite(); glowHint();
     }
-    const keys = Object.keys(sum), xs = keys.map((k) => sum[k] / cnt[k]), ys = keys.map((k) => M.share[k] || 0);
-    const mean = (a) => a.reduce((s, v) => s + v, 0) / a.length;
-    const mx = mean(xs), my = mean(ys);
-    let sxy = 0, sxx = 0, syy = 0;
-    xs.forEach((x, i) => { sxy += (x - mx) * (ys[i] - my); sxx += (x - mx) ** 2; syy += (ys[i] - my) ** 2; });
-    const r = sxx && syy ? sxy / Math.sqrt(sxx * syy) : 0;
-    let hs = 0, hn = 0, ms = 0, mn = 0;
-    keys.forEach((k, i) => { if (M.hits.has(k)) { hs += xs[i]; hn++; } else { ms += xs[i]; mn++; } });
-    return { r, glow: hn ? hs / hn : 0, rest: mn ? ms / mn : 0, points: Math.max(0, Math.min(1000, Math.round(((r - 0.25) / 0.5) * 1000))) };   // r <= 0.25 (one date, structure only) = 0; r >= 0.75 = full marks
+    if (step === 3) {
+      composite(); drawCells();
+      missionMap.dragging.disable();
+      say("Paint the squares where you see glow: click and drag, or tap. Tap a square again to un-mark it.");
+      updateMarked();
+    }
+    if (step === 4) check();
   }
 
-  $("#btn-reveal").addEventListener("click", () => {
-    if (!M || M.revealed) return;
-    stopSwipe();
-    const s = score();
-    M.revealed = true; $("#btn-reveal").disabled = true;
-    M.reveal = L.layerGroup([
-      L.imageOverlay(M.base + M.info.change_overlay, M.bounds, { opacity: .9 }),
-      L.geoJSON(M.grid, {
-        filter: (f) => f.properties.hit === 1,
-        style: { color: "#ffc24a", weight: 1.5, fill: false },
-      }),
-    ]).addTo(missionMap);
-    scores[M.id] = Math.max(scores[M.id] || 0, s.points); store.set("scores", scores); updateHud();
-    const verdict = s.points >= 700 ? "Brilliant! The change glows exactly where it happened."
-      : s.points >= 300 ? "Good mix: the change shows. Can a different layer or contrast make it glow more?"
-      : "The change is hiding in your mix. Try a BEFORE layer and an AFTER layer of the same channel in two colours.";
-    $("#result").hidden = false;
-    $("#result").innerHTML = `<div class="big">★ ${s.points}</div>
-      <p>${verdict}</p>
-      <p class="muted">Red = what really changed (NISAR). Yellow squares = the ${M.hits.size} cells of the answer key.
-      Your mix matches the real change map ${Math.max(0, Math.round(s.r * 100))} %
-      (glow ${s.glow.toFixed(0)} on changed cells, ${s.rest.toFixed(0)} elsewhere).</p>
-      <div class="actions"><button id="btn-retry" class="ghost">Try another mix</button><button id="btn-next">Next mission</button></div>`;
-    $("#btn-retry").onclick = () => { missionMap.removeLayer(M.reveal); M.revealed = false; $("#btn-reveal").disabled = false; $("#result").hidden = true; };
-    $("#btn-next").onclick = openWorld;
-  });
+  function next(label, enabled) { const b = $("#btn-next"); b.textContent = label; b.disabled = !enabled; }
+  const say = (t) => ($("#guide-text").textContent = t);
+  $("#btn-next").addEventListener("click", () => (M.step === 4 ? openWorld() : goStep(M.step + 1)));
+  $("#btn-prev").addEventListener("click", () => goStep(Math.max(1, M.step - 1)));
+  $("#btn-back").addEventListener("click", openWorld);
 
-  // before ⇄ after swipe with the ready-made pictures
+  // step 1 · before ⇄ after swipe with the ready-made pictures
+  function startSwipe() {
+    const after = L.imageOverlay(M.base + M.info.after.image, M.bounds).addTo(missionMap);
+    const before = L.imageOverlay(M.base + M.info.before.image, M.bounds).addTo(missionMap);
+    M.swipe = [after, before];
+    if (M.overlay) M.overlay.setOpacity(0);
+    $("#swipe-bar").hidden = false;
+    const clip = () => before.getElement() && (before.getElement().style.clipPath = `inset(0 ${100 - $("#swipe").value}% 0 0)`);
+    before.once("load", clip); clip();
+    $("#swipe").oninput = clip;
+  }
   function stopSwipe() {
     if (M && M.swipe) { M.swipe.forEach((l) => missionMap.removeLayer(l)); M.swipe = null; }
     $("#swipe-bar").hidden = true;
     if (M && M.overlay) M.overlay.setOpacity(1);
   }
-  $("#btn-swipe").addEventListener("click", () => {
-    if (!M) return;
-    if (M.swipe) return stopSwipe();
-    const after = L.imageOverlay(M.base + M.info.after.image, M.bounds).addTo(missionMap);
-    const before = L.imageOverlay(M.base + M.info.before.image, M.bounds).addTo(missionMap);
-    M.swipe = [after, before];
-    M.overlay.setOpacity(0);
-    $("#swipe-bar").hidden = false;
-    const clip = () => (before.getElement().style.clipPath = `inset(0 ${100 - $("#swipe").value}% 0 0)`);
-    before.once("load", clip); clip();
-    $("#swipe").oninput = clip;
-    setGuide("Slide: left of the line is BEFORE, right is AFTER. Spot the difference, then build a mix that makes it glow.");
-  });
 
-  $("#btn-back").addEventListener("click", openWorld);
+  // step 2 · two cards into two buckets
+  function refreshCards() {
+    document.querySelectorAll(".card").forEach((c) => {
+      c.querySelector("img").src = M.layers[`${c.dataset.date}_${M.glasses}`].src;
+      c.classList.toggle("used", Object.values(M.buckets).includes(c.dataset.date));
+      c.classList.toggle("picked", M.picked === c.dataset.date);
+    });
+    document.querySelectorAll(".bucket").forEach((b) => {
+      const d = M.buckets[b.dataset.bucket];
+      b.querySelector(".bucket-body").innerHTML = d
+        ? `<img src="${M.layers[`${d}_${M.glasses}`].src}" alt=""><div>${d.toUpperCase()}</div>` : "drop a card";
+    });
+    document.querySelectorAll(".glasses button").forEach((bt) => bt.classList.toggle("on", bt.dataset.ch === M.glasses));
+  }
+  function glowHint() {
+    const { red, cyan } = M.buckets;
+    if (!red || !cyan) {
+      say("Drag the BEFORE card into one bucket and the AFTER card into the other. (Or tap a card, then tap a bucket.)");
+      return next("Next: mark the glow ✏️", false);
+    }
+    say(red === "before"
+      ? "See the glow? RED = got darker, BLUE-GREEN = got brighter. If little glows, try the other radar glasses."
+      : "See the glow? BLUE-GREEN = got darker, RED = got brighter. If little glows, try the other radar glasses.");
+    next("Next: mark the glow ✏️", true);
+  }
+  function drop(bucket, date) {
+    if (!date) return;
+    const other = bucket === "red" ? "cyan" : "red";
+    if (M.buckets[other] === date) M.buckets[other] = null;   // a card can only be in one bucket
+    M.buckets[bucket] = date; M.picked = null;
+    refreshCards(); composite(); glowHint();
+  }
+  document.querySelectorAll(".card").forEach((c) => {
+    c.addEventListener("dragstart", (e) => e.dataTransfer.setData("text/plain", c.dataset.date));
+    c.addEventListener("click", () => { M.picked = M.picked === c.dataset.date ? null : c.dataset.date; refreshCards(); });
+  });
+  document.querySelectorAll(".bucket").forEach((b) => {
+    b.addEventListener("dragover", (e) => { e.preventDefault(); b.classList.add("over"); });
+    b.addEventListener("dragleave", () => b.classList.remove("over"));
+    b.addEventListener("drop", (e) => { e.preventDefault(); b.classList.remove("over"); drop(b.dataset.bucket, e.dataTransfer.getData("text/plain")); });
+    b.addEventListener("click", () => M.picked && drop(b.dataset.bucket, M.picked));
+  });
+  document.querySelectorAll(".glasses button").forEach((bt) => bt.addEventListener("click", () => {
+    M.glasses = bt.dataset.ch; refreshCards(); composite();
+  }));
+
+  // the glow picture: red = the card in the red bucket, green + blue = the card in the blue-green bucket
+  function composite() {
+    const layer = (d) => (d ? M.layers[`${d}_${M.glasses}`].data : null);
+    const R = layer(M.buckets.red), C = layer(M.buckets.cyan), any = R || C;
+    let url;
+    if (!any) url = M.base + M.info.after.image;   // nothing mixed yet: show the plain after picture
+    else {
+      const W = any.width, H = any.height, out = new ImageData(W, H), o = out.data, k = 1.4;
+      const st = (v) => { v = (v - 128) * k + 128; return v < 0 ? 0 : v > 255 ? 255 : v; };
+      for (let i = 0; i < W * H * 4; i += 4) {
+        const r = R ? st(R.data[i]) : 0, c = C ? st(C.data[i]) : 0;
+        o[i] = r; o[i + 1] = c; o[i + 2] = c;
+        o[i + 3] = Math.max(R ? R.data[i + 3] : 0, C ? C.data[i + 3] : 0);
+      }
+      const cv = el("canvas"); cv.width = W; cv.height = H; cv.getContext("2d").putImageData(out, 0, 0);
+      url = cv.toDataURL("image/png");
+    }
+    if (M.overlay) { M.overlay.setUrl(url); M.overlay.setOpacity(1); }
+    else M.overlay = L.imageOverlay(url, M.bounds).addTo(missionMap);
+  }
+
+  // step 3 · paint squares
+  let painting = false, paintTo = true;
+  document.addEventListener("mouseup", () => (painting = false));
+  document.addEventListener("touchend", () => (painting = false));
+  const cellStyle = (on) => ({ color: on ? "#ffe14a" : "#ffffff", weight: on ? 2 : 0.6, opacity: on ? 1 : 0.5,
+                               fillColor: "#ffe14a", fillOpacity: on ? 0.35 : 0.01 });
+  function drawCells() {
+    Object.entries(M.big).forEach(([k, c]) => {
+      const r = L.rectangle(c.bounds, cellStyle(M.marked.has(k))).addTo(missionMap);
+      const set = (on) => { on ? M.marked.add(k) : M.marked.delete(k); r.setStyle(cellStyle(on)); updateMarked(); };
+      r.on("mousedown", (e) => { L.DomEvent.stop(e); painting = true; paintTo = !M.marked.has(k); set(paintTo); });
+      r.on("mouseover", () => painting && set(paintTo));
+      M.cells.push(r);
+    });
+  }
+  function clearCells() { M.cells.forEach((r) => missionMap.removeLayer(r)); M.cells = []; }
+  function updateMarked() { $("#marked").textContent = M.marked.size; next("Check! ✅", M.marked.size > 0); }
+  $("#btn-clear").addEventListener("click", () => { M.marked.clear(); clearCells(); drawCells(); updateMarked(); });
+
+  // step 4 · check: points come from the squares
+  function check() {
+    const found = [...M.marked].filter((k) => M.truth.has(k)).length;
+    const wrong = M.marked.size - found, total = M.truth.size;
+    const points = Math.max(0, Math.round((1000 * (found - 0.5 * wrong)) / total));
+    M.extra.push(L.imageOverlay(M.base + M.info.change_overlay, M.bounds, { opacity: 0.9 }).addTo(missionMap));
+    Object.entries(M.big).forEach(([k, c]) => {
+      const hit = M.truth.has(k), mine = M.marked.has(k);
+      if (!hit && !mine) return;
+      const color = hit && mine ? "#4be08a" : hit ? "#ffe14a" : "#ff5a5a";
+      M.extra.push(L.rectangle(c.bounds, { color, weight: 3, fillColor: color, fillOpacity: hit && mine ? 0.25 : 0.08 }).addTo(missionMap));
+    });
+    scores[M.id] = Math.max(scores[M.id] || 0, points); store.set("scores", scores); updateHud();
+    const cheer = points >= 800 ? "Amazing radar eyes! 🚀" : points >= 400 ? "Nice work, cadet! 👍" : "Good try! Look for the glow and try again. 💪";
+    $("#result").innerHTML = `<div class="big">★ ${points}</div>
+      <p class="score-line"><b>${cheer}</b><br>You found <b>${found}</b> of <b>${total}</b> changed squares${wrong ? `, and <b>${wrong}</b> ${wrong === 1 ? "square was" : "squares were"} wrong` : ""}.</p>
+      <div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff5a5a"></i>wrong</span><span><i style="background:#ff2828"></i>real change</span></div>
+      <p class="muted">Why? ${WHY[M.info.topic] || ""}</p>
+      <button id="btn-retry" class="ghost small">Try again</button>`;
+    $("#btn-retry").onclick = () => { M.marked.clear(); goStep(3); };
+    say(`Here is what really changed. ${WHY[M.info.topic] || ""}`);
+    next("Next mission 🌍", true);
+  }
 
   // ---------- end ----------
   function finish() {

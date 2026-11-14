@@ -102,3 +102,31 @@ input { font: inherit; }
   #world-map, .mission-map-wrap { min-height: 55vh; }
   .intro-card { flex-direction: column; text-align: center; }
 }
+
+/* ---- 4-step mission (kids) ---- */
+.steps { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 0; margin: 12px 0 4px; }
+.steps li { text-align: center; font-size: 13px; padding: 6px 2px; border-radius: 8px; background: var(--panel2); color: var(--muted); }
+.steps li.now { background: var(--accent); color: #062018; font-weight: 700; }
+.steps li.past { color: var(--text); }
+.guide p { font-size: 15px; }
+.cards, .buckets { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.card { background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 6px; text-align: center; cursor: grab; user-select: none; }
+.card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; display: block; background: #000; pointer-events: none; }
+.card b { display: block; margin-top: 4px; }
+.card span { font-size: 12px; color: var(--muted); }
+.card.picked { outline: 3px solid var(--accent); }
+.card.used { opacity: .45; }
+.bucket { border: 3px dashed; border-radius: 14px; min-height: 110px; padding: 8px; text-align: center; font-weight: 800; }
+.bucket.red { border-color: var(--red); color: var(--red); }
+.bucket.cyan { border-color: #4fe3e0; color: #4fe3e0; }
+.bucket.over { background: rgba(255, 255, 255, .06); }
+.bucket-body { font-weight: 400; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.bucket-body img { width: 70%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; }
+.glasses { display: flex; gap: 6px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+.glasses button.on { background: var(--accent); color: #062018; border-color: var(--accent); }
+.counter { font-size: 16px; margin: 14px 0 6px; }
+.mixer .actions { position: sticky; bottom: 0; background: var(--panel); padding: 12px 0 4px; margin-top: 16px; }
+.mixer .actions #btn-next { flex: 1; font-size: 17px; padding: 12px; }
+.score-line { font-size: 15px; line-height: 1.5; }
+.legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 13px; margin-top: 6px; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
