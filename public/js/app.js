@@ -147,16 +147,11 @@
   const CHANGE_DB = 3;       // a block changed if its brightness moved ≥ 3 dB, darker or brighter
   const MAX_TARGETS = 8, MIN_TARGETS = 3, HEARTS = 3, TAP_REACH = 3;   // reach in blocks, forgiving for fingers
   const PTS = { glow: 50, glasses: 100, spot: 150, speed: 50 };
-  const STORIES = {   // one line per mission until the team's texts land in mission.json (story)
-    W2: "In January 2026 heavy rain made the Limpopo River in Mozambique burst its banks and flood the valley.",
-    W1: "In October 2026 storms poured rain on the coast near Gandia, Spain, and fields filled with water.",
-    D1: "Along the BR-163 highway in the Amazon rainforest, people cut down forest in the dry season of 2026.",
-    D3: "A giant nickel mine in Weda Bay, Indonesia, clears rainforest to dig up metal used in batteries.",
-    A1: "In Punjab, India, farmers flood their rice fields in June, the rice grows tall, then it is harvested in autumn.",
-    A3: "In the Jezreel Valley in Israel, summer crops grow in June and are harvested by October.",
-    L3: "The Great Salt Lake in Utah is shrinking. Between summer and autumn its marshes and shores change.",
-    M3: "In the Mississippi River Delta, the marshes along the coast are slowly turning into open water.",
-  };
+  let CONTENT = null;   // missions/content.json: story, facts, news links and game rule per mission (editable text)
+  async function content() {
+    if (!CONTENT) CONTENT = await fetch("missions/content.json").then((r) => r.json()).catch(() => ({}));
+    return CONTENT;
+  }
   const WATERY = { floods: true, marine: true, land: true };   // topics the co-pol (HH / VV) glasses see best
   const WHY = {
     floods: "Water is smooth like a mirror, so the radar bounces away and flooded places turn dark.",
@@ -199,16 +194,20 @@
     show("screen-mission");
     const base = `missions/${id}/`;
     const info = await (await fetch(base + "mission.json")).json();
+    const extra = (await content())[id] || {};
     const [w, s, e, n] = info.bbox;
     const { CO, CX } = info.channels;
     M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), step: 1, layers: {}, opened: Date.now(), log: [],
           buckets: { red: null, cyan: null }, glasses: "CO",
           best: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO",
-          picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS };
+          picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS,
+          content: extra, rule: { sign: 0, db: CHANGE_DB, water_max: 99, ...((extra.game || {}).rule || {}) },
+          focus: (extra.game || {}).focus || [0, 0, 1, 1], anaCache: {} };
 
     $("#m-title").textContent = info.title || id;
     $("#m-place").textContent = info.place || "";
-    $("#m-story").textContent = info.story || STORIES[id] || "";
+    $("#m-story").textContent = extra.story || info.story || "";
+    renderInfo(extra);
     $(".d-before").textContent = info.before.date; $(".d-after").textContent = info.after.date;
     document.querySelectorAll(".glasses button[data-ch]").forEach((bt) => {
       bt.textContent = bt.dataset.ch === "CO" ? `${CO} 💧 water` : `${CX} 🌿 plants`;
@@ -230,6 +229,16 @@
       M.layers[`${d}_${ch}`] = { src, data: pixels(await loadImage(src)) };
     })));
     goStep(1);
+  }
+
+  function renderInfo(c) {
+    const esc = (s) => String(s || "").replace(/[<>&"]/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[ch]));
+    const facts = (c.facts || []).map((f) => `<li>${esc(f)}</li>`).join("");
+    const news = (c.news || []).filter((n) => /^https:\/\//.test(n.url)).map((n) =>
+      `<li><a href="${esc(n.url)}" target="_blank" rel="noopener noreferrer">${esc(n.title)}</a><span>${esc(n.source)}${n.date ? " · " + esc(n.date) : ""}</span></li>`).join("");
+    $("#m-info").innerHTML = facts || news ? `<details open><summary>📰 What happened</summary>
+      ${facts ? `<ul class="facts">${facts}</ul>` : ""}${news ? `<p class="muted">Read more:</p><ul class="news">${news}</ul>` : ""}
+      <p class="muted small">Radar data: NASA-ISRO NISAR, ${esc(M.info.before.date)} and ${esc(M.info.after.date)}.</p></details>` : "";
   }
 
   function setPoints() { $("#m-points").textContent = M.points; }
@@ -357,8 +366,16 @@
     else {
       const W = any.width, H = any.height, out = new ImageData(W, H), o = out.data, k = 1.4;
       const st = (v) => { v = (v - 128) * k + 128; return v < 0 ? 0 : v > 255 ? 255 : v; };
-      for (let i = 0; i < W * H * 4; i += 4) {
-        const r = R ? st(R.data[i]) : 0, c = C ? st(C.data[i]) : 0;
+      const a = R && C ? analysis() : null;   // which blocks count for this mission
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const i = (y * W + x) * 4;
+        let r = R ? st(R.data[i]) : 0, c = C ? st(C.data[i]) : 0;
+        if (a) {
+          const bx = Math.min(a.bw - 1, (x / BLOCK) | 0), by = Math.min(a.bh - 1, (y / BLOCK) | 0);
+          const m = (r + c) / 2;
+          if (!a.changed[by * a.bw + bx]) r = c = m;   // doesn't count -> plain grey
+          else { r = Math.max(0, Math.min(255, m + (r - m) * 1.8)); c = Math.max(0, Math.min(255, m + (c - m) * 1.8)); }   // counts -> stronger glow
+        }
         o[i] = r; o[i + 1] = c; o[i + 2] = c;
         o[i + 3] = Math.max(R ? R.data[i + 3] : 0, C ? C.data[i + 3] : 0);
       }
@@ -375,13 +392,18 @@
     const B = M.layers[`before_${ch}`].data, A = M.layers[`after_${ch}`].data, W = B.width, H = B.height;
     const bw = Math.floor(W / BLOCK), bh = Math.floor(H / BLOCK), changed = new Uint8Array(bw * bh);
     for (let by = 0; by < bh; by++) for (let bx = 0; bx < bw; bx++) {
-      let s = 0, n = 0;
+      let s = 0, sa = 0, n = 0;
       for (let y = by * BLOCK; y < (by + 1) * BLOCK; y++) for (let x = bx * BLOCK; x < (bx + 1) * BLOCK; x++) {
         const i = (y * W + x) * 4;
         if (!B.data[i + 3] || !A.data[i + 3]) continue;
-        s += A.data[i] - B.data[i]; n++;
+        s += A.data[i] - B.data[i]; sa += A.data[i]; n++;
       }
-      if (n > (BLOCK * BLOCK) / 2 && Math.abs(s / n) / DB_PER_GREY >= CHANGE_DB) changed[by * bw + bx] = 1;
+      if (n <= (BLOCK * BLOCK) / 2) continue;
+      const fx = (bx + 0.5) / bw, fy = (by + 0.5) / bh, [fx0, fy0, fx1, fy1] = M.focus;
+      if (fx < fx0 || fx > fx1 || fy < fy0 || fy > fy1) continue;   // outside the mission's focus area
+      const d = s / n / DB_PER_GREY, after = sa / n / DB_PER_GREY - 35, r = M.rule;
+      const strong = r.sign < 0 ? d <= -r.db : r.sign > 0 ? d >= r.db : Math.abs(d) >= r.db;
+      if (strong && after < r.water_max) changed[by * bw + bx] = 1;
     }
     const labels = new Int32Array(bw * bh), blobs = [];
     for (let i = 0; i < bw * bh; i++) {
@@ -404,8 +426,10 @@
     const minSize = Math.max(6, Math.round(bw * bh * 0.0015));
     let targets = blobs.filter((b) => b.size >= minSize).slice(0, MAX_TARGETS);
     if (targets.length < MIN_TARGETS) targets = blobs.slice(0, MIN_TARGETS);
-    return { W, H, bw, bh, labels, targets, targetIds: new Set(targets.map((t) => t.id)) };
+    return { W, H, bw, bh, labels, changed, targets, targetIds: new Set(targets.map((t) => t.id)) };
   }
+
+  const analysis = () => (M.anaCache[M.glasses] = M.anaCache[M.glasses] || analyse(M.glasses));
 
   const mercY = (lat) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
   function toBlock(ll) {
@@ -423,7 +447,7 @@
 
   function startFind() {
     composite();
-    M.ana = analyse(M.glasses);
+    M.ana = analysis();
     M.found = new Set(); M.hearts = HEARTS; M.t0 = Date.now(); M.hintLayer = null;
     $("#targets").textContent = $("#hud-targets").textContent = M.ana.targets.length;
     if (window.innerWidth <= 820) setTimeout(() => $(".mission-map-wrap").scrollIntoView({ behavior: "smooth" }), 600);

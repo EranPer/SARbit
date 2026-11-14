@@ -185,3 +185,13 @@ path.hint-pulse { animation: pulse 0.9s ease-in-out infinite; }
   #topbar { padding: 0 10px; }
   #map-hud { top: auto; bottom: 12px; right: 50%; transform: translateX(50%); }
 }
+
+/* ---- what happened: facts + news ---- */
+.info-panel { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 10px; }
+.info-panel summary { cursor: pointer; font-weight: 700; margin-bottom: 6px; }
+.info-panel ul { padding-left: 18px; margin: 6px 0; }
+.info-panel .facts li { margin: 4px 0; line-height: 1.4; font-size: 14px; }
+.info-panel .news li { margin: 6px 0; font-size: 13px; line-height: 1.35; }
+.info-panel .news a { color: var(--accent); }
+.info-panel .news span { display: block; color: var(--muted); font-size: 12px; }
+.info-panel .small { font-size: 12px; }
