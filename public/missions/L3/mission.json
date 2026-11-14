@@ -1,0 +1,62 @@
+{
+ "id": "L3",
+ "bbox": [
+  -112.48186644203915,
+  41.135785815852685,
+  -111.99725693619274,
+  41.50117532351272
+ ],
+ "before": {
+  "date": "2026-06-25",
+  "image": "img0.png"
+ },
+ "after": {
+  "date": "2026-10-23",
+  "image": "img1.png"
+ },
+ "change_overlay": "img2.png",
+ "channels": {
+  "CO": "HH",
+  "CX": "HV"
+ },
+ "layers": {
+  "before": {
+   "CO": "img3.png",
+   "CX": "img4.png",
+   "RATIO": "img7.png"
+  },
+  "after": {
+   "CO": "img5.png",
+   "CX": "img6.png",
+   "RATIO": "img8.png"
+  }
+ },
+ "layer_scale": {
+  "CO_CX": {
+   "db_at_0": -35,
+   "db_at_255": 5
+  },
+  "RATIO": {
+   "db_at_0": 0,
+   "db_at_255": 20
+  }
+ },
+ "change_rule": {
+  "channel": 0,
+  "sign": -1,
+  "thresh_db": 3,
+  "water_max_db": 99
+ },
+ "grid": {
+  "rows": 12,
+  "cols": 12,
+  "geojson": "grid.geojson"
+ },
+ "sensor": "NISAR L-band (NASA-ISRO), ASF DAAC",
+ "topic": "land",
+ "title": "Shrinking Great Salt Lake",
+ "place": "Utah, USA",
+ "lat": 41.1,
+ "lon": -112.5,
+ "difficulty": 2
+}

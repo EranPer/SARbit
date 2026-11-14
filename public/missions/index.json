@@ -32,12 +32,28 @@
   "difficulty": 1
  },
  {
+  "id": "L3",
+  "topic": "land",
+  "title": "Shrinking Great Salt Lake",
+  "lat": 41.1,
+  "lon": -112.5,
+  "difficulty": 2
+ },
+ {
   "id": "M3",
   "topic": "marine",
   "title": "Mississippi Delta wetland loss",
   "lat": 29.4,
   "lon": -89.9,
   "difficulty": 3
+ },
+ {
+  "id": "W1",
+  "topic": "floods",
+  "title": "Valencia flash floods",
+  "lat": 38.97,
+  "lon": -0.18,
+  "difficulty": 1
  },
  {
   "id": "W2",

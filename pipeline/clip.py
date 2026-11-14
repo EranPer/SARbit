@@ -108,6 +108,11 @@ def main(only):
         rows.append([mid, role, date, freq, co, cx or "", epsg, f"{dx:g}", f"{min(valid):.3f}",
                      f"{med(dbs['CO']):.1f}", f"{cxm:.1f}"])
     os.makedirs(f"{ROOT}/clips", exist_ok=True)
+    done = {r[0] for r in rows}                     # keep other missions' rows when clipping only some
+    old = []
+    if os.path.exists(f"{ROOT}/clips/summary.csv"):
+        old = [r for r in list(csv.reader(open(f"{ROOT}/clips/summary.csv")))[1:] if r and r[0] not in done]
+    rows = old + rows
     with open(f"{ROOT}/clips/summary.csv", "w", newline="") as f:
         w = csv.writer(f); w.writerow(["mission", "role", "date", "freq", "co_pol", "cx_pol", "epsg", "pixel_m", "valid_frac", "co_db_median", "cx_db_median"]); w.writerows(rows)
 
