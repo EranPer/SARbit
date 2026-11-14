@@ -64,7 +64,7 @@
       });
     } catch { /* no audio */ }
   }
-  const soundBtn = () => ($("#btn-sound").textContent = muted ? "🔇" : "🔊");
+  const soundBtn = () => ($("#btn-sound").innerHTML = `<img class="ico" src="art/ui-${muted ? "mute" : "sound"}.webp" alt="${muted ? "sound off" : "sound on"}">`);
   $("#btn-sound").addEventListener("click", () => { muted = !muted; store.set("muted", muted); soundBtn(); });
   soundBtn();
 
@@ -113,7 +113,7 @@
   const totalStars = () => sum(stars);
   const updateHud = () => {
     $("#hud").hidden = !player;
-    $("#hud-name").textContent = `👤 ${player}`;
+    $("#hud-name").innerHTML = `${ART("ui-player")}${esc(player)}`;
     $("#hud-score").textContent = total();
     $("#hud-stars").textContent = totalStars();
   };
@@ -122,8 +122,8 @@
   function renderPlayers() {
     const names = Object.keys(players).sort((a, b) => players[b].seen - players[a].seen);
     $("#players").hidden = !names.length;
-    $("#player-list").innerHTML = names.map((n) => `<button class="player ghost" data-name="${esc(n)}">👤 ${esc(n)}
-      <small>⭐ ${sum(players[n].stars)} · ${sum(players[n].scores)} pts</small></button>`).join("");
+    $("#player-list").innerHTML = names.map((n) => `<button class="player ghost" data-name="${esc(n)}"><span>${ART("ui-player")}${esc(n)}</span>
+      <small>${ART("star-on")}${sum(players[n].stars)} · ${sum(players[n].scores)} pts</small></button>`).join("");
     $("#player-list").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { usePlayer(b.dataset.name); openWorld(); }));
     $("#name-input").value = names.length ? "" : player;
   }
@@ -144,15 +144,19 @@
       worldMap = L.map("world-map", { worldCopyJump: true, minZoom: 2 }).setView([20, 20], 2);
       L.tileLayer(ESRI, { attribution: ESRI_ATTR, maxZoom: 18 }).addTo(worldMap);
     }
-    worldMap.eachLayer((l) => l instanceof L.CircleMarker && worldMap.removeLayer(l));
+    worldMap.eachLayer((l) => l instanceof L.Marker && worldMap.removeLayer(l));
     const list = $("#mission-list"); list.innerHTML = "";
     missions.forEach((m) => {
       const t = TOPICS[m.topic] || { color: "#fff", label: m.topic };
       const done = m.id in scores, st = stars[m.id] || 0;
-      L.circleMarker([m.lat, m.lon], { radius: 9, color: "#fff", weight: 2, fillColor: t.color, fillOpacity: done ? .45 : .95 })
-        .addTo(worldMap).bindTooltip(`${m.title} · ${t.label}${done ? ` · ${"★".repeat(st)}` : ""}`).on("click", () => openMission(m.id));
+      // a picture pin per mission (its topic card), with the stars underneath once played
+      const pin = L.divIcon({ className: "mission-pin", iconSize: [68, 58], iconAnchor: [34, 56], tooltipAnchor: [0, -34],
+        html: `<div class="mp${done ? " done" : ""}" style="border-color:${t.color}"><img src="art/card-${m.topic}.webp" alt=""></div>` +
+              `<i style="border-top-color:${t.color}"></i>${done ? `<span class="stars">${starText(st)}</span>` : ""}` });
+      L.marker([m.lat, m.lon], { icon: pin, title: m.title, riseOnHover: true })
+        .addTo(worldMap).bindTooltip(`${m.title} · ${t.label}`, { direction: "top" }).on("click", () => openMission(m.id));
       const li = el("li", { class: done ? "done" : "" }, [
-        el("img", { class: "thumb", src: `art/card-${m.topic}.webp`, alt: "", style: `border-color:${t.color}` }),
+        el("span", { class: "chip", style: `background:${t.color}` }),
         el("span", { text: m.title }),
       ]);
       const s = el("span", { class: "pts stars" }); s.innerHTML = done ? starText(st) : "";
@@ -183,7 +187,7 @@
     if (tab === "device") {
       const rows = ranking();
       $("#board-device").innerHTML = rows.length ? `<table class="board"><tr><th>#</th><th>Cadet</th><th>⭐</th><th>Points</th><th>Missions</th></tr>
-        ${rows.map((r, i) => `<tr class="${r.name === player ? "me" : ""}"><td>${i === 0 && r.pts ? "🏆" : i + 1}</td><td>${esc(r.name)}</td>
+        ${rows.map((r, i) => `<tr class="${r.name === player ? "me" : ""}"><td>${r.pts && i < 3 ? `<img class="medal" src="art/medal-${i + 1}.webp" alt="${i + 1}">` : i + 1}</td><td>${esc(r.name)}</td>
           <td>${r.stars}</td><td>${r.pts}</td><td>${r.done} / ${missions.length}</td></tr>`).join("")}</table>
         <p class="muted small">Scores stay on this device. Tap your name at the top to switch player.</p>` : "<p>No players yet.</p>";
     } else worldTab();
@@ -200,10 +204,10 @@
     }
     const me = data.top.find((r) => r.name.toLowerCase() === player.toLowerCase());
     box.innerHTML = `${data.top.length ? `<table class="board"><tr><th>#</th><th>Cadet</th><th>⭐</th><th>Points</th></tr>
-      ${data.top.map((r, i) => `<tr class="${r === me ? "me" : ""}"><td>${i === 0 ? "🏆" : i + 1}</td><td>${esc(r.name)}</td><td>${r.stars}</td><td>${r.points}</td></tr>`).join("")}</table>`
+      ${data.top.map((r, i) => `<tr class="${r === me ? "me" : ""}"><td>${i < 3 ? `<img class="medal" src="art/medal-${i + 1}.webp" alt="${i + 1}">` : i + 1}</td><td>${esc(r.name)}</td><td>${r.stars}</td><td>${r.points}</td></tr>`).join("")}</table>`
       : "<p>No scores yet: be the first!</p>"}
       <div class="upload"><p class="small">Send <b>${esc(player)}</b>: ⭐ ${totalStars()} · ${total()} points. Everyone will see this name, so use a nickname, never your real full name.</p>
-      <button id="btn-upload" ${total() ? "" : "disabled"}>🌍 Send my score</button></div>`;
+      <button id="btn-upload" ${total() ? "" : "disabled"}>${ART("ui-send")}Send my score</button></div>`;
     const up = $("#btn-upload");
     if (up) up.onclick = async () => {
       up.disabled = true; up.textContent = "Sending…";
@@ -287,7 +291,7 @@
           picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS,
           content: extra, rule: { sign: 0, db: CHANGE_DB, water_max: 99, ...((extra.game || {}).rule || {}) },
           focus: (extra.game || {}).focus || [0, 0, 1, 1], anaCache: {}, game: extra.game || { type: "spots" }, result: null, onTap: null };
-    const STEP3 = { spots: ART("icon-find") + "Find", quiz: ART("icon-inspect") + "Inspect", order: "⏳ Order", lasso: "⭕ Circle", hunt: ART("icon-rig") + "Hunt" };
+    const STEP3 = { spots: ART("icon-find") + "Find", quiz: ART("icon-inspect") + "Inspect", order: ART("ui-undo") + "Order", lasso: ART("icon-circle") + "Circle", hunt: ART("icon-rig") + "Hunt" };
     $('.steps li[data-step="3"]').innerHTML = STEP3[M.game.type] || "🎯 Play";
 
     $("#m-title").textContent = info.title || id;
@@ -332,7 +336,7 @@
     M.newsTouched = false;
   }
   // the news panel opens by itself on Look and Score (not over the map while you play), unless you opened or closed it
-  function newsOpen(open) { $("#m-info").hidden = !open; $("#btn-news").classList.toggle("on", open); $("#btn-news").textContent = open ? "📰 What happened ✕" : "📰 What happened"; }
+  function newsOpen(open) { $("#m-info").hidden = !open; $("#btn-news").classList.toggle("on", open); $("#btn-news").innerHTML = `${ART("ui-news")}What happened${open ? " ✕" : ""}`; }
   $("#btn-news").addEventListener("click", () => { M.newsTouched = true; newsOpen($("#m-info").hidden); });
   // the alien's tips can shrink to just the alien; a new tip makes it wiggle
   let guideMin = store.get("guideMin", false);
@@ -343,9 +347,9 @@
 
   // ---------- map layers: OpenStreetMap towns / roads / rivers, NASA's camera, a street map ----------
   const LAYERS = {
-    towns: "🏘 Towns & islands", roads: "🛣 Roads", rivers: "🌊 Rivers",
-    wet_before: "💧 Wet on {before}", wet_after: "💧 Wet on {after}",
-    camera: "📷 NASA camera photo", street: "🗺 Street map",
+    towns: ART("lyr-towns") + "Towns & islands", roads: ART("lyr-roads") + "Roads", rivers: ART("lyr-rivers") + "Rivers",
+    wet_before: ART("lyr-wet") + "Wet on {before}", wet_after: ART("lyr-wet") + "Wet on {after}",
+    camera: ART("lyr-camera") + "NASA camera photo", street: ART("lyr-street") + "Street map",
   };
   const osmData = () => (M.osmP = M.osmP || fetch(M.base + "osm.geojson").then((r) => (r.ok ? r.json() : null)).catch(() => null));
   const ROAD_BIG = /motorway|trunk|primary/, OSM_KIND = { towns: "town", roads: "road", rivers: "river" };
@@ -421,6 +425,7 @@
     const box = $("#layer-list");
     box.innerHTML = Object.entries(LAYERS)
       .filter(([k]) => k !== "camera" || M.content.camera !== false)
+      .filter(([k]) => !k.startsWith("wet_") || (M.content.layers || []).includes(k) || (M.content.offer || []).includes(k))   // only where it tells the story
       .filter(([k]) => !OSM_KIND[k] || !M.osmKinds || M.osmKinds.has(OSM_KIND[k]))   // hide OSM layers this place has none of
       .map(([k, label]) => `<label><input type="checkbox" data-layer="${k}" ${M.on.has(k) ? "checked" : ""}> ${label
         .replace("{before}", M.info.before.date).replace("{after}", M.info.after.date)}</label>`).join("") +

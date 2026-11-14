@@ -1,6 +1,6 @@
 # SARbit: team guide (read this first)
 
-**SARbit** is a kids' web game for NASA Space Apps 2026, challenge *Dancing with the SARs*. An alien flies over
+**SARbit** (a [MENASIM](https://www.menasim.org/home-en) team, mentor Yakov Geltser) is a kids' web game for NASA Space Apps 2026, challenge *Dancing with the SARs*. An alien flies over
 Earth with a radar. In every mission the player compares a BEFORE and an AFTER radar picture of a real 2026
 event, makes the change **glow**, marks the squares that changed, and scores points.
 

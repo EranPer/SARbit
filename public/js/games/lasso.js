@@ -108,7 +108,7 @@
         api.kit.innerHTML = `<p class="quiz-q">Catch the cut forest! Draw a loop around each glowing patch. Caught <b>${caught.size}</b> of <b>${targets.length}</b>.</p>
           <p class="hearts">${"⭕".repeat(loops.length)}${"◌".repeat(left)}</p>
           <p class="muted">Yellow line = the BR-163 highway; white lines = side roads. Clearings grow along the roads.</p>
-          <div class="actions"><button id="ls-undo" class="ghost small" ${loops.length ? "" : "disabled"}>↩ Undo loop</button></div>`;
+          <div class="actions"><button id="ls-undo" class="ghost small" ${loops.length ? "" : "disabled"}><img class="ico" src="art/ui-undo.webp" alt="">Undo loop</button></div>`;
         api.kit.querySelector("#ls-undo").onclick = () => {
           const d = loops.pop(); if (!d) return;
           map.removeLayer(d.shape); d.ids.forEach((id) => caught.delete(id)); drawCaught(); render();

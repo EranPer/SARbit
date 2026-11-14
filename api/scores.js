@@ -10,10 +10,23 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), {
   status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
 });
 
+// the database's address and key: Vercel names them KV_REST_API_URL / _TOKEN, UPSTASH_REDIS_REST_URL / _TOKEN,
+// or <PREFIX>_KV_REST_API_URL / _TOKEN when a custom prefix was chosen while connecting
+function credentials() {
+  const env = process.env || {};
+  let names = [];
+  try { names = Object.keys(env); } catch { /* not listable here */ }
+  for (const u of ["KV_REST_API_URL", "UPSTASH_REDIS_REST_URL", ...names.filter((n) => /REST_API_URL$|REDIS_REST_URL$/.test(n))]) {
+    const t = u.replace(/URL$/, "TOKEN");
+    if (env[u] && env[t]) return { url: env[u], token: env[t] };
+  }
+  // say which storage settings exist (names only, never values), so the team can see what is connected
+  return { found: names.filter((n) => /KV|REDIS|UPSTASH|STORAGE/i.test(n)) };
+}
+
 export default async function handler(req) {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return json({ error: "the world board is not switched on" }, 503);
+  const { url, token, found } = credentials();
+  if (!url || !token) return json({ error: "the world board is not switched on", found }, 503);
   const redis = async (...cmd) => {   // Upstash REST: one command as a JSON array
     const r = await fetch(url, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: JSON.stringify(cmd) });
     if (!r.ok) throw new Error(`redis ${r.status}`);

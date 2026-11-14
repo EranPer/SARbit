@@ -72,7 +72,7 @@
           <p class="muted">Zoom in with + or your fingers. Tapping plain water costs a heart; tapping land is free.</p>
           <p class="peek">👀 Show: <button class="ghost small" data-v="glow">✨ Glow</button>
             <button class="ghost small" data-v="before">BEFORE</button><button class="ghost small" data-v="after">AFTER</button>
-            <button id="hunt-hint" class="ghost small">💡 Hint</button></p>`;
+            <button id="hunt-hint" class="ghost small"><img class="ico" src="art/ui-hint.webp" alt="">Hint</button></p>`;
         api.kit.querySelectorAll(".peek button[data-v]").forEach((b) => b.addEventListener("click", () => setView(b.dataset.v)));
         api.kit.querySelector("#hunt-hint").onclick = () => {
           const t = targets.find((q) => !q.found);

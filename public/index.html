@@ -12,10 +12,10 @@
     <div class="brand"><img class="brand-ufo" src="art/ufo.webp" alt=""> SARbit <small>radar cleanup</small></div>
     <div id="hud" hidden>
       <button id="hud-name" class="ghost small" title="Switch player"></button>
-      <button id="btn-board" class="ghost small" title="Scoreboard">🏆</button>
+      <button id="btn-board" class="ghost small" title="Scoreboard"><img class="ico" src="art/ui-board.webp" alt=""></button>
       <span class="score"><img class="ico" src="art/star-on.webp" alt="stars"> <b id="hud-stars">0</b> · <b id="hud-score">0</b> pts</span>
       <button id="btn-sound" class="ghost small" title="Sound on/off">🔊</button>
-      <button id="btn-finish" class="ghost">Finish</button>
+      <button id="btn-finish" class="ghost"><img class="ico" src="art/ui-finish.webp" alt="">Finish</button>
     </div>
   </header>
 
@@ -37,6 +37,8 @@
           <button type="submit">Start mission</button>
         </form>
         <p class="credit">Real data: NASA-ISRO NISAR L-band radar, 2026.</p>
+        <a class="menasim" href="https://www.menasim.org/home-en" target="_blank" rel="noopener noreferrer"><img src="art/menasim.webp" alt="MENASIM logo">
+          <span>Made by a <b>MENASIM</b> team: engineers who volunteer for environmental challenges. Mentor: Yakov Geltser.</span></a>
       </div>
     </div>
   </section>
@@ -51,8 +53,8 @@
       <div id="board">
         <h3>Top cadets</h3>
         <ol id="board-list"></ol>
-        <p class="info-row"><button id="btn-world-board" class="ghost small">🏆 Full scoreboard</button>
-          <button id="btn-world-finish" class="ghost small">🏁 Finish</button></p>
+        <p class="info-row"><button id="btn-world-board" class="ghost small"><img class="ico" src="art/ui-board.webp" alt="">Full scoreboard</button>
+          <button id="btn-world-finish" class="ghost small"><img class="ico" src="art/ui-finish.webp" alt="">Finish</button></p>
       </div>
     </aside>
   </section>
@@ -60,7 +62,7 @@
   <!-- 3 · mission: 4 simple steps -->
   <section id="screen-mission" class="screen">
     <aside class="mixer">
-      <button id="btn-back" class="ghost small">← World map</button>
+      <button id="btn-back" class="ghost small"><img class="ico" src="art/ui-back.webp" alt="">World map</button>
       <h2 id="m-title"></h2>
       <p id="m-place" class="muted"></p>
       <p id="m-story" class="story"></p>
@@ -69,7 +71,7 @@
         <li data-step="1"><img class="ico" src="art/icon-look.webp" alt="">Look</li><li data-step="2"><img class="ico" src="art/icon-glow.webp" alt="">Glow</li><li data-step="3"><img class="ico" src="art/icon-find.webp" alt="">Find</li><li data-step="4"><img class="ico" src="art/icon-score.webp" alt="">Score</li>
       </ol>
 
-      <p class="mission-pts">Mission points: <b id="m-points">0</b></p>
+      <p class="mission-pts"><img class="ico" src="art/coin.webp" alt="">Mission points: <b id="m-points">0</b></p>
       <div id="camera-kit" class="game-kit" hidden></div>
 
       <!-- step 2: two cards, two buckets -->
@@ -109,9 +111,9 @@
     </aside>
     <div class="mission-map-wrap">
       <div id="mission-map"></div>
-      <div id="layers"><button id="btn-layers" class="ghost small">🗺 Layers</button><div id="layer-list" hidden></div></div>
+      <div id="layers"><button id="btn-layers" class="ghost small"><img class="ico" src="art/ui-layers.webp" alt="">Layers</button><div id="layer-list" hidden></div></div>
       <div id="map-hud" hidden>🎯 <b id="hud-found">0</b>/<b id="hud-targets">0</b> · <span id="hud-hearts"></span>
-        <button id="btn-hint2" class="ghost small">💡 Hint</button></div>
+        <button id="btn-hint2" class="ghost small"><img class="ico" src="art/ui-hint.webp" alt="">Hint</button></div>
       <div id="swipe-bar" hidden>
         <span>before</span><input id="swipe" type="range" min="0" max="100" value="50"><span>after</span>
       </div>
@@ -144,16 +146,18 @@
       <div class="intro-text">
         <h1>Mission log closed</h1>
         <p id="end-text"></p>
-        <div class="actions"><button id="btn-end-board">🏆 Scoreboard</button><button id="btn-switch" class="ghost">👤 Next player</button>
+        <div class="actions"><button id="btn-end-board"><img class="ico" src="art/ui-board.webp" alt="">Scoreboard</button><button id="btn-switch" class="ghost"><img class="ico" src="art/ui-player.webp" alt="">Next player</button>
           <button id="btn-again" class="ghost">Play again</button></div>
+        <a class="menasim" href="https://www.menasim.org/home-en" target="_blank" rel="noopener noreferrer"><img src="art/menasim.webp" alt="MENASIM logo">
+          <span>Made by a <b>MENASIM</b> team: engineers who volunteer for environmental challenges. Mentor: Yakov Geltser.</span></a>
       </div>
     </div>
   </section>
 
   <!-- the scoreboard: this device's players + the world board (api/scores.js, when it's switched on) -->
   <dialog id="board-dialog">
-    <div class="board-head"><h2>🏆 Scoreboard</h2><button id="btn-board-close" class="ghost small">✕</button></div>
-    <div class="tabs"><button data-tab="device" class="on">On this device</button><button data-tab="world">🌍 World</button></div>
+    <div class="board-head"><h2><img class="ico" src="art/ui-board.webp" alt="">Scoreboard</h2><button id="btn-board-close" class="ghost small" title="Close"><img class="ico" src="art/ui-close.webp" alt=""></button></div>
+    <div class="tabs"><button data-tab="device" class="on"><img class="ico" src="art/ui-device.webp" alt="">On this device</button><button data-tab="world"><img class="ico" src="art/ui-world.webp" alt="">World</button></div>
     <div id="board-device"></div>
     <div id="board-world" hidden></div>
   </dialog>

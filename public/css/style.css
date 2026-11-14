@@ -314,3 +314,31 @@ table.board tr.me td { color: var(--accent); font-weight: 700; }
   #news-panel { order: 3; width: auto; max-height: none; margin-bottom: 8px; }
   #swipe-bar { right: 50%; transform: translateX(50%); width: min(420px, 86%); }
 }
+
+/* ---- MENASIM credit (intro + end) ---- */
+.menasim { display: flex; gap: 10px; align-items: center; margin-top: 12px; padding: 8px 10px; border-radius: 12px;
+  background: var(--panel2); border: 1px solid var(--line); color: var(--muted); text-decoration: none; font-size: 13px; line-height: 1.4; }
+.menasim:hover { border-color: var(--accent); color: var(--text); }
+.menasim img { width: 46px; height: 46px; object-fit: contain; border-radius: 10px; background: #f4f1ea; padding: 2px; flex: none; }
+.menasim b { color: var(--text); }
+
+/* ---- mission pins on the world map ---- */
+.mission-pin { background: none; border: 0; }
+/* the card picture sits inside the frame at its own shape (128 × 88), so the border never cuts it */
+.mission-pin .mp { width: 68px; height: 47px; border-radius: 10px; border: 3px solid; overflow: hidden; background: #0b1020;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .55); transition: transform .15s; }
+.mission-pin .mp img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mission-pin i { position: absolute; left: 50%; top: 46px; transform: translateX(-50%); border: 8px solid transparent; border-bottom: 0; border-top-width: 10px; }
+.mission-pin:hover .mp { transform: translateY(-4px) scale(1.08); }
+.mission-pin .mp.done { filter: saturate(.8); }
+.mission-pin .stars { position: absolute; left: 50%; top: -16px; transform: translateX(-50%); font-size: 14px;
+  background: rgba(11, 16, 32, .85); border-radius: 8px; padding: 0 4px; }
+#mission-list .chip { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+
+/* ---- icon buttons ---- */
+#hud .ico, .info-row .ico, .tabs .ico { height: 20px; }
+#btn-sound .ico, #btn-board .ico, #btn-board-close .ico { margin: 0; height: 20px; }
+.board-head h2 .ico { height: 30px; }
+img.medal { height: 28px; vertical-align: middle; }
+.mission-pts .ico { height: 22px; }
+.player span { display: flex; align-items: center; }
