@@ -1,0 +1,62 @@
+{
+ "id": "A1",
+ "bbox": [
+  75.39542319538472,
+  30.409264587837896,
+  75.6046669174504,
+  30.590614558428094
+ ],
+ "before": {
+  "date": "2026-06-16",
+  "image": "img0.png"
+ },
+ "after": {
+  "date": "2026-11-07",
+  "image": "img1.png"
+ },
+ "change_overlay": "img2.png",
+ "channels": {
+  "CO": "HH",
+  "CX": "HV"
+ },
+ "layers": {
+  "before": {
+   "CO": "img3.png",
+   "CX": "img4.png",
+   "RATIO": "img7.png"
+  },
+  "after": {
+   "CO": "img5.png",
+   "CX": "img6.png",
+   "RATIO": "img8.png"
+  }
+ },
+ "layer_scale": {
+  "CO_CX": {
+   "db_at_0": -35,
+   "db_at_255": 5
+  },
+  "RATIO": {
+   "db_at_0": 0,
+   "db_at_255": 20
+  }
+ },
+ "change_rule": {
+  "channel": 1,
+  "sign": 1,
+  "thresh_db": 6,
+  "water_max_db": 99
+ },
+ "grid": {
+  "rows": 12,
+  "cols": 12,
+  "geojson": "grid.geojson"
+ },
+ "sensor": "NISAR L-band (NASA-ISRO), ASF DAAC",
+ "topic": "agriculture",
+ "title": "Rice season",
+ "place": "Punjab, India",
+ "lat": 30.5,
+ "lon": 75.5,
+ "difficulty": 1
+}

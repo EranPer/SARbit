@@ -1,0 +1,62 @@
+{
+ "id": "D3",
+ "bbox": [
+  127.85996653121373,
+  0.3597255784240681,
+  128.03978077229553,
+  0.5405908568473817
+ ],
+ "before": {
+  "date": "2026-06-17",
+  "image": "img0.png"
+ },
+ "after": {
+  "date": "2026-10-27",
+  "image": "img1.png"
+ },
+ "change_overlay": "img2.png",
+ "channels": {
+  "CO": "HH",
+  "CX": "HH"
+ },
+ "layers": {
+  "before": {
+   "CO": "img3.png",
+   "CX": "img4.png",
+   "RATIO": "img7.png"
+  },
+  "after": {
+   "CO": "img5.png",
+   "CX": "img6.png",
+   "RATIO": "img8.png"
+  }
+ },
+ "layer_scale": {
+  "CO_CX": {
+   "db_at_0": -35,
+   "db_at_255": 5
+  },
+  "RATIO": {
+   "db_at_0": 0,
+   "db_at_255": 20
+  }
+ },
+ "change_rule": {
+  "channel": 0,
+  "sign": -1,
+  "thresh_db": 2,
+  "water_max_db": 99
+ },
+ "grid": {
+  "rows": 12,
+  "cols": 12,
+  "geojson": "grid.geojson"
+ },
+ "sensor": "NISAR L-band (NASA-ISRO), ASF DAAC",
+ "topic": "forest",
+ "title": "Nickel mine eats the rainforest",
+ "place": "Weda Bay, Halmahera, Indonesia",
+ "lat": 0.45,
+ "lon": 127.95,
+ "difficulty": 1
+}

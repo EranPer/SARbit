@@ -1,0 +1,19 @@
+{
+ "_note": "Mission centre + box size (km). Boxes start centred on the event point; refine per mission after the first look.",
+ "M1": {"lat": 17.3, "lon": 56.3, "box_km": 40},
+ "M2": {"lat": 19.6, "lon": -92.2, "box_km": 30},
+ "M3": {"lat": 29.4, "lon": -89.9, "box_km": 20},
+ "D1": {"lat": -7.1, "lon": -55.4, "box_km": 20},
+ "D2": {"lat": -8.5, "lon": -65.5, "box_km": 20},
+ "D3": {"lat": 0.45, "lon": 127.95, "box_km": 20},
+ "W1": {"lat": 38.97, "lon": -0.18, "box_km": 20},
+ "W2": {"lat": -24.5, "lon": 33.0, "box_km": 40},
+ "W3": {"lat": 35.18, "lon": 25.47, "box_km": 20},
+ "L1": {"lat": 49.9, "lon": -89.0, "box_km": 60},
+ "L2": {"lat": 54.59, "lon": 159.75, "box_km": 30},
+ "L3": {"lat": 41.1, "lon": -112.5, "box_km": 40},
+ "A1": {"lat": 30.5, "lon": 75.5, "box_km": 20},
+ "A2": {"lat": 42.0, "lon": -93.5, "box_km": 20},
+ "A3": {"lat": 32.62, "lon": 35.30, "box_km": 20},
+ "M_UAE25": {"lat": 25.564, "lon": 55.555, "box_km": 30}
+}

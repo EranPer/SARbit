@@ -1,0 +1,1929 @@
+#! <?xml version="1.0" encoding="UTF-8" ?>
+#! <WORKSPACE
+#!   AI_CONTEXT_ENABLED="Yes"
+#!   ARCGIS_COMPATIBILITY="ARCGIS_AUTO"
+#!   ATTR_TYPE_ENCODING="SDF"
+#!   BEGIN_PYTHON=""
+#!   BEGIN_TCL=""
+#!   CATEGORY=""
+#!   DESCRIPTION=""
+#!   DESTINATION="NONE"
+#!   DESTINATION_ROUTING_FILE=""
+#!   DOC_EXTENTS="9500 3740"
+#!   DOC_TOP_LEFT="0 -1500"
+#!   ENABLE_DATA_CACHING="Yes"
+#!   ENABLE_FEATURE_COUNTING="Yes"
+#!   ENABLE_PERFORMANCE_PROFILING="No"
+#!   END_PYTHON=""
+#!   END_TCL=""
+#!   EXPLICIT_BOOKMARK_ORDER="false"
+#!   FME_BUILD_NUM="26656"
+#!   FME_BULK_MODE_THRESHOLD="2000"
+#!   FME_DOCUMENT_GUID="ddaba1f4-ae7f-4ae3-a95c-2ae47474b2de"
+#!   FME_DOCUMENT_PRIORGUID="20330a6f-2380-4fe3-8993-431780f753a1"
+#!   FME_GEOMETRY_HANDLING="Enhanced"
+#!   FME_IMPLICIT_CSMAP_REPROJECTION_MODE="Auto"
+#!   FME_NAMES_ENCODING="US-ASCII"
+#!   FME_REPROJECTION_ENGINE="FME"
+#!   FME_SERVER_SERVICES=""
+#!   FME_STROKE_MAX_DEVIATION="0"
+#!   HISTORY=""
+#!   IGNORE_READER_FAILURE="No"
+#!   INCOMPLETE_CACHE_HANDLING="Stale"
+#!   LAST_SAVE_BUILD="0.1"
+#!   LAST_SAVE_DATE="2026-11-14T10:04:05"
+#!   LOG_FILE=""
+#!   LOG_MAX_RECORDED_FEATURES="200"
+#!   MARKDOWN_DESCRIPTION=""
+#!   MARKDOWN_USAGE=""
+#!   MAX_LOG_FEATURES="200"
+#!   MULTI_WRITER_DATASET_ORDER="BY_ID"
+#!   PASSWORD=""
+#!   PROMPT_FOR_PARAMS="Yes"
+#!   PYTHON_COMPATIBILITY="312"
+#!   PYTHON_SCRIPTS_ENABLED="Yes"
+#!   REDIRECT_TERMINATORS="NONE"
+#!   SAVE_ON_PROMPT_AND_RUN="Yes"
+#!   SHOW_ANNOTATIONS="true"
+#!   SHOW_INFO_NODES="true"
+#!   SOURCE="NONE"
+#!   SOURCE_ROUTING_FILE=""
+#!   STOP_AT_BREAKPOINTS="No"
+#!   TERMINATE_REJECTED="YES"
+#!   TITLE=""
+#!   USAGE=""
+#!   USE_MARKDOWN=""
+#!   VIEW_POSITION="0 0"
+#!   WARN_INVALID_XFORM_PARAM="Yes"
+#!   WORKSPACE_VERSION="1"
+#!   ZOOM_SCALE="100"
+#! >
+#! <DATASETS>
+#! </DATASETS>
+#! <DATA_TYPES>
+#! </DATA_TYPES>
+#! <GEOM_TYPES>
+#! </GEOM_TYPES>
+#! <FEATURE_TYPES>
+#! </FEATURE_TYPES>
+#! <FMESERVER>
+#! <READER_DATASETS>
+#! <DATASET
+#!   NAME="FeatureReader"
+#!   OVERRIDE="--FeatureReaderDataset_FeatureReader"
+#!   DATASET="FeatureReader/stack.tif"
+#! />
+#! </READER_DATASETS>
+#! <WRITER_DATASETS>
+#! <DATASET
+#!   NAME="FeatureWriter"
+#!   OVERRIDE="--FeatureWriterDataset_FeatureWriter"
+#!   DATASET="FeatureWriter/W2"
+#! />
+#! <DATASET
+#!   NAME="FeatureWriter_2"
+#!   OVERRIDE="--FeatureWriterDataset_FeatureWriter_2"
+#!   DATASET="FeatureWriter_2/grid.geojson"
+#! />
+#! </WRITER_DATASETS>
+#! </FMESERVER>
+#! <GLOBAL_PARAMETERS>
+#! <GLOBAL_PARAMETER
+#!   GUI_LINE="GUI STRING_OR_ATTR MISSION Mission id (folder in /data/nisar/clips)"
+#!   DEFAULT_VALUE="W2"
+#!   IS_STAND_ALONE="false"
+#! />
+#! <GLOBAL_PARAMETER
+#!   GUI_LINE="GUI STRING_OR_ATTR BEFORE Before date (for mission.json)"
+#!   DEFAULT_VALUE="2026-01-05"
+#!   IS_STAND_ALONE="false"
+#! />
+#! <GLOBAL_PARAMETER
+#!   GUI_LINE="GUI STRING_OR_ATTR AFTER After date (for mission.json)"
+#!   DEFAULT_VALUE="2026-01-17"
+#!   IS_STAND_ALONE="false"
+#! />
+#! <GLOBAL_PARAMETER
+#!   GUI_LINE="GUI STRING_OR_ATTR CHANNEL Change channel: 0 = co-pol (HH/VV), 1 = cross-pol (HV/VH)"
+#!   DEFAULT_VALUE="0"
+#!   IS_STAND_ALONE="false"
+#! />
+#! <GLOBAL_PARAMETER
+#!   GUI_LINE="GUI STRING_OR_ATTR SIGN Direction: -1 = got darker, 1 = got brighter"
+#!   DEFAULT_VALUE="-1"
+#!   IS_STAND_ALONE="false"
+#! />
+#! <GLOBAL_PARAMETER
+#!   GUI_LINE="GUI STRING_OR_ATTR THRESH_DB Minimum change in dB"
+#!   DEFAULT_VALUE="3"
+#!   IS_STAND_ALONE="false"
+#! />
+#! <GLOBAL_PARAMETER
+#!   GUI_LINE="GUI STRING_OR_ATTR WATER_MAX After value must be below this dB (floods: -18; else 99 = off)"
+#!   DEFAULT_VALUE="-18"
+#!   IS_STAND_ALONE="false"
+#! />
+#! <GLOBAL_PARAMETER
+#!   GUI_LINE="GUI STRING_OR_ATTR CO_NAME Co-pol channel name (HH, or VV)"
+#!   DEFAULT_VALUE="HH"
+#!   IS_STAND_ALONE="false"
+#! />
+#! <GLOBAL_PARAMETER
+#!   GUI_LINE="GUI STRING_OR_ATTR CX_NAME Cross-pol channel name (HV, or VH; same as CO_NAME if missing)"
+#!   DEFAULT_VALUE="HV"
+#!   IS_STAND_ALONE="false"
+#! />
+#! </GLOBAL_PARAMETERS>
+#! <USER_PARAMETERS
+#!   FORM="eyJwYXJhbWV0ZXJzIjpbeyJuYW1lIjoiTUlTU0lPTiIsInByb21wdCI6Ik1pc3Npb24gaWQgKGZvbGRlciBpbiAvZGF0YS9uaXNhci9jbGlwcykiLCJ2YWx1ZVR5cGUiOiJzdHJpbmciLCJkZWZhdWx0VmFsdWUiOiJXMiIsInN1cHBvcnRlZFZhbHVlVHlwZXMiOlsiZXhwcmVzc2lvbiIsImdsb2JhbFBhcmFtZXRlciJdLCJ0eXBlIjoidGV4dCJ9LHsibmFtZSI6IkJFRk9SRSIsInByb21wdCI6IkJlZm9yZSBkYXRlIChmb3IgbWlzc2lvbi5qc29uKSIsInZhbHVlVHlwZSI6InN0cmluZyIsImRlZmF1bHRWYWx1ZSI6IjIwMjYtMDEtMDUiLCJzdXBwb3J0ZWRWYWx1ZVR5cGVzIjpbImV4cHJlc3Npb24iLCJnbG9iYWxQYXJhbWV0ZXIiXSwidHlwZSI6InRleHQifSx7Im5hbWUiOiJBRlRFUiIsInByb21wdCI6IkFmdGVyIGRhdGUgKGZvciBtaXNzaW9uLmpzb24pIiwidmFsdWVUeXBlIjoic3RyaW5nIiwiZGVmYXVsdFZhbHVlIjoiMjAyNi0wMS0xNyIsInN1cHBvcnRlZFZhbHVlVHlwZXMiOlsiZXhwcmVzc2lvbiIsImdsb2JhbFBhcmFtZXRlciJdLCJ0eXBlIjoidGV4dCJ9LHsibmFtZSI6IkNIQU5ORUwiLCJwcm9tcHQiOiJDaGFuZ2UgY2hhbm5lbDogMCA9IGNvLXBvbCAoSEgvVlYpLCAxID0gY3Jvc3MtcG9sIChIVi9WSCkiLCJ2YWx1ZVR5cGUiOiJzdHJpbmciLCJkZWZhdWx0VmFsdWUiOiIwIiwic3VwcG9ydGVkVmFsdWVUeXBlcyI6WyJleHByZXNzaW9uIiwiZ2xvYmFsUGFyYW1ldGVyIl0sInR5cGUiOiJ0ZXh0In0seyJuYW1lIjoiU0lHTiIsInByb21wdCI6IkRpcmVjdGlvbjogLTEgPSBnb3QgZGFya2VyLCAxID0gZ290IGJyaWdodGVyIiwidmFsdWVUeXBlIjoic3RyaW5nIiwiZGVmYXVsdFZhbHVlIjoiLTEiLCJzdXBwb3J0ZWRWYWx1ZVR5cGVzIjpbImV4cHJlc3Npb24iLCJnbG9iYWxQYXJhbWV0ZXIiXSwidHlwZSI6InRleHQifSx7Im5hbWUiOiJUSFJFU0hfREIiLCJwcm9tcHQiOiJNaW5pbXVtIGNoYW5nZSBpbiBkQiIsInZhbHVlVHlwZSI6InN0cmluZyIsImRlZmF1bHRWYWx1ZSI6IjMiLCJzdXBwb3J0ZWRWYWx1ZVR5cGVzIjpbImV4cHJlc3Npb24iLCJnbG9iYWxQYXJhbWV0ZXIiXSwidHlwZSI6InRleHQifSx7Im5hbWUiOiJXQVRFUl9NQVgiLCJwcm9tcHQiOiJBZnRlciB2YWx1ZSBtdXN0IGJlIGJlbG93IHRoaXMgZEIgKGZsb29kczogLTE4OyBlbHNlIDk5ID0gb2ZmKSIsInZhbHVlVHlwZSI6InN0cmluZyIsImRlZmF1bHRWYWx1ZSI6Ii0xOCIsInN1cHBvcnRlZFZhbHVlVHlwZXMiOlsiZXhwcmVzc2lvbiIsImdsb2JhbFBhcmFtZXRlciJdLCJ0eXBlIjoidGV4dCJ9LHsibmFtZSI6IkNPX05BTUUiLCJwcm9tcHQiOiJDby1wb2wgY2hhbm5lbCBuYW1lIChISCwgb3IgVlYpIiwidmFsdWVUeXBlIjoic3RyaW5nIiwiZGVmYXVsdFZhbHVlIjoiSEgiLCJzdXBwb3J0ZWRWYWx1ZVR5cGVzIjpbImV4cHJlc3Npb24iLCJnbG9iYWxQYXJhbWV0ZXIiXSwidHlwZSI6InRleHQifSx7Im5hbWUiOiJDWF9OQU1FIiwicHJvbXB0IjoiQ3Jvc3MtcG9sIGNoYW5uZWwgbmFtZSAoSFYsIG9yIFZIOyBzYW1lIGFzIENPX05BTUUgaWYgbWlzc2luZykiLCJ2YWx1ZVR5cGUiOiJzdHJpbmciLCJkZWZhdWx0VmFsdWUiOiJIViIsInN1cHBvcnRlZFZhbHVlVHlwZXMiOlsiZXhwcmVzc2lvbiIsImdsb2JhbFBhcmFtZXRlciJdLCJ0eXBlIjoidGV4dCJ9XX0="
+#! >
+#! <PARAMETER_INFO>
+#!     <INFO NAME="MISSION" 
+#!   DEFAULT_VALUE="W2"
+#!   SCOPE="DEPENDENT"
+#!   GENERATED_GUI_LINE="true"
+#!   GUI_LINE="GUI STRING_OR_ATTR MISSION Mission id (folder in /data/nisar/clips)"
+#! />
+#!     <INFO NAME="BEFORE" 
+#!   DEFAULT_VALUE="2026-01-05"
+#!   SCOPE="DEPENDENT"
+#!   GENERATED_GUI_LINE="true"
+#!   GUI_LINE="GUI STRING_OR_ATTR BEFORE Before date (for mission.json)"
+#! />
+#!     <INFO NAME="AFTER" 
+#!   DEFAULT_VALUE="2026-01-17"
+#!   SCOPE="DEPENDENT"
+#!   GENERATED_GUI_LINE="true"
+#!   GUI_LINE="GUI STRING_OR_ATTR AFTER After date (for mission.json)"
+#! />
+#!     <INFO NAME="CHANNEL" 
+#!   DEFAULT_VALUE="0"
+#!   SCOPE="DEPENDENT"
+#!   GENERATED_GUI_LINE="true"
+#!   GUI_LINE="GUI STRING_OR_ATTR CHANNEL Change channel: 0 = co-pol (HH/VV), 1 = cross-pol (HV/VH)"
+#! />
+#!     <INFO NAME="SIGN" 
+#!   DEFAULT_VALUE="-1"
+#!   SCOPE="DEPENDENT"
+#!   GENERATED_GUI_LINE="true"
+#!   GUI_LINE="GUI STRING_OR_ATTR SIGN Direction: -1 = got darker, 1 = got brighter"
+#! />
+#!     <INFO NAME="THRESH_DB" 
+#!   DEFAULT_VALUE="3"
+#!   SCOPE="DEPENDENT"
+#!   GENERATED_GUI_LINE="true"
+#!   GUI_LINE="GUI STRING_OR_ATTR THRESH_DB Minimum change in dB"
+#! />
+#!     <INFO NAME="WATER_MAX" 
+#!   DEFAULT_VALUE="-18"
+#!   SCOPE="DEPENDENT"
+#!   GENERATED_GUI_LINE="true"
+#!   GUI_LINE="GUI STRING_OR_ATTR WATER_MAX After value must be below this dB (floods: -18; else 99 = off)"
+#! />
+#!     <INFO NAME="CO_NAME" 
+#!   DEFAULT_VALUE="HH"
+#!   SCOPE="DEPENDENT"
+#!   GENERATED_GUI_LINE="true"
+#!   GUI_LINE="GUI STRING_OR_ATTR CO_NAME Co-pol channel name (HH, or VV)"
+#! />
+#!     <INFO NAME="CX_NAME" 
+#!   DEFAULT_VALUE="HV"
+#!   SCOPE="DEPENDENT"
+#!   GENERATED_GUI_LINE="true"
+#!   GUI_LINE="GUI STRING_OR_ATTR CX_NAME Cross-pol channel name (HV, or VH; same as CO_NAME if missing)"
+#! />
+#! </PARAMETER_INFO>
+#! </USER_PARAMETERS>
+#! <COMMENTS>
+#! <COMMENT
+#!   IDENTIFIER="47"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;1 · TO DECIBELS. Radar brightness arrives as linear power (0.001 to 30). 10·log10 turns it into dB (about −30 to +5), the scale every radar rule and colour stretch below is written in. 4 bands in, 4 out. No signal (0) becomes −99 dB, so no NoData flag is needed anywhere.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="800 740"
+#!   TOP_LEFT="800 740"
+#!   BOTTOM_RIGHT="1500 180"
+#!   BOUNDING_RECT="800 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{5e5a224c-cace-4dc5-b461-d9d0cfcb7244}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="5"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="48"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;2 · DESPECKLE. Radar images are grainy (&apos;speckle&apos;). A 5×5 median replaces each pixel by the middle value of its 25 neighbours: grain goes, edges (shorelines, field borders) stay sharp.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="1600 740"
+#!   TOP_LEFT="1600 740"
+#!   BOTTOM_RIGHT="2300 180"
+#!   BOUNDING_RECT="1600 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{2683b5ad-3672-4eda-aa42-f258a5bd901f}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="6"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="49"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;3 · RESIZE to 1024 × 1024. The box is square in UTM, so it stays square. Plenty for the screen, small files for the web, same size for every mission.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="2400 740"
+#!   TOP_LEFT="2400 740"
+#!   BOTTOM_RIGHT="3100 180"
+#!   BOUNDING_RECT="2400 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{a86be2fe-76f3-4cd1-9858-382f565bf6a7}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="7"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="50"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;4 · CHANGE MAP (adds band 5). Per pixel: difference after − before on the chosen channel (CHANNEL 0 = co-pol HH/VV, 1 = cross-pol HV/VH). Changed = 1 when SIGN × difference &amp;gt; THRESH_DB (SIGN −1 = got darker, +1 = got brighter) and the after value is below WATER_MAX (−18 for floods, 99 = off). Pixels without signal on either date never count.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="3200 740"
+#!   TOP_LEFT="3200 740"
+#!   BOTTOM_RIGHT="3900 180"
+#!   BOUNDING_RECT="3200 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{ac8cb78a-5c58-4c00-9b14-716feaa54c10}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="8"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="51"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;5 · TO WEB MERCATOR (EPSG:3857), the projection of web maps. This is what makes the PNGs sit exactly on the Leaflet basemap. Everything after this point is output.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="4000 740"
+#!   TOP_LEFT="4000 740"
+#!   BOTTOM_RIGHT="4700 180"
+#!   BOUNDING_RECT="4000 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{9f14bc81-ee73-4613-9579-0c47c404a748}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="9"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="52"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;6 · PAINT every picture into one 36-band raster (9 pictures × RGBA). Ready-made: before, after (R = co-pol, G = cross-pol, B = co-pol, one fixed stretch for both dates) and the red change overlay. Building blocks for the game: grey layers co-pol, cross-pol and co−cross ratio for each date, all on ONE fixed scale (−35…+5 dB, ratio 0…20 dB), so the player can mix them into R/G/B and the colours stay comparable.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="4800 2240"
+#!   TOP_LEFT="4800 2240"
+#!   BOTTOM_RIGHT="5500 1680"
+#!   BOUNDING_RECT="4800 2240 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{9d619b92-059e-4115-8243-69934ae3be1f}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="10"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="53"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;7 · NINE COPIES, one per picture: 0 before · 1 after · 2 change · 3 before co · 4 before cross · 5 after co · 6 after cross · 7 before ratio · 8 after ratio.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="5600 2240"
+#!   TOP_LEFT="5600 2240"
+#!   BOTTOM_RIGHT="6300 1680"
+#!   BOUNDING_RECT="5600 2240 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{7c55531f-684e-4c3a-8951-e6523ced784f}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="11"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="54"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;8 · WHICH BANDS. Copy n keeps bands 4n … 4n+3. Written as a band list for the next step.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="6400 2240"
+#!   TOP_LEFT="6400 2240"
+#!   BOTTOM_RIGHT="7100 1680"
+#!   BOUNDING_RECT="6400 2240 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{4777d422-4acd-4a31-bec9-4ba2d690732c}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="12"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="55"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;9 · MARK the 4 bands of this copy (RasterSelector only marks, it doesn&apos;t remove).&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="7200 2240"
+#!   TOP_LEFT="7200 2240"
+#!   BOTTOM_RIGHT="7900 1680"
+#!   BOUNDING_RECT="7200 2240 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{d895308e-fbb6-403a-b5cb-09a7a4174b31}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="13"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="56"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;10 · KEEP only the marked bands = one RGBA picture per copy, ready for PNG.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="8000 2240"
+#!   TOP_LEFT="8000 2240"
+#!   BOTTOM_RIGHT="8700 1680"
+#!   BOUNDING_RECT="8000 2240 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{f27ce861-a96c-499b-84cf-933c83f80e30}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="14"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="57"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;11 · CUT INTO 12 × 12 TILES: the game board. Each tile keeps its _tile_row / _tile_column.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="4800 740"
+#!   TOP_LEFT="4800 740"
+#!   BOTTOM_RIGHT="5500 180"
+#!   BOUNDING_RECT="4800 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{23049cc0-726f-4c27-8a77-59a49fb3144e}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="15"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="58"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;12 · SHARE CHANGED. Mean of band 5 (0/1) over the tile = the fraction of its pixels that changed (band4.mean).&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="5600 740"
+#!   TOP_LEFT="5600 740"
+#!   BOTTOM_RIGHT="6300 180"
+#!   BOUNDING_RECT="5600 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{abf4f84c-5a81-4a36-8c22-befd17d79034}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="16"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="59"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;13 · TILE → CELL. Swap each raster tile for its outline polygon: the clickable square in the game.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="6400 740"
+#!   TOP_LEFT="6400 740"
+#!   BOTTOM_RIGHT="7100 180"
+#!   BOUNDING_RECT="6400 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{e510827e-5a3e-4a2a-bea6-57804e20e275}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="17"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="60"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;14 · HIT OR NOT. hit = 1 when at least 20 % of the cell changed: the answer key the player&apos;s guess is scored against. row / col say where the cell sits.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="7200 740"
+#!   TOP_LEFT="7200 740"
+#!   BOTTOM_RIGHT="7900 180"
+#!   BOUNDING_RECT="7200 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{d59dc164-abad-4b12-bfb0-b23b5d218f23}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="18"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="61"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;15 · TO LAT/LON (EPSG:4326), what GeoJSON and Leaflet expect for vector shapes.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="8000 740"
+#!   TOP_LEFT="8000 740"
+#!   BOTTOM_RIGHT="8700 180"
+#!   BOUNDING_RECT="8000 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{6c740464-cad6-4bb1-ade3-ec40f317e709}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="19"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="62"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;16 · FOOTPRINT. The outline of the finished image (still Web Mercator).&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="4800 -760"
+#!   TOP_LEFT="4800 -760"
+#!   BOTTOM_RIGHT="5500 -1320"
+#!   BOUNDING_RECT="4800 -760 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{b9cc2125-a75f-4537-acc8-56249d3691c4}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="20"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="63"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;17 · TO LAT/LON. Leaflet places an image by its corner latitudes/longitudes.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="5600 -760"
+#!   TOP_LEFT="5600 -760"
+#!   BOTTOM_RIGHT="6300 -1320"
+#!   BOUNDING_RECT="5600 -760 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{24d478ca-9963-40bb-b93e-5f564c518f10}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="21"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="64"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;18 · CORNERS → _xmin _ymin _xmax _ymax: the bbox for mission.json.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="6400 -760"
+#!   TOP_LEFT="6400 -760"
+#!   BOTTOM_RIGHT="7100 -1320"
+#!   BOUNDING_RECT="6400 -760 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{f692bf80-f806-485d-bc74-04bea01c6d3a}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="22"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="65"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;19 · MISSION.JSON text: id, bbox, dates, the 9 picture files, channel names (HH/HV or VV/VH), the layer scales, the change rule used, grid file. Story/explain texts come from the game team (Missions tab).&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="7200 -760"
+#!   TOP_LEFT="7200 -760"
+#!   BOTTOM_RIGHT="7900 -1320"
+#!   BOUNDING_RECT="7200 -760 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{993786a8-cb14-4db3-ae28-62ae896aeebf}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="23"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="66"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;20 · WRITE mission.json next to the images and the grid.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="8000 -760"
+#!   TOP_LEFT="8000 -760"
+#!   BOTTOM_RIGHT="8700 -1320"
+#!   BOUNDING_RECT="8000 -760 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{6929132f-c7fd-4f6d-a167-b62623948fa9}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="24"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="67"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;0 · READ the mission&apos;s stack: one GeoTIFF, 4 bands = before co-pol, before cross-pol, after co-pol, after cross-pol, on one grid (made by clip.py + stack.py, because FME on Linux can&apos;t open NISAR HDF5).&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="0 740"
+#!   TOP_LEFT="0 740"
+#!   BOTTOM_RIGHT="700 180"
+#!   BOUNDING_RECT="0 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{fd816baf-f1ad-45c4-ad7f-1c2ffc410fcc}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="2"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="68"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;21 · PNG WRITER. img0…img8.png (name = img + _copynum) into /data/nisar/out/MISSION/. mission.json says which file is which.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="8800 2240"
+#!   TOP_LEFT="8800 2240"
+#!   BOTTOM_RIGHT="9500 1680"
+#!   BOUNDING_RECT="8800 2240 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{a123b853-3e8c-412e-8f48-a9d59304c944}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="3"
+#! />
+#! <COMMENT
+#!   IDENTIFIER="69"
+#!   COMMENT_VALUE="&lt;html&gt;&lt;body&gt;22 · GEOJSON WRITER. grid.geojson: 144 cells with hit / row / col, the game&apos;s answer key.&lt;/body&gt;&lt;/html&gt;"
+#!   POSITION="8800 740"
+#!   TOP_LEFT="8800 740"
+#!   BOTTOM_RIGHT="9500 180"
+#!   BOUNDING_RECT="8800 740 700 560"
+#!   ORDER="500000000000000"
+#!   FOLLOW_ANCHOR="true"
+#!   INFO_NODE="false"
+#!   CUSTOM_USER_COLOR="false"
+#!   UUID="{13628b49-de3c-4eab-905d-e96a710ebdda}"
+#!   COLOUR="1,0.95686274509803926,0.80000000000000004,0.90196078431372551"
+#!   SIZE_POLICY="10"
+#!   ANCHORED_NODE="4"
+#! />
+#! </COMMENTS>
+#! <CONSTANTS>
+#! </CONSTANTS>
+#! <BOOKMARKS>
+#! </BOOKMARKS>
+#! <LOOPS>
+#! </LOOPS>
+#! <TRANSFORMERS>
+#! <TRANSFORMER
+#!   IDENTIFIER="2"
+#!   TYPE="FeatureReader"
+#!   VERSION="17"
+#!   POSITION="0 0"
+#!   BOUNDING_RECT="0 0 440 65"
+#!   ORDER="500000000000001"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="&lt;SCHEMA&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="0"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_feature_type_name" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="attribute{}.name" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="attribute{}.fme_data_type" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="attribute{}.native_data_type" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="fme_format_short_name" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="fme_format_long_name" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="fme_schema_handling" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <OUTPUT_FEAT NAME="GEOTIFF"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <OUTPUT_FEAT NAME="&lt;OTHER&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="2"/>
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="3"/>
+#!     <XFORM_ATTR ATTR_NAME="_reader_error" IS_USER_CREATED="false" FEAT_INDEX="3" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="3" />
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTES" PARM_VALUE="GEOTIFF,"/>
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTE_TYPES" PARM_VALUE="GEOTIFF,"/>
+#!     <XFORM_PARM PARM_NAME="ATTRS_TO_EXPOSE" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="ATTR_CONFLICT_RES_LOOKUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_IGNORE_NULLS" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_PREFIX" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="AVAILABLE_FEATURE_TYPES" PARM_VALUE="_FEATUREREADER_OPTIONAL_FTTR_%GEOTIFF"/>
+#!     <XFORM_PARM PARM_NAME="CACHE_TIMEOUT_HRS" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="CLIP_TO_ENVELOPE" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="COMBINE_ATTRS_OPTIONS" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="COMBINE_GEOM_OPTIONS" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="CONSTRAINTS_GROUP" PARM_VALUE="FME_DISCLOSURE_OPEN"/>
+#!     <XFORM_PARM PARM_NAME="COORDSYS" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="DATASET" PARM_VALUE="&lt;solidus&gt;data&lt;solidus&gt;nisar&lt;solidus&gt;clips&lt;solidus&gt;$(MISSION)&lt;solidus&gt;stack.tif"/>
+#!     <XFORM_PARM PARM_NAME="DYNGROUP_0" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="ENABLE_CACHE" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="FEATURETYPES" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="FORCE_REFRESH_OUTPUTS" PARM_VALUE="on_parm_change"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT" PARM_VALUE="GEOTIFF"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_ATTRIBUTE_TYPES" PARM_VALUE="GEOTIFF,"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_DIRECTIVES" PARM_VALUE="METAFILE,GEOTIFF"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_PARAMS" PARM_VALUE="&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_IGNORE_RASTER_TYPE_KEY&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Ignore Raster Type Key:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_APPLY_GCPS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Apply GCP&apos;s&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;NO&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;style&quot;&quot;:&quot;&quot;checkable&quot;&quot;,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;GCP_INTERPOLATION_METHOD&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GCP Interpolation Method&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;NearestNeighbor&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Nearest Neighbor&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;NearestNeighbor&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;Bilinear&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Bilinear&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;Bicubic&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Bicubic&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}]}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_USE_SEARCH_ENVELOPE&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Use Search Envelope&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;NO&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;style&quot;&quot;:&quot;&quot;checkable&quot;&quot;,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_MINX&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Minimum X:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;0&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_MINY&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Minimum Y:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;0&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_MAXX&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Maximum X:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;0&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_MAXY&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Maximum Y:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;0&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_COORDINATE_SYSTEM&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Search Envelope Coordinate System:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;coordinateSystems&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;CLIP_TO_ENVELOPE&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Clip to Search Envelope&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;NO&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;checkbox&quot;&quot;}]}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_LENIENT_READ&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF &quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;visibility&quot;&quot;:&quot;&quot;hiddenEnabled&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_COORDINATE_SYSTEM&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Coordinate System:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;coordinateSystems&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_FEATURE_TYPE_NAME&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Feature Type Name(s):&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;FORMAT_NAME&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;From Format Name&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;FORMAT_NAME&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;From File Name(s)&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;FILE_NAME&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;From Subdataset Name(s)&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;SUBDATASET_NAME&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;From File Name and Subdataset Name(s)&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;FILE_NAME_AND_SUBDATASET_NAME&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_SPATIAL_GROUP&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Spatial&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;style&quot;&quot;:&quot;&quot;collapsible&quot;&quot;,&quot;&quot;collapse&quot;&quot;:false,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;COORDINATE_SYSTEM&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Coordinate System:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;coordinateSystems&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;PREFER_FILE_CS_UNITS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Prefer File Coordinate System Units:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;READ_OFFSETS_IN_CS_UNITS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Offsets in Coordinate System Units:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;APPLY_GCPS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Apply GCP&apos;s&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;NO&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;style&quot;&quot;:&quot;&quot;checkable&quot;&quot;,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;GCP_INTERPOLATION_METHOD&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GCP Interpolation Method&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;NearestNeighbor&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Nearest Neighbor&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;NearestNeighbor&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;Bilinear&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Bilinear&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;Bicubic&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Bicubic&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}]},{&quot;&quot;name&quot;&quot;:&quot;&quot;USE_SEARCH_ENVELOPE&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Use Search Envelope&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;NO&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;style&quot;&quot;:&quot;&quot;checkable&quot;&quot;,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_MINX&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Minimum X:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;0&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_MINY&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Minimum Y:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;0&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_MAXX&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Maximum X:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;0&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_MAXY&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Maximum Y:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;0&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;SEARCH_ENVELOPE_COORDINATE_SYSTEM&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Search Envelope Coordinate System:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;coordinateSystems&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;CLIP_TO_ENVELOPE&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Clip to Search Envelope&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;NO&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;checkbox&quot;&quot;}]},{&quot;&quot;name&quot;&quot;:&quot;&quot;USE_APPROXIMATE_WORLDFILES&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Use Approximate World File (.tfwx):&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;no&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}]}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_READ_OFFSETS_IN_CS_UNITS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Offsets in Coordinate System Units:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_GEOTIFF_EXPOSE_FORMAT_ATTRS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Additional Attributes to Expose:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;supportedValueTypes&quot;&quot;:[&quot;&quot;none&quot;&quot;],&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;exposableFormatAttributes&quot;&quot;,&quot;&quot;format&quot;&quot;:&quot;&quot;GEOTIFF&quot;&quot;,&quot;&quot;direction&quot;&quot;:&quot;&quot;reader&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;listbox&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_GEOTIFF_RDR_ADV_PARM_GROUP&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Advanced&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;style&quot;&quot;:&quot;&quot;collapsible&quot;&quot;,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;PYRAMID_LEVEL&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Pyramid Level to Read:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;,&quot;&quot;multipleOf&quot;&quot;:1},{&quot;&quot;name&quot;&quot;:&quot;&quot;IGNORE_RASTER_TYPE_KEY&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Ignore Raster Type Key:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;SCALE_COLOR_TO_STANDARD_BIT_DEPTH&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Non-standard Color Bit Depth:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;YES&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Scale to Standard Bit Depth&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;YES&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;Do Not Scale&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;NO&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}]}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_EXPOSE_ATTRS_GROUP&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Schema Attributes&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;style&quot;&quot;:&quot;&quot;collapsible&quot;&quot;,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_EXPOSE_FORMAT_ATTRS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Additional Attributes to Expose:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;exposableFormatAttributes&quot;&quot;,&quot;&quot;format&quot;&quot;:&quot;&quot;GEOTIFF&quot;&quot;,&quot;&quot;direction&quot;&quot;:&quot;&quot;reader&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;listbox&quot;&quot;}]}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_PREFER_FILE_CS_UNITS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Prefer File Coordinate System Units:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_SCALE_COLOR_TO_STANDARD_BIT_DEPTH&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Non-standard Color Bit Depth:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;YES&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Scale to Standard Bit Depth&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;YES&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;Do Not Scale&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;NO&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_PYRAMID_LEVEL&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Pyramid Level to Read:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;,&quot;&quot;multipleOf&quot;&quot;:1}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_READER_META_ATTRIBUTES&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF &quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;visibility&quot;&quot;:&quot;&quot;hiddenEnabled&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_NATIVELY_HANDLED_WEBSERVICES&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF &quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;visibility&quot;&quot;:&quot;&quot;hiddenEnabled&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOTIFF_USE_APPROXIMATE_WORLDFILES&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOTIFF Use Approximate World File (.tfwx):&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;no&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_PROMPT" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="FTTR_SEPARATOR" PARM_VALUE="SPACE"/>
+#!     <XFORM_PARM PARM_NAME="GENERIC_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOMETRY_TYPES" PARM_VALUE="GEOTIFF,&quot;&quot;&quot;,fme_raster&quot;&quot;&quot;"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_APPLY_GCPS" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_COORDINATE_SYSTEM" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_EXPOSE_ATTRS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_FEATURE_TYPE_NAME" PARM_VALUE="FORMAT_NAME"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_GEOTIFF_EXPOSE_FORMAT_ATTRS" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_GEOTIFF_RDR_ADV_PARM_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_IGNORE_RASTER_TYPE_KEY" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_LENIENT_READ" PARM_VALUE="Yes"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_NATIVELY_HANDLED_WEBSERVICES" PARM_VALUE="s3connector,azurestorage,google-cloud-storage"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_PREFER_FILE_CS_UNITS" PARM_VALUE="Yes"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_PYRAMID_LEVEL" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_READER_META_ATTRIBUTES" PARM_VALUE="fme_dataset fme_basename"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_READ_OFFSETS_IN_CS_UNITS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_SCALE_COLOR_TO_STANDARD_BIT_DEPTH" PARM_VALUE="YES"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_SPATIAL_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_USE_APPROXIMATE_WORLDFILES" PARM_VALUE="no"/>
+#!     <XFORM_PARM PARM_NAME="GEOTIFF_USE_SEARCH_ENVELOPE" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="INITIATOR_FIRST_OUTPUT" PARM_VALUE="default"/>
+#!     <XFORM_PARM PARM_NAME="INPUT_PORT_INITIATOR_CONNECTED" PARM_VALUE="*"/>
+#!     <XFORM_PARM PARM_NAME="INTERACT" PARM_VALUE="NONE"/>
+#!     <XFORM_PARM PARM_NAME="MAX_FEATURES" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="MERGE_HANDLING_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="ORDER_RESULTS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="OUTPUTPORTS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_ADD_SCHEMA_ATTRIBUTES" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_FEATURES" PARM_VALUE="BASED_ON_CONNECTIONS"/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_FEATURES_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_PORTS_MODE" PARM_VALUE="PORTS_FROM_FTTR"/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_USE_SCHEMA_CACHE" PARM_VALUE="YES"/>
+#!     <XFORM_PARM PARM_NAME="PORTS_FROM_FTTR" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="READER_BEHAVIOR" PARM_VALUE="Constraint Parameters"/>
+#!     <XFORM_PARM PARM_NAME="READER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SELECTED_PORTS" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="SINGLE_PORT" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SUPPORTED_SPATIAL_INTERACTIONS" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="USER_QUERY" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="WHERE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="FeatureReader"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_ACCUM_MODE" PARM_IS_LOOKUP="true" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_CONFLICT_RES" PARM_IS_LOOKUP="true" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="COMBINE_GEOM" PARM_IS_LOOKUP="true" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_FEATURES_DISPLAY" PARM_IS_LOOKUP="true" PARM_VALUE="Schema and Data Features"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="3"
+#!   TYPE="FeatureWriter"
+#!   VERSION="0"
+#!   POSITION="8800 1500"
+#!   BOUNDING_RECT="8800 1500 440 65"
+#!   ORDER="500000000000002"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="SUMMARY"/>
+#!     <FEAT_COLLAPSED COLLAPSED="0"/>
+#!     <XFORM_ATTR ATTR_NAME="_feature_types{}.count" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_feature_types{}.name" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_dataset" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_total_features_written" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="CONFIG_PARAMETERS" PARM_VALUE="ESCAPE_COMMAS_IN_FTP_FORMAT_PARAMETERS,no"/>
+#!     <XFORM_PARM PARM_NAME="COORDSYS" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="DATASET" PARM_VALUE="&lt;solidus&gt;data&lt;solidus&gt;nisar&lt;solidus&gt;out&lt;solidus&gt;$(MISSION)"/>
+#!     <XFORM_PARM PARM_NAME="DATASET_ATTR" PARM_VALUE="_dataset"/>
+#!     <XFORM_PARM PARM_NAME="DYNGROUP_0" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="FEATURE_TYPES_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="FEATURE_TYPE_LIST_ATTR" PARM_VALUE="_feature_types"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT" PARM_VALUE="PNGRASTER"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_DIRECTIVES" PARM_VALUE="RUNTIME_MACROS,FORMAT_ATTRIBUTES_OVERRIDE_FEATURE_TYPE_PARAMETERS&lt;comma&gt;No&lt;comma&gt;COORDINATE_SYSTEM_GRANULARITY&lt;comma&gt;FEATURE&lt;comma&gt;SPATIAL_GROUP&lt;comma&gt;&lt;comma&gt;COORDINATE_SYSTEM&lt;comma&gt;,METAFILE,PNGRASTER"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_PARAMS" PARM_VALUE="&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;PNGRASTER_FORMAT_ATTRIBUTES_OVERRIDE_FEATURE_TYPE_PARAMETERS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;PNGRASTER &quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;visibility&quot;&quot;:&quot;&quot;hiddenEnabled&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;PNGRASTER_COORDINATE_SYSTEM&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;PNGRASTER Coordinate System:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;coordinateSystems&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;PNGRASTER_SPATIAL_GROUP&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;PNGRASTER Spatial&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;style&quot;&quot;:&quot;&quot;collapsible&quot;&quot;,&quot;&quot;collapse&quot;&quot;:false,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;COORDINATE_SYSTEM&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Coordinate System:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;coordinateSystems&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}]}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;PNGRASTER_COORDINATE_SYSTEM_GRANULARITY&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;PNGRASTER &quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;visibility&quot;&quot;:&quot;&quot;hiddenEnabled&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}&quot;"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_PROMPT" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY_MODE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_PROCESSING_GROUP" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="MORE_SUMMARY_ATTRS" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="NO_OUTPUT_PORTS" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="OUTPUTPORTS_GROUP" PARM_VALUE="FME_DISCLOSURE_CLOSED"/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_PORTS" PARM_VALUE="&quot;&quot;"/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_PORTS_MODE" PARM_VALUE="NO_OUTPUT_PORTS"/>
+#!     <XFORM_PARM PARM_NAME="PER_EACH_INPUT" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="PNGRASTER_COORDINATE_SYSTEM" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="PNGRASTER_COORDINATE_SYSTEM_GRANULARITY" PARM_VALUE="FEATURE"/>
+#!     <XFORM_PARM PARM_NAME="PNGRASTER_FORMAT_ATTRIBUTES_OVERRIDE_FEATURE_TYPE_PARAMETERS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="PNGRASTER_SPATIAL_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SELECTED_PORTS" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="SUMMARY_ATTRS_GROUP" PARM_VALUE="FME_DISCLOSURE_CLOSED"/>
+#!     <XFORM_PARM PARM_NAME="TOTAL_FEATURES_WRITTEN_ATTR" PARM_VALUE="_total_features_written"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="WRITER_DIRECTIVES" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="WRITER_FEATURE_TYPE_PARAMS" PARM_VALUE="img&lt;at&gt;Value&lt;openparen&gt;_copynum&lt;closeparen&gt;:Raster1,ftp_feature_type_name,img&lt;at&gt;Value&lt;openparen&gt;_copynum&lt;closeparen&gt;,ftp_writer,PNGRASTER,ftp_dynamic_schema,no,ftp_dynamic_feature_type_name_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_geometry_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_schema_def_name_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_schema_sources,&lt;lt&gt;lt&lt;gt&gt;Unused&lt;lt&gt;gt&lt;gt&gt;,ftp_attribute_source,0,ftp_format_parameters,pngraster_layer_group&lt;comma&gt;&lt;comma&gt;pngraster_world_file_generation&lt;comma&gt;no&lt;comma&gt;pngraster_tab_file_generation&lt;comma&gt;no&lt;comma&gt;pngraster_optimize&lt;comma&gt;No_optimization"/>
+#!     <XFORM_PARM PARM_NAME="WRITER_METAFILE" PARM_VALUE="ATTRIBUTE_CASE,ANY_FIRST_NONNUMERIC,ATTRIBUTE_INVALID_CHARS,&lt;quote&gt;&lt;space&gt;&lt;openparen&gt;&lt;closeparen&gt;,ATTRIBUTE_LENGTH,64,ATTR_TYPE_MAP,char&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;fme_varchar&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;char&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;fme_varbinary&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;char&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;fme_char&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;char&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;fme_binary&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;char&lt;openparen&gt;254&lt;closeparen&gt;&lt;comma&gt;fme_buffer&lt;comma&gt;char&lt;openparen&gt;254&lt;closeparen&gt;&lt;comma&gt;fme_binarybuffer&lt;comma&gt;char&lt;openparen&gt;254&lt;closeparen&gt;&lt;comma&gt;fme_xml&lt;comma&gt;char&lt;openparen&gt;254&lt;closeparen&gt;&lt;comma&gt;fme_json&lt;comma&gt;datetime&lt;comma&gt;fme_datetime&lt;comma&gt;time&lt;comma&gt;fme_time&lt;comma&gt;date&lt;comma&gt;fme_date&lt;comma&gt;&lt;quote&gt;decimal&lt;openparen&gt;width&lt;comma&gt;decimal&lt;closeparen&gt;&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;fme_decimal&lt;openparen&gt;width&lt;comma&gt;decimal&lt;closeparen&gt;&lt;quote&gt;&lt;comma&gt;float&lt;comma&gt;fme_real64&lt;comma&gt;float&lt;comma&gt;fme_real32&lt;comma&gt;integer&lt;comma&gt;fme_int32&lt;comma&gt;largeint&lt;comma&gt;fme_int64&lt;comma&gt;&lt;quote&gt;decimal&lt;openparen&gt;20&lt;comma&gt;0&lt;closeparen&gt;&lt;quote&gt;&lt;comma&gt;fme_uint64&lt;comma&gt;largeint&lt;comma&gt;fme_uint32&lt;comma&gt;logical&lt;comma&gt;fme_boolean&lt;comma&gt;smallint&lt;comma&gt;fme_int16&lt;comma&gt;integer&lt;comma&gt;fme_uint16&lt;comma&gt;smallint&lt;comma&gt;fme_int8&lt;comma&gt;smallint&lt;comma&gt;fme_uint8,DEST_ILLEGAL_ATTR_LIST,,FEATURE_TYPE_CASE,ANY,FEATURE_TYPE_INVALID_CHARS,&lt;quote&gt;:?*&lt;lt&gt;&lt;gt&gt;&lt;pipe&gt;,FEATURE_TYPE_LENGTH,0,FEATURE_TYPE_LENGTH_INCLUDES_PREFIX,false,FEATURE_TYPE_RESERVED_WORDS,,FORMAT_METAFILE,$(FME_HOME_ENCODED)metafile&lt;solidus&gt;pngraster.fmf,FORMAT_NAME,PNGRASTER,GEOM_MAP,pngraster_raster&lt;comma&gt;fme_raster&lt;comma&gt;pngraster_none&lt;comma&gt;fme_no_geom&lt;comma&gt;fme_no_map&lt;comma&gt;fme_point&lt;comma&gt;fme_no_map&lt;comma&gt;fme_text&lt;comma&gt;fme_no_map&lt;comma&gt;fme_line&lt;comma&gt;fme_no_map&lt;comma&gt;fme_arc&lt;comma&gt;fme_no_map&lt;comma&gt;fme_polygon&lt;comma&gt;fme_no_map&lt;comma&gt;fme_ellipse&lt;comma&gt;fme_no_map&lt;comma&gt;fme_rectangle&lt;comma&gt;fme_no_map&lt;comma&gt;fme_rounded_rectangle&lt;comma&gt;fme_no_map&lt;comma&gt;fme_no_geom&lt;comma&gt;fme_no_map&lt;comma&gt;fme_surface&lt;comma&gt;fme_no_map&lt;comma&gt;fme_solid&lt;comma&gt;fme_no_map&lt;comma&gt;fme_point_cloud&lt;comma&gt;pngraster_none&lt;comma&gt;fme_collection,READER_ATTR_INDEX_TYPES,,READER_FORMAT_TYPE,,READER_USES_DEF,yes,SOURCE,no,SUPPORTS_FEAT_TYPE_FANOUT,yes,SUPPORTS_MULTI_GEOM,yes,WORKBENCH_CANNED_SCHEMA,,WRITER,PNGRASTER,WRITER_ATTR_INDEX_TYPES,,WRITER_DEFLINE_PARMS,&lt;quote&gt;GUI&lt;space&gt;NAMEDGROUP&lt;space&gt;pngraster_layer_group&lt;space&gt;pngraster_world_file_generation%pngraster_tab_file_generation%pngraster_optimize&lt;space&gt;&lt;space&gt;Raster&lt;quote&gt;&lt;comma&gt;&lt;comma&gt;&lt;quote&gt;GUI&lt;space&gt;CHOICE_OR_ATTR&lt;space&gt;pngraster_world_file_generation&lt;space&gt;yes%no&lt;space&gt;World&lt;space&gt;File&lt;space&gt;Generation&lt;quote&gt;&lt;comma&gt;yes&lt;comma&gt;&lt;quote&gt;GUI&lt;space&gt;CHOICE_OR_ATTR&lt;space&gt;pngraster_tab_file_generation&lt;space&gt;yes%no&lt;space&gt;TAB&lt;space&gt;File&lt;space&gt;Generation&lt;quote&gt;&lt;comma&gt;no&lt;comma&gt;&lt;quote&gt;GUI&lt;space&gt;CHOICE_OR_ATTR&lt;space&gt;pngraster_optimize&lt;space&gt;No_optimization%Level_1_&lt;openparen&gt;recommended&lt;closeparen&gt;%Level_2%Level_3%Level_4%Level_5%Level_6%Level_7_&lt;openparen&gt;slow&lt;closeparen&gt;&lt;space&gt;PNG&lt;space&gt;Optimization&lt;space&gt;Level&lt;space&gt;&lt;openparen&gt;reduces&lt;space&gt;file&lt;space&gt;size&lt;closeparen&gt;&lt;quote&gt;&lt;comma&gt;No_optimization,WRITER_DEF_LINE_TEMPLATE,&lt;opencurly&gt;FME_GEN_GROUP_NAME&lt;closecurly&gt;&lt;comma&gt;pngraster_world_file_generation&lt;comma&gt;&lt;dollar&gt;&lt;openbracket&gt;_PNGRASTER_WRITER_WORLD_FILE_GENERATION&lt;closebracket&gt;&lt;comma&gt;pngraster_tab_file_generation&lt;comma&gt;&lt;dollar&gt;&lt;openbracket&gt;_PNGRASTER_WRITER_TAB_FILE_GENERATION&lt;closebracket&gt;&lt;comma&gt;pngraster_optimize&lt;comma&gt;&lt;dollar&gt;&lt;openbracket&gt;_PNGRASTER_WRITER_OPTIMIZE&lt;closebracket&gt;,WRITER_FORMAT_PARAMETER,AUTO_FANOUT_ATTRIBUTE&lt;comma&gt;fme_basename&lt;comma&gt;READER_AUTO_EXPOSE&lt;comma&gt;&lt;quote&gt;fme_basename&lt;space&gt;char&lt;openparen&gt;50&lt;closeparen&gt;&lt;quote&gt;&lt;comma&gt;MIME_TYPE&lt;comma&gt;image&lt;solidus&gt;PNG&lt;comma&gt;ADVANCED_PARMS&lt;comma&gt;PNGRASTER_IN_SCALE_COLOR_TO_STANDARD_BIT_DEPTH&lt;comma&gt;FEATURE_TYPE_NAME&lt;comma&gt;&lt;quote&gt;Raster&lt;space&gt;File&lt;quote&gt;&lt;comma&gt;FEATURE_TYPE_DEFAULT_NAME&lt;comma&gt;Raster1&lt;comma&gt;READER_DATASET_HINT&lt;comma&gt;&lt;quote&gt;Select&lt;space&gt;the&lt;space&gt;PNG&lt;space&gt;raster&lt;space&gt;file&lt;openparen&gt;s&lt;closeparen&gt;&lt;quote&gt;&lt;comma&gt;WRITER_DATASET_HINT&lt;comma&gt;&lt;quote&gt;Specify&lt;space&gt;a&lt;space&gt;folder&lt;space&gt;for&lt;space&gt;the&lt;space&gt;PNG&lt;space&gt;raster&lt;space&gt;file&lt;quote&gt;,WRITER_FORMAT_TYPE,,WRITER_HAS_DEFLINE_ATTRS,yes,WRITER_USES_DEF,yes"/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="FeatureWriter"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="4"
+#!   TYPE="FeatureWriter"
+#!   VERSION="0"
+#!   POSITION="8800 0"
+#!   BOUNDING_RECT="8800 0 440 65"
+#!   ORDER="500000000000004"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="SUMMARY"/>
+#!     <FEAT_COLLAPSED COLLAPSED="0"/>
+#!     <XFORM_ATTR ATTR_NAME="_feature_types{}.count" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_feature_types{}.name" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_dataset" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_total_features_written" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="CONFIG_PARAMETERS" PARM_VALUE="ESCAPE_COMMAS_IN_FTP_FORMAT_PARAMETERS,no"/>
+#!     <XFORM_PARM PARM_NAME="COORDSYS" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="DATASET" PARM_VALUE="&lt;solidus&gt;data&lt;solidus&gt;nisar&lt;solidus&gt;out&lt;solidus&gt;$(MISSION)&lt;solidus&gt;grid.geojson"/>
+#!     <XFORM_PARM PARM_NAME="DATASET_ATTR" PARM_VALUE="_dataset"/>
+#!     <XFORM_PARM PARM_NAME="DYNGROUP_0" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="FEATURE_TYPES_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="FEATURE_TYPE_LIST_ATTR" PARM_VALUE="_feature_types"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT" PARM_VALUE="GEOJSON"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_DIRECTIVES" PARM_VALUE="RUNTIME_MACROS,WRITER_CHARSET&lt;comma&gt;UTF-8&lt;comma&gt;WRITE_BOM&lt;comma&gt;No&lt;comma&gt;FILE_STRUCTURE&lt;comma&gt;SINGLE_FEATURE_COLLECTION&lt;comma&gt;WRITE_FEATURE_IDS&lt;comma&gt;Yes&lt;comma&gt;WRITE_NESTED&lt;comma&gt;YES&lt;comma&gt;PRETTY_PRINT&lt;comma&gt;YES&lt;comma&gt;INDENT_SIZE&lt;comma&gt;0&lt;comma&gt;SPATIAL_GROUP&lt;comma&gt;&lt;comma&gt;COORDINATE_SYSTEM&lt;comma&gt;&lt;comma&gt;MAX_COORDINATE_PRECISION&lt;comma&gt;10&lt;comma&gt;COUNTER_CLOCKWISE_AREAS&lt;comma&gt;Yes&lt;comma&gt;WGS84_REPROJECTION&lt;comma&gt;Yes&lt;comma&gt;DESTINATION_DATASETTYPE_VALIDATION&lt;comma&gt;Yes,METAFILE,GEOJSON"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_PARAMS" PARM_VALUE="&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_FILE_STRUCTURE&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON File Structure:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;SINGLE_FEATURE_COLLECTION&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Single FeatureCollection object containing all features&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;SINGLE_FEATURE_COLLECTION&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;Array of FeatureCollection objects - one per feature type&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;ARRAY_OF_FEATURE_COLLECTIONS&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;Object with feature type names as keys, FeatureCollection objects as values&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;OBJECT_WITH_FEATURE_TYPE_KEYS&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_DESTINATION_DATASETTYPE_VALIDATION&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON &quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;visibility&quot;&quot;:&quot;&quot;hiddenEnabled&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_WRITE_FEATURE_IDS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Write Feature ids from &apos;id&apos; Attribute:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_WRITER_CHARSET&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Output Character Set:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;UTF-8&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;UTF-8&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;UTF-8&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;UTF-16&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;UTF-16&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;UTF-16BE&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;UTF-16BE&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;UTF-16LE&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;UTF-16LE&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;UTF-32&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;UTF-32&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;UTF-32BE&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;UTF-32BE&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;UTF-32LE&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;UTF-32LE&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_COORDINATE_SYSTEM&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Coordinate System:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;coordinateSystems&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_MAX_COORDINATE_PRECISION&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Coordinate Precision (Maximum Number of Fractional Digits):&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;10&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;,&quot;&quot;minimum&quot;&quot;:1,&quot;&quot;maximum&quot;&quot;:15,&quot;&quot;multipleOf&quot;&quot;:1,&quot;&quot;showSlider&quot;&quot;:true}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_SPATIAL_GROUP&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Spatial&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;style&quot;&quot;:&quot;&quot;collapsible&quot;&quot;,&quot;&quot;collapse&quot;&quot;:false,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;COORDINATE_SYSTEM&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Coordinate System:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;coordinateSystems&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;text&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;MAX_COORDINATE_PRECISION&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Coordinate Precision (Maximum Number of Fractional Digits):&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;10&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;number&quot;&quot;,&quot;&quot;minimum&quot;&quot;:1,&quot;&quot;maximum&quot;&quot;:15,&quot;&quot;multipleOf&quot;&quot;:1,&quot;&quot;showSlider&quot;&quot;:true},{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOMETRY_GROUP&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Geometry&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;type&quot;&quot;:&quot;&quot;group&quot;&quot;,&quot;&quot;parameters&quot;&quot;:[{&quot;&quot;name&quot;&quot;:&quot;&quot;COUNTER_CLOCKWISE_AREAS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Convert Areas to Counterclockwise:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;},{&quot;&quot;name&quot;&quot;:&quot;&quot;WGS84_REPROJECTION&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;Reproject to WGS84:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}]}]}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_WGS84_REPROJECTION&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Reproject to WGS84:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_WRITE_BOM&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Byte Order Marker:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_COUNTER_CLOCKWISE_AREAS&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Convert Areas to Counterclockwise:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;Yes&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;No&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_WRITE_NESTED&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Nested Output:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Yes&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;YES&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;No&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;NO&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_INDENT_SIZE&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Indent Size:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Tabs&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Tabs&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;0&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;1 space&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;1&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;2 spaces&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;2&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;3 spaces&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;3&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;4 spaces&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;4&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;5 spaces&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;5&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;6 spaces&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;6&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;7 spaces&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;7&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;8 spaces&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;8&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;,&quot;{&quot;&quot;name&quot;&quot;:&quot;&quot;GEOJSON_PRETTY_PRINT&quot;&quot;,&quot;&quot;prompt&quot;&quot;:&quot;&quot;GEOJSON Formatting Type:&quot;&quot;,&quot;&quot;valueType&quot;&quot;:&quot;&quot;string&quot;&quot;,&quot;&quot;required&quot;&quot;:false,&quot;&quot;defaultValue&quot;&quot;:&quot;&quot;Pretty Print&quot;&quot;,&quot;&quot;choiceSettings&quot;&quot;:{&quot;&quot;sort&quot;&quot;:&quot;&quot;noSort&quot;&quot;,&quot;&quot;choices&quot;&quot;:[{&quot;&quot;display&quot;&quot;:&quot;&quot;Pretty Print&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;YES&quot;&quot;},{&quot;&quot;display&quot;&quot;:&quot;&quot;Linear&quot;&quot;,&quot;&quot;value&quot;&quot;:&quot;&quot;NO&quot;&quot;}],&quot;&quot;choiceSet&quot;&quot;:&quot;&quot;userDefined&quot;&quot;},&quot;&quot;type&quot;&quot;:&quot;&quot;dropdown&quot;&quot;}&quot;"/>
+#!     <XFORM_PARM PARM_NAME="FORMAT_PROMPT" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_COORDINATE_SYSTEM" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_COUNTER_CLOCKWISE_AREAS" PARM_VALUE="Yes"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_DESTINATION_DATASETTYPE_VALIDATION" PARM_VALUE="Yes"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_FILE_STRUCTURE" PARM_VALUE="SINGLE_FEATURE_COLLECTION"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_INDENT_SIZE" PARM_VALUE="0"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_MAX_COORDINATE_PRECISION" PARM_VALUE="10"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_PRETTY_PRINT" PARM_VALUE="YES"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_SPATIAL_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_WGS84_REPROJECTION" PARM_VALUE="Yes"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_WRITER_CHARSET" PARM_VALUE="UTF-8"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_WRITE_BOM" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_WRITE_FEATURE_IDS" PARM_VALUE="Yes"/>
+#!     <XFORM_PARM PARM_NAME="GEOJSON_WRITE_NESTED" PARM_VALUE="YES"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY_MODE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_PROCESSING_GROUP" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="MORE_SUMMARY_ATTRS" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="NO_OUTPUT_PORTS" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="OUTPUTPORTS_GROUP" PARM_VALUE="FME_DISCLOSURE_CLOSED"/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_PORTS" PARM_VALUE="&quot;&quot;"/>
+#!     <XFORM_PARM PARM_NAME="OUTPUT_PORTS_MODE" PARM_VALUE="NO_OUTPUT_PORTS"/>
+#!     <XFORM_PARM PARM_NAME="PER_EACH_INPUT" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SELECTED_PORTS" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="SUMMARY_ATTRS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="TOTAL_FEATURES_WRITTEN_ATTR" PARM_VALUE="_total_features_written"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="WRITER_DIRECTIVES" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="WRITER_FEATURE_TYPE_PARAMS" PARM_VALUE="grid:NewFeatureType,ftp_feature_type_name,grid,ftp_writer,GEOJSON,ftp_dynamic_schema,no,ftp_dynamic_feature_type_name_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_geometry_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_schema_def_name_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_schema_sources,&lt;lt&gt;lt&lt;gt&gt;Unused&lt;lt&gt;gt&lt;gt&gt;,ftp_attribute_source,0,ftp_uses_spatial_definition,yes,ftp_spatial_definition,geom_name&lt;comma&gt;&lt;comma&gt;geom_string&lt;comma&gt;&lt;comma&gt;spatial_type&lt;comma&gt;"/>
+#!     <XFORM_PARM PARM_NAME="WRITER_METAFILE" PARM_VALUE="ATTRIBUTE_CASE,ANY,ATTRIBUTE_INVALID_CHARS,,ATTRIBUTE_LENGTH,600,ATTR_TYPE_MAP,string&lt;comma&gt;fme_buffer&lt;comma&gt;string&lt;comma&gt;fme_binarybuffer&lt;comma&gt;string&lt;comma&gt;fme_xml&lt;comma&gt;string&lt;comma&gt;fme_varchar&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;string&lt;comma&gt;fme_varbinary&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;boolean&lt;comma&gt;fme_boolean&lt;comma&gt;string&lt;comma&gt;fme_char&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;string&lt;comma&gt;fme_binary&lt;openparen&gt;width&lt;closeparen&gt;&lt;comma&gt;string&lt;comma&gt;fme_datetime&lt;comma&gt;string&lt;comma&gt;fme_time&lt;comma&gt;string&lt;comma&gt;fme_date&lt;comma&gt;float&lt;comma&gt;fme_real64&lt;comma&gt;float&lt;comma&gt;fme_real32&lt;comma&gt;int&lt;comma&gt;fme_int64&lt;comma&gt;string&lt;comma&gt;fme_uint64&lt;comma&gt;int&lt;comma&gt;fme_int32&lt;comma&gt;int&lt;comma&gt;fme_uint32&lt;comma&gt;int&lt;comma&gt;fme_int16&lt;comma&gt;int&lt;comma&gt;fme_uint16&lt;comma&gt;int&lt;comma&gt;fme_int8&lt;comma&gt;int&lt;comma&gt;fme_uint8&lt;comma&gt;string&lt;comma&gt;&lt;quote&gt;fme_decimal&lt;openparen&gt;width&lt;comma&gt;decimal&lt;closeparen&gt;&lt;quote&gt;&lt;comma&gt;json&lt;comma&gt;fme_json,DEST_ILLEGAL_ATTR_LIST,,FEATURE_TYPE_CASE,ANY,FEATURE_TYPE_INVALID_CHARS,,FEATURE_TYPE_LENGTH,0,FEATURE_TYPE_LENGTH_INCLUDES_PREFIX,false,FEATURE_TYPE_RESERVED_WORDS,,FORMAT_METAFILE,$(FME_HOME_ENCODED)metafile&lt;solidus&gt;geojson.fmf,FORMAT_NAME,GEOJSON,GEOM_MAP,json_point&lt;comma&gt;fme_point&lt;comma&gt;json_line&lt;comma&gt;fme_line&lt;comma&gt;json_polygon&lt;comma&gt;fme_polygon&lt;comma&gt;json_text&lt;comma&gt;fme_text&lt;comma&gt;json_ellipse&lt;comma&gt;fme_ellipse&lt;comma&gt;json_arc&lt;comma&gt;fme_arc&lt;comma&gt;json_rectangle&lt;comma&gt;fme_rectangle&lt;comma&gt;json_rounded_rectangle&lt;comma&gt;fme_rounded_rectangle&lt;comma&gt;json_raster&lt;comma&gt;fme_raster&lt;comma&gt;json_no_geom&lt;comma&gt;fme_no_geom&lt;comma&gt;json_collection&lt;comma&gt;fme_collection&lt;comma&gt;json_line&lt;comma&gt;fme_surface&lt;comma&gt;json_line&lt;comma&gt;fme_solid&lt;comma&gt;json_polygon&lt;comma&gt;fme_point_cloud,READER_ATTR_INDEX_TYPES,,READER_FORMAT_TYPE,,READER_USES_DEF,yes,SOURCE,no,SUPPORTS_FEAT_TYPE_FANOUT,yes,SUPPORTS_MULTI_GEOM,yes,WORKBENCH_CANNED_SCHEMA,,WRITER,GEOJSON,WRITER_ATTR_INDEX_TYPES,,WRITER_DEFLINE_PARMS,,WRITER_DEF_LINE_TEMPLATE,&lt;opencurly&gt;FME_GEN_GROUP_NAME&lt;closecurly&gt;,WRITER_FORMAT_PARAMETER,MIME_TYPE&lt;comma&gt;&lt;quote&gt;application&lt;solidus&gt;geo+json&lt;space&gt;ADD_DISPOSITION&lt;quote&gt;&lt;comma&gt;WRITER_SPATIAL_DEFINITION_TABLE&lt;comma&gt;YES&lt;comma&gt;READER_DATASET_HINT&lt;comma&gt;&lt;quote&gt;Select&lt;space&gt;the&lt;space&gt;GeoJSON&lt;space&gt;file&lt;openparen&gt;s&lt;closeparen&gt;&lt;space&gt;or&lt;space&gt;type&lt;space&gt;the&lt;space&gt;GeoJSON&lt;space&gt;URL&lt;quote&gt;&lt;comma&gt;WRITER_DATASET_HINT&lt;comma&gt;&lt;quote&gt;Specify&lt;space&gt;a&lt;space&gt;name&lt;space&gt;for&lt;space&gt;the&lt;space&gt;GeoJSON&lt;space&gt;file&lt;quote&gt;,WRITER_FORMAT_TYPE,,WRITER_HAS_DEFLINE_ATTRS,yes,WRITER_USES_DEF,yes"/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="FeatureWriter_2"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="5"
+#!   TYPE="RasterExpressionEvaluator"
+#!   VERSION="3"
+#!   POSITION="800 0"
+#!   BOUNDING_RECT="800 0 0 0"
+#!   ORDER="500000000000010"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="RESULT"/>
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTES_GROUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_ACCUM_MODE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_CONFLICT_RES_LOOKUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="EXPRESSION_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="EXPRESSION_LIST" PARM_VALUE="REAL32 @if(A[0]&gt;0,10*@log10(A[0]),-99) REAL32 @if(A[1]&gt;0,10*@log10(A[1]),-99) REAL32 @if(A[2]&gt;0,10*@log10(A[2]),-99) REAL32 @if(A[3]&gt;0,10*@log10(A[3]),-99)"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY_MODE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_PROCESSING_GROUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="MODE" PARM_VALUE="One Raster"/>
+#!     <XFORM_PARM PARM_NAME="MODE_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="ToDecibels"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_CONFLICT_RES" PARM_IS_LOOKUP="true" PARM_VALUE="&lt;Unused&gt;"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="6"
+#!   TYPE="RasterConvolver"
+#!   VERSION="2"
+#!   POSITION="1600 0"
+#!   BOUNDING_RECT="1600 0 0 0"
+#!   ORDER="500000000000011"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="OUTPUT"/>
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="ADVANCED_GROUP" PARM_VALUE="FME_DISCLOSURE_CLOSED"/>
+#!     <XFORM_PARM PARM_NAME="CENTER_PIXEL_NODATA_HANDLING" PARM_VALUE="OutputNodata"/>
+#!     <XFORM_PARM PARM_NAME="CONVOLUTION_FILTER" PARM_VALUE="UserDefined"/>
+#!     <XFORM_PARM PARM_NAME="CONVOLUTION_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="EDGE_HANDLING" PARM_VALUE="ExtendBorderValues"/>
+#!     <XFORM_PARM PARM_NAME="KERNEL_DIVISOR_LOOKUP" PARM_VALUE="1"/>
+#!     <XFORM_PARM PARM_NAME="KERNEL_GROUP" PARM_VALUE="FME_DISCLOSURE_CLOSED"/>
+#!     <XFORM_PARM PARM_NAME="KERNEL_OPERATION" PARM_VALUE="Median"/>
+#!     <XFORM_PARM PARM_NAME="KERNEL_WEIGHTS" PARM_VALUE="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"/>
+#!     <XFORM_PARM PARM_NAME="NEIGHBOR_PIXEL_NODATA_HANDLING" PARM_VALUE="UseCenterPixel"/>
+#!     <XFORM_PARM PARM_NAME="NODATA_EDGE_HANDLING_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="PRESERVE_BAND_INTERPRETATION" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="Despeckle5x5Median"/>
+#!     <XFORM_PARM PARM_NAME="ZERO_WEIGHT_HANDLING" PARM_VALUE="IgnoreZeroWeightValues"/>
+#!     <XFORM_PARM PARM_NAME="KERNEL_DIVISOR" PARM_IS_LOOKUP="true" PARM_VALUE="1"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="7"
+#!   TYPE="RasterResampler"
+#!   VERSION="3"
+#!   POSITION="2400 0"
+#!   BOUNDING_RECT="2400 0 0 0"
+#!   ORDER="500000000000012"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="RESAMPLED"/>
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="COLUMNS" PARM_VALUE="1024"/>
+#!     <XFORM_PARM PARM_NAME="INTERPOLATION_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="INTERPOLATION_TYPE" PARM_VALUE="Bilinear"/>
+#!     <XFORM_PARM PARM_NAME="PARAMETERS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="PERCENTAGE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ROWCOL_OR_CELLSIZE" PARM_VALUE="RowsColumns"/>
+#!     <XFORM_PARM PARM_NAME="ROWS" PARM_VALUE="1024"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="Resize1024"/>
+#!     <XFORM_PARM PARM_NAME="X_CELL_SIZE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="Y_CELL_SIZE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="INTERPOLATION_TYPE_NAME" PARM_IS_LOOKUP="true" PARM_VALUE="Bilinear"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="8"
+#!   TYPE="RasterExpressionEvaluator"
+#!   VERSION="3"
+#!   POSITION="3200 0"
+#!   BOUNDING_RECT="3200 0 0 0"
+#!   ORDER="500000000000013"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="RESULT"/>
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTES_GROUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_ACCUM_MODE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_CONFLICT_RES_LOOKUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="EXPRESSION_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="EXPRESSION_LIST" PARM_VALUE="REAL32 A[0] REAL32 A[1] REAL32 A[2] REAL32 A[3] UINT8 @if((A[0]&gt;-90)&amp;&amp;(A[2]&gt;-90)&amp;&amp;($(SIGN)*@if($(CHANNEL)==0,A[2]-A[0],A[3]-A[1])&gt;$(THRESH_DB))&amp;&amp;(@if($(CHANNEL)==0,A[2],A[3])&lt;$(WATER_MAX)),1,0)"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY_MODE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_PROCESSING_GROUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="MODE" PARM_VALUE="One Raster"/>
+#!     <XFORM_PARM PARM_NAME="MODE_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="ChangeMap"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_CONFLICT_RES" PARM_IS_LOOKUP="true" PARM_VALUE="&lt;Unused&gt;"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="9"
+#!   TYPE="Reprojector"
+#!   VERSION="6"
+#!   POSITION="4000 0"
+#!   BOUNDING_RECT="4000 0 0 0"
+#!   ORDER="500000000000014"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="REPROJECTED"/>
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="DEST" PARM_VALUE="EPSG:3857"/>
+#!     <XFORM_PARM PARM_NAME="GENERAL_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOM_NAME_SELECTION" PARM_VALUE="FME_ALL_GEOMETRIES"/>
+#!     <XFORM_PARM PARM_NAME="INTERPOLATION_TYPE" PARM_VALUE="Bilinear"/>
+#!     <XFORM_PARM PARM_NAME="PARAMETERS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="RASTER_CELL_SIZE" PARM_VALUE="SquareCells"/>
+#!     <XFORM_PARM PARM_NAME="RASTER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="RASTER_TOLERANCE" PARM_VALUE="0.0"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="SOURCE" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="ToWebMercator"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="10"
+#!   TYPE="RasterExpressionEvaluator"
+#!   VERSION="3"
+#!   POSITION="4800 1500"
+#!   BOUNDING_RECT="4800 1500 0 0"
+#!   ORDER="500000000000015"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="RESULT"/>
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTES_GROUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_ACCUM_MODE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_CONFLICT_RES_LOOKUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="EXPRESSION_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="EXPRESSION_LIST" PARM_VALUE="RED8 @if((A[0]+25)*10.2&lt;0,0,@if((A[0]+25)*10.2&gt;255,255,(A[0]+25)*10.2)) GREEN8 @if((A[1]+32)*10.625&lt;0,0,@if((A[1]+32)*10.625&gt;255,255,(A[1]+32)*10.625)) BLUE8 @if((A[0]+25)*10.2&lt;0,0,@if((A[0]+25)*10.2&gt;255,255,(A[0]+25)*10.2)) ALPHA8 @if(A[0]&gt;-90,255,0) RED8 @if((A[2]+25)*10.2&lt;0,0,@if((A[2]+25)*10.2&gt;255,255,(A[2]+25)*10.2)) GREEN8 @if((A[3]+32)*10.625&lt;0,0,@if((A[3]+32)*10.625&gt;255,255,(A[3]+32)*10.625)) BLUE8 @if((A[2]+25)*10.2&lt;0,0,@if((A[2]+25)*10.2&gt;255,255,(A[2]+25)*10.2)) ALPHA8 @if(A[2]&gt;-90,255,0) RED8 255 GREEN8 40 BLUE8 40 ALPHA8 A[4]*170 RED8 @if((A[0]+35)*6.375&lt;0,0,@if((A[0]+35)*6.375&gt;255,255,(A[0]+35)*6.375)) GREEN8 @if((A[0]+35)*6.375&lt;0,0,@if((A[0]+35)*6.375&gt;255,255,(A[0]+35)*6.375)) BLUE8 @if((A[0]+35)*6.375&lt;0,0,@if((A[0]+35)*6.375&gt;255,255,(A[0]+35)*6.375)) ALPHA8 @if(A[0]&gt;-90,255,0) RED8 @if((A[1]+35)*6.375&lt;0,0,@if((A[1]+35)*6.375&gt;255,255,(A[1]+35)*6.375)) GREEN8 @if((A[1]+35)*6.375&lt;0,0,@if((A[1]+35)*6.375&gt;255,255,(A[1]+35)*6.375)) BLUE8 @if((A[1]+35)*6.375&lt;0,0,@if((A[1]+35)*6.375&gt;255,255,(A[1]+35)*6.375)) ALPHA8 @if(A[1]&gt;-90,255,0) RED8 @if((A[2]+35)*6.375&lt;0,0,@if((A[2]+35)*6.375&gt;255,255,(A[2]+35)*6.375)) GREEN8 @if((A[2]+35)*6.375&lt;0,0,@if((A[2]+35)*6.375&gt;255,255,(A[2]+35)*6.375)) BLUE8 @if((A[2]+35)*6.375&lt;0,0,@if((A[2]+35)*6.375&gt;255,255,(A[2]+35)*6.375)) ALPHA8 @if(A[2]&gt;-90,255,0) RED8 @if((A[3]+35)*6.375&lt;0,0,@if((A[3]+35)*6.375&gt;255,255,(A[3]+35)*6.375)) GREEN8 @if((A[3]+35)*6.375&lt;0,0,@if((A[3]+35)*6.375&gt;255,255,(A[3]+35)*6.375)) BLUE8 @if((A[3]+35)*6.375&lt;0,0,@if((A[3]+35)*6.375&gt;255,255,(A[3]+35)*6.375)) ALPHA8 @if(A[3]&gt;-90,255,0) RED8 @if((A[0]-A[1])*12.75&lt;0,0,@if((A[0]-A[1])*12.75&gt;255,255,(A[0]-A[1])*12.75)) GREEN8 @if((A[0]-A[1])*12.75&lt;0,0,@if((A[0]-A[1])*12.75&gt;255,255,(A[0]-A[1])*12.75)) BLUE8 @if((A[0]-A[1])*12.75&lt;0,0,@if((A[0]-A[1])*12.75&gt;255,255,(A[0]-A[1])*12.75)) ALPHA8 @if((A[0]&gt;-90)&amp;&amp;(A[1]&gt;-90),255,0) RED8 @if((A[2]-A[3])*12.75&lt;0,0,@if((A[2]-A[3])*12.75&gt;255,255,(A[2]-A[3])*12.75)) GREEN8 @if((A[2]-A[3])*12.75&lt;0,0,@if((A[2]-A[3])*12.75&gt;255,255,(A[2]-A[3])*12.75)) BLUE8 @if((A[2]-A[3])*12.75&lt;0,0,@if((A[2]-A[3])*12.75&gt;255,255,(A[2]-A[3])*12.75)) ALPHA8 @if((A[2]&gt;-90)&amp;&amp;(A[3]&gt;-90),255,0)"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_BY_MODE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="GROUP_PROCESSING_GROUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="MODE" PARM_VALUE="One Raster"/>
+#!     <XFORM_PARM PARM_NAME="MODE_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="PaintAll"/>
+#!     <XFORM_PARM PARM_NAME="ATTR_CONFLICT_RES" PARM_IS_LOOKUP="true" PARM_VALUE="&lt;Unused&gt;"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="11"
+#!   TYPE="Cloner"
+#!   VERSION="0"
+#!   POSITION="5600 1500"
+#!   BOUNDING_RECT="5600 1500 0 0"
+#!   ORDER="500000000000016"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="COPY"/>
+#!     <XFORM_ATTR ATTR_NAME="_copynum" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_PARM PARM_NAME="COPIES" PARM_VALUE="9"/>
+#!     <XFORM_PARM PARM_NAME="COPYATT" PARM_VALUE="_copynum"/>
+#!     <XFORM_PARM PARM_NAME="OAN_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="PARAMETERS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="NineImages"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="12"
+#!   TYPE="AttributeCreator"
+#!   VERSION="11"
+#!   POSITION="6400 1500"
+#!   BOUNDING_RECT="6400 1500 0 0"
+#!   ORDER="500000000000027"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="OUTPUT"/>
+#!     <XFORM_ATTR ATTR_NAME="_bands" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_copynum" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTE_GRP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTE_HANDLING" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="ATTR_TABLE" PARM_VALUE="&quot;&quot; _bands SET_TO @Evaluate&lt;openparen&gt;@Value&lt;openparen&gt;_copynum&lt;closeparen&gt;*4+0&lt;closeparen&gt;:ALL;@Evaluate&lt;openparen&gt;@Value&lt;openparen&gt;_copynum&lt;closeparen&gt;*4+1&lt;closeparen&gt;:ALL;@Evaluate&lt;openparen&gt;@Value&lt;openparen&gt;_copynum&lt;closeparen&gt;*4+2&lt;closeparen&gt;:ALL;@Evaluate&lt;openparen&gt;@Value&lt;openparen&gt;_copynum&lt;closeparen&gt;*4+3&lt;closeparen&gt;:ALL buffer"/>
+#!     <XFORM_PARM PARM_NAME="INPUT_PORT_CONNECTED" PARM_VALUE="CONNECTED"/>
+#!     <XFORM_PARM PARM_NAME="MULTI_FEATURE_MODE" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="NULL_ATTR_MODE" PARM_VALUE="NO_OP"/>
+#!     <XFORM_PARM PARM_NAME="NULL_ATTR_VALUE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="NUM_PRIOR_FEATURES" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="NUM_SUBSEQUENT_FEATURES" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="USER_MODIFIED_ATTRIBUTE_TYPES" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="BandsForThisCopy"/>
+#!     <XFORM_PARM PARM_NAME="NULL_ATTR_MODE_DISPLAY" PARM_IS_LOOKUP="true" PARM_VALUE="No Substitution"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="13"
+#!   TYPE="RasterSelector"
+#!   VERSION="1"
+#!   POSITION="7200 1500"
+#!   BOUNDING_RECT="7200 1500 0 0"
+#!   ORDER="500000000000028"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="OUTPUT"/>
+#!     <XFORM_ATTR ATTR_NAME="_bands" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_copynum" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="_bands" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_copynum" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTE" PARM_VALUE="_bands"/>
+#!     <XFORM_PARM PARM_NAME="BAND_LIST" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="PARAMETERS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SELECTION_MODE_LOOKUP" PARM_VALUE="ATTRIBUTE"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="KeepFourBands"/>
+#!     <XFORM_PARM PARM_NAME="SELECTION_MODE" PARM_IS_LOOKUP="true" PARM_VALUE="Attribute"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="14"
+#!   TYPE="RasterBandKeeper"
+#!   VERSION="1"
+#!   POSITION="8000 1500"
+#!   BOUNDING_RECT="8000 1500 0 0"
+#!   ORDER="500000000000029"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="OUTPUT"/>
+#!     <XFORM_ATTR ATTR_NAME="_bands" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_copynum" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="_bands" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_copynum" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="DropOtherBands"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="15"
+#!   TYPE="RasterTiler"
+#!   VERSION="2"
+#!   POSITION="4800 0"
+#!   BOUNDING_RECT="4800 0 0 0"
+#!   ORDER="500000000000017"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="TILES"/>
+#!     <XFORM_ATTR ATTR_NAME="_raster_index" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_column" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_row" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_columns" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_rows" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="DIMENSION_RASTER_CELLS_GROUP" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="FORCE_EQUAL_SIZED_TILES" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="NUM_HORIZONTAL_TILES" PARM_VALUE="12"/>
+#!     <XFORM_PARM PARM_NAME="NUM_HORIZONTAL_TILES_ATTRIBUTE" PARM_VALUE="_num_tile_columns"/>
+#!     <XFORM_PARM PARM_NAME="NUM_TILES_GROUP" PARM_VALUE="FME_DISCLOSURE_OPEN"/>
+#!     <XFORM_PARM PARM_NAME="NUM_TILE_COLUMNS" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="NUM_TILE_ROWS" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="NUM_VERTICAL_TILES" PARM_VALUE="12"/>
+#!     <XFORM_PARM PARM_NAME="NUM_VERTICAL_TILES_ATTRIBUTE" PARM_VALUE="_num_tile_rows"/>
+#!     <XFORM_PARM PARM_NAME="OAN_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="RASTER_INDEX_ATTRIBUTE" PARM_VALUE="_raster_index"/>
+#!     <XFORM_PARM PARM_NAME="SEED_COLUMN" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SEED_ROW" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TILESIZE_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="TILESIZE_OR_NUMTILES" PARM_VALUE="Number of Tiles"/>
+#!     <XFORM_PARM PARM_NAME="TILE_COLUMN_ATTRIBUTE" PARM_VALUE="_tile_column"/>
+#!     <XFORM_PARM PARM_NAME="TILE_ROW_ATTRIBUTE" PARM_VALUE="_tile_row"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="Grid12x12"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="16"
+#!   TYPE="RasterStatisticsCalculator"
+#!   VERSION="2"
+#!   POSITION="5600 0"
+#!   BOUNDING_RECT="5600 0 0 0"
+#!   ORDER="500000000000018"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="OUTPUT"/>
+#!     <XFORM_ATTR ATTR_NAME="_raster_index" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_column" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_row" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_columns" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_rows" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="band4.mean" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="_raster_index" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_column" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_row" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_columns" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_rows" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="OPTIONS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="RASTER_LEVEL" PARM_VALUE="BAND_ONLY"/>
+#!     <XFORM_PARM PARM_NAME="RASTER_STATS" PARM_VALUE="4 &quot;&quot; &quot;&quot; MEAN &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot;"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="STATS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="ChangedShare"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="17"
+#!   TYPE="BoundingBoxReplacer"
+#!   VERSION="6"
+#!   POSITION="6400 0"
+#!   BOUNDING_RECT="6400 0 0 0"
+#!   ORDER="500000000000019"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="BOX"/>
+#!     <XFORM_ATTR ATTR_NAME="_raster_index" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_column" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_row" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_columns" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_rows" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="band4.mean" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_PARM PARM_NAME="BBANGLE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="BBLONGER" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="BBSHORTER" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="BBTYPE" PARM_VALUE="BB"/>
+#!     <XFORM_PARM PARM_NAME="OAN_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="PARAMETERS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="TileToCell"/>
+#!     <XFORM_PARM PARM_NAME="BOXTYPE" PARM_IS_LOOKUP="true" PARM_VALUE="2D Bounding Box"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="18"
+#!   TYPE="AttributeCreator"
+#!   VERSION="11"
+#!   POSITION="7200 0"
+#!   BOUNDING_RECT="7200 0 0 0"
+#!   ORDER="500000000000020"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="OUTPUT"/>
+#!     <XFORM_ATTR ATTR_NAME="hit" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="share" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="row" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="col" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_raster_index" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_column" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_row" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_columns" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_rows" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="band4.mean" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTE_GRP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTE_HANDLING" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="ATTR_TABLE" PARM_VALUE="&quot;&quot; hit SET_TO @Evaluate&lt;openparen&gt;@Value&lt;openparen&gt;band4.mean&lt;closeparen&gt;&gt;=0.2&lt;closeparen&gt; uint8 &quot;&quot; share SET_TO @Value&lt;openparen&gt;band4.mean&lt;closeparen&gt; real64 &quot;&quot; row SET_TO @Value&lt;openparen&gt;_tile_row&lt;closeparen&gt; uint16 &quot;&quot; col SET_TO @Value&lt;openparen&gt;_tile_column&lt;closeparen&gt; uint16"/>
+#!     <XFORM_PARM PARM_NAME="INPUT_PORT_CONNECTED" PARM_VALUE="CONNECTED"/>
+#!     <XFORM_PARM PARM_NAME="MULTI_FEATURE_MODE" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="NULL_ATTR_MODE" PARM_VALUE="NO_OP"/>
+#!     <XFORM_PARM PARM_NAME="NULL_ATTR_VALUE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="NUM_PRIOR_FEATURES" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="NUM_SUBSEQUENT_FEATURES" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="USER_MODIFIED_ATTRIBUTE_TYPES" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="HitOrNot"/>
+#!     <XFORM_PARM PARM_NAME="NULL_ATTR_MODE_DISPLAY" PARM_IS_LOOKUP="true" PARM_VALUE="No Substitution"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="19"
+#!   TYPE="Reprojector"
+#!   VERSION="6"
+#!   POSITION="8000 0"
+#!   BOUNDING_RECT="8000 0 0 0"
+#!   ORDER="500000000000021"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="REPROJECTED"/>
+#!     <XFORM_ATTR ATTR_NAME="hit" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="share" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="row" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="col" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_raster_index" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_column" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_row" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_columns" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_rows" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="band4.mean" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="hit" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="share" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="row" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="col" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_raster_index" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_column" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_tile_row" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_columns" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_num_tile_rows" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="band4.mean" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="DEST" PARM_VALUE="EPSG:4326"/>
+#!     <XFORM_PARM PARM_NAME="GENERAL_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOM_NAME_SELECTION" PARM_VALUE="FME_ALL_GEOMETRIES"/>
+#!     <XFORM_PARM PARM_NAME="INTERPOLATION_TYPE" PARM_VALUE="NearestNeighbor"/>
+#!     <XFORM_PARM PARM_NAME="PARAMETERS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="RASTER_CELL_SIZE" PARM_VALUE="PreserveCells"/>
+#!     <XFORM_PARM PARM_NAME="RASTER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="RASTER_TOLERANCE" PARM_VALUE="0.0"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="SOURCE" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="CellsToLatLon"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="20"
+#!   TYPE="BoundingBoxReplacer"
+#!   VERSION="6"
+#!   POSITION="4800 -1500"
+#!   BOUNDING_RECT="4800 -1500 0 0"
+#!   ORDER="500000000000022"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="BOX"/>
+#!     <XFORM_PARM PARM_NAME="BBANGLE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="BBLONGER" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="BBSHORTER" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="BBTYPE" PARM_VALUE="BB"/>
+#!     <XFORM_PARM PARM_NAME="OAN_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="PARAMETERS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="ImageFootprint"/>
+#!     <XFORM_PARM PARM_NAME="BOXTYPE" PARM_IS_LOOKUP="true" PARM_VALUE="2D Bounding Box"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="21"
+#!   TYPE="Reprojector"
+#!   VERSION="6"
+#!   POSITION="5600 -1500"
+#!   BOUNDING_RECT="5600 -1500 0 0"
+#!   ORDER="500000000000023"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="REPROJECTED"/>
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_message" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="DEST" PARM_VALUE="EPSG:4326"/>
+#!     <XFORM_PARM PARM_NAME="GENERAL_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="GEOM_NAME_SELECTION" PARM_VALUE="FME_ALL_GEOMETRIES"/>
+#!     <XFORM_PARM PARM_NAME="INTERPOLATION_TYPE" PARM_VALUE="NearestNeighbor"/>
+#!     <XFORM_PARM PARM_NAME="PARAMETERS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="RASTER_CELL_SIZE" PARM_VALUE="PreserveCells"/>
+#!     <XFORM_PARM PARM_NAME="RASTER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="RASTER_TOLERANCE" PARM_VALUE="0.0"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="SOURCE" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="FootprintToLatLon"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="22"
+#!   TYPE="BoundsExtractor"
+#!   VERSION="3"
+#!   POSITION="6400 -1500"
+#!   BOUNDING_RECT="6400 -1500 0 0"
+#!   ORDER="500000000000024"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="OUTPUT"/>
+#!     <XFORM_ATTR ATTR_NAME="_xmin" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_xmax" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_ymin" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_ymax" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_zmin" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_zmax" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_PARM PARM_NAME="OAN_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="Corners"/>
+#!     <XFORM_PARM PARM_NAME="XMAX" PARM_VALUE="_xmax"/>
+#!     <XFORM_PARM PARM_NAME="XMIN" PARM_VALUE="_xmin"/>
+#!     <XFORM_PARM PARM_NAME="YMAX" PARM_VALUE="_ymax"/>
+#!     <XFORM_PARM PARM_NAME="YMIN" PARM_VALUE="_ymin"/>
+#!     <XFORM_PARM PARM_NAME="ZMAX" PARM_VALUE="_zmax"/>
+#!     <XFORM_PARM PARM_NAME="ZMIN" PARM_VALUE="_zmin"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="23"
+#!   TYPE="AttributeCreator"
+#!   VERSION="11"
+#!   POSITION="7200 -1500"
+#!   BOUNDING_RECT="7200 -1500 0 0"
+#!   ORDER="500000000000025"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="OUTPUT"/>
+#!     <XFORM_ATTR ATTR_NAME="_json" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_xmin" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_xmax" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_ymin" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_ymax" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_zmin" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_zmax" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTE_GRP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="ATTRIBUTE_HANDLING" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="ATTR_TABLE" PARM_VALUE="&quot;&quot; _json SET_TO {&lt;quote&gt;id&lt;quote&gt;:&lt;quote&gt;$(MISSION)&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;bbox&lt;quote&gt;:[@Value&lt;openparen&gt;_xmin&lt;closeparen&gt;&lt;comma&gt;@Value&lt;openparen&gt;_ymin&lt;closeparen&gt;&lt;comma&gt;@Value&lt;openparen&gt;_xmax&lt;closeparen&gt;&lt;comma&gt;@Value&lt;openparen&gt;_ymax&lt;closeparen&gt;]&lt;comma&gt;&lt;quote&gt;before&lt;quote&gt;:{&lt;quote&gt;date&lt;quote&gt;:&lt;quote&gt;$(BEFORE)&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;image&lt;quote&gt;:&lt;quote&gt;img0.png&lt;quote&gt;}&lt;comma&gt;&lt;quote&gt;after&lt;quote&gt;:{&lt;quote&gt;date&lt;quote&gt;:&lt;quote&gt;$(AFTER)&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;image&lt;quote&gt;:&lt;quote&gt;img1.png&lt;quote&gt;}&lt;comma&gt;&lt;quote&gt;change_overlay&lt;quote&gt;:&lt;quote&gt;img2.png&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;channels&lt;quote&gt;:{&lt;quote&gt;CO&lt;quote&gt;:&lt;quote&gt;$(CO_NAME)&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;CX&lt;quote&gt;:&lt;quote&gt;$(CX_NAME)&lt;quote&gt;}&lt;comma&gt;&lt;quote&gt;layers&lt;quote&gt;:{&lt;quote&gt;before&lt;quote&gt;:{&lt;quote&gt;CO&lt;quote&gt;:&lt;quote&gt;img3.png&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;CX&lt;quote&gt;:&lt;quote&gt;img4.png&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;RATIO&lt;quote&gt;:&lt;quote&gt;img7.png&lt;quote&gt;}&lt;comma&gt;&lt;quote&gt;after&lt;quote&gt;:{&lt;quote&gt;CO&lt;quote&gt;:&lt;quote&gt;img5.png&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;CX&lt;quote&gt;:&lt;quote&gt;img6.png&lt;quote&gt;&lt;comma&gt;&lt;quote&gt;RATIO&lt;quote&gt;:&lt;quote&gt;img8.png&lt;quote&gt;}}&lt;comma&gt;&lt;quote&gt;layer_scale&lt;quote&gt;:{&lt;quote&gt;CO_CX&lt;quote&gt;:{&lt;quote&gt;db_at_0&lt;quote&gt;:-35&lt;comma&gt;&lt;quote&gt;db_at_255&lt;quote&gt;:5}&lt;comma&gt;&lt;quote&gt;RATIO&lt;quote&gt;:{&lt;quote&gt;db_at_0&lt;quote&gt;:0&lt;comma&gt;&lt;quote&gt;db_at_255&lt;quote&gt;:20}}&lt;comma&gt;&lt;quote&gt;change_rule&lt;quote&gt;:{&lt;quote&gt;channel&lt;quote&gt;:$(CHANNEL)&lt;comma&gt;&lt;quote&gt;sign&lt;quote&gt;:$(SIGN)&lt;comma&gt;&lt;quote&gt;thresh_db&lt;quote&gt;:$(THRESH_DB)&lt;comma&gt;&lt;quote&gt;water_max_db&lt;quote&gt;:$(WATER_MAX)}&lt;comma&gt;&lt;quote&gt;grid&lt;quote&gt;:{&lt;quote&gt;rows&lt;quote&gt;:12&lt;comma&gt;&lt;quote&gt;cols&lt;quote&gt;:12&lt;comma&gt;&lt;quote&gt;geojson&lt;quote&gt;:&lt;quote&gt;grid.geojson&lt;quote&gt;}&lt;comma&gt;&lt;quote&gt;sensor&lt;quote&gt;:&lt;quote&gt;NISAR&lt;space&gt;L-band&lt;space&gt;&lt;openparen&gt;NASA-ISRO&lt;closeparen&gt;&lt;comma&gt;&lt;space&gt;ASF&lt;space&gt;DAAC&lt;quote&gt;} buffer"/>
+#!     <XFORM_PARM PARM_NAME="INPUT_PORT_CONNECTED" PARM_VALUE="CONNECTED"/>
+#!     <XFORM_PARM PARM_NAME="MULTI_FEATURE_MODE" PARM_VALUE="NO"/>
+#!     <XFORM_PARM PARM_NAME="NULL_ATTR_MODE" PARM_VALUE="NO_OP"/>
+#!     <XFORM_PARM PARM_NAME="NULL_ATTR_VALUE" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="NUM_PRIOR_FEATURES" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="NUM_SUBSEQUENT_FEATURES" PARM_VALUE="&lt;Unused&gt;"/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="USER_MODIFIED_ATTRIBUTE_TYPES" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="MissionJson"/>
+#!     <XFORM_PARM PARM_NAME="NULL_ATTR_MODE_DISPLAY" PARM_IS_LOOKUP="true" PARM_VALUE="No Substitution"/>
+#! </TRANSFORMER>
+#! <TRANSFORMER
+#!   IDENTIFIER="24"
+#!   TYPE="AttributeFileWriter"
+#!   VERSION="5"
+#!   POSITION="8000 -1500"
+#!   BOUNDING_RECT="8000 -1500 0 0"
+#!   ORDER="500000000000026"
+#!   PARMS_EDITED="true"
+#!   ENABLED="true"
+#!   LAST_PARM_EDIT="26656"
+#! >
+#!     <OUTPUT_FEAT NAME="OUTPUT"/>
+#!     <XFORM_ATTR ATTR_NAME="_json" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_xmin" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_xmax" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_ymin" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_ymax" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_zmin" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <XFORM_ATTR ATTR_NAME="_zmax" IS_USER_CREATED="false" FEAT_INDEX="0" />
+#!     <OUTPUT_FEAT NAME="&lt;REJECTED&gt;"/>
+#!     <FEAT_COLLAPSED COLLAPSED="1"/>
+#!     <XFORM_ATTR ATTR_NAME="_json" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_xmin" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_xmax" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_ymin" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_ymax" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_zmin" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="_zmax" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_ATTR ATTR_NAME="fme_rejection_code" IS_USER_CREATED="false" FEAT_INDEX="1" />
+#!     <XFORM_PARM PARM_NAME="CHAR_ENCODING" PARM_VALUE="UTF-8"/>
+#!     <XFORM_PARM PARM_NAME="FILE_NAME" PARM_VALUE="/data/nisar/out/$(MISSION)/mission.json"/>
+#!     <XFORM_PARM PARM_NAME="OVERWRITE_FILE_LOOKUP" PARM_VALUE="DestWriteSrcRead"/>
+#!     <XFORM_PARM PARM_NAME="PARAMETERS_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="SHOW_ERROR_INDICATORS" PARM_VALUE="No"/>
+#!     <XFORM_PARM PARM_NAME="SOURCE_ATTR" PARM_VALUE="_json"/>
+#!     <XFORM_PARM PARM_NAME="TRANSFORMER_GROUP" PARM_VALUE=""/>
+#!     <XFORM_PARM PARM_NAME="XFORMER_NAME" PARM_VALUE="WriteMissionJson"/>
+#!     <XFORM_PARM PARM_NAME="OVERWRITE_FILE" PARM_IS_LOOKUP="true" PARM_VALUE="Overwrite file"/>
+#! </TRANSFORMER>
+#! </TRANSFORMERS>
+#! <FEAT_LINKS>
+#! <FEAT_LINK
+#!   IDENTIFIER="26"
+#!   SOURCE_NODE="5"
+#!   TARGET_NODE="6"
+#!   SOURCE_PORT_DESC="fo 0 RESULT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="27"
+#!   SOURCE_NODE="6"
+#!   TARGET_NODE="7"
+#!   SOURCE_PORT_DESC="fo 0 OUTPUT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="28"
+#!   SOURCE_NODE="7"
+#!   TARGET_NODE="8"
+#!   SOURCE_PORT_DESC="fo 0 RESAMPLED"
+#!   TARGET_PORT_DESC="fi 0 A"
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="29"
+#!   SOURCE_NODE="8"
+#!   TARGET_NODE="9"
+#!   SOURCE_PORT_DESC="fo 0 RESULT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="42"
+#!   SOURCE_NODE="9"
+#!   TARGET_NODE="20"
+#!   SOURCE_PORT_DESC="fo 0 REPROJECTED"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="36"
+#!   SOURCE_NODE="9"
+#!   TARGET_NODE="15"
+#!   SOURCE_PORT_DESC="fo 0 REPROJECTED"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="1"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="30"
+#!   SOURCE_NODE="9"
+#!   TARGET_NODE="10"
+#!   SOURCE_PORT_DESC="fo 0 REPROJECTED"
+#!   TARGET_PORT_DESC="fi 0 A"
+#!   ENABLED="true"
+#!   EXECUTION_IDX="2"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="31"
+#!   SOURCE_NODE="10"
+#!   TARGET_NODE="11"
+#!   SOURCE_PORT_DESC="fo 0 RESULT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="32"
+#!   SOURCE_NODE="11"
+#!   TARGET_NODE="12"
+#!   SOURCE_PORT_DESC="fo 0 COPY"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="33"
+#!   SOURCE_NODE="12"
+#!   TARGET_NODE="13"
+#!   SOURCE_PORT_DESC="fo 0 OUTPUT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="34"
+#!   SOURCE_NODE="13"
+#!   TARGET_NODE="14"
+#!   SOURCE_PORT_DESC="fo 0 OUTPUT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="35"
+#!   SOURCE_NODE="14"
+#!   TARGET_NODE="3"
+#!   SOURCE_PORT_DESC="fo 0 OUTPUT"
+#!   TARGET_PORT_DESC="fi 0 Raster1"
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="37"
+#!   SOURCE_NODE="15"
+#!   TARGET_NODE="16"
+#!   SOURCE_PORT_DESC="fo 0 TILES"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="38"
+#!   SOURCE_NODE="16"
+#!   TARGET_NODE="17"
+#!   SOURCE_PORT_DESC="fo 0 OUTPUT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="39"
+#!   SOURCE_NODE="17"
+#!   TARGET_NODE="18"
+#!   SOURCE_PORT_DESC="fo 0 BOX"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="40"
+#!   SOURCE_NODE="18"
+#!   TARGET_NODE="19"
+#!   SOURCE_PORT_DESC="fo 0 OUTPUT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="41"
+#!   SOURCE_NODE="19"
+#!   TARGET_NODE="4"
+#!   SOURCE_PORT_DESC="fo 0 REPROJECTED"
+#!   TARGET_PORT_DESC="fi 0 NewFeatureType"
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="43"
+#!   SOURCE_NODE="20"
+#!   TARGET_NODE="21"
+#!   SOURCE_PORT_DESC="fo 0 BOX"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="44"
+#!   SOURCE_NODE="21"
+#!   TARGET_NODE="22"
+#!   SOURCE_PORT_DESC="fo 0 REPROJECTED"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="45"
+#!   SOURCE_NODE="22"
+#!   TARGET_NODE="23"
+#!   SOURCE_PORT_DESC="fo 0 OUTPUT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="46"
+#!   SOURCE_NODE="23"
+#!   TARGET_NODE="24"
+#!   SOURCE_PORT_DESC="fo 0 OUTPUT"
+#!   TARGET_PORT_DESC="fi 0 "
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! <FEAT_LINK
+#!   IDENTIFIER="25"
+#!   SOURCE_NODE="2"
+#!   TARGET_NODE="5"
+#!   SOURCE_PORT_DESC="fo 1 GEOTIFF"
+#!   TARGET_PORT_DESC="fi 0 A"
+#!   ENABLED="true"
+#!   EXECUTION_IDX="0"
+#!   HIDDEN="false"
+#!   COLOUR="0,0,0,1"
+#!   PEN_WIDTH="1"
+#!   PEN_STYLE="1"
+#!   LINK_STYLE_NAME=""
+#!   EXTRA_POINTS=""
+#! />
+#! </FEAT_LINKS>
+#! <BREAKPOINTS>
+#! </BREAKPOINTS>
+#! <ATTR_LINKS>
+#! </ATTR_LINKS>
+#! <SUBDOCUMENTS>
+#! </SUBDOCUMENTS>
+#! <LOOKUP_TABLES>
+#! </LOOKUP_TABLES>
+#! </WORKSPACE>
+
+FME_PYTHON_VERSION 312
+ARCGIS_COMPATIBILITY ARCGIS_AUTO
+# ============================================================================
+DEFAULT_MACRO MISSION W2
+DEFAULT_MACRO BEFORE 2026-01-05
+DEFAULT_MACRO AFTER 2026-01-17
+DEFAULT_MACRO CHANNEL 0
+DEFAULT_MACRO SIGN -1
+DEFAULT_MACRO THRESH_DB 3
+DEFAULT_MACRO WATER_MAX -18
+DEFAULT_MACRO CO_NAME HH
+DEFAULT_MACRO CX_NAME HV
+# ============================================================================
+INCLUDE [ if {{$(MISSION$encode)} == {}} { puts_real {Parameter 'MISSION' must be given a value.}; exit 1; }; ]
+INCLUDE [ if {{$(BEFORE$encode)} == {}} { puts_real {Parameter 'BEFORE' must be given a value.}; exit 1; }; ]
+INCLUDE [ if {{$(AFTER$encode)} == {}} { puts_real {Parameter 'AFTER' must be given a value.}; exit 1; }; ]
+INCLUDE [ if {{$(CHANNEL$encode)} == {}} { puts_real {Parameter 'CHANNEL' must be given a value.}; exit 1; }; ]
+INCLUDE [ if {{$(SIGN$encode)} == {}} { puts_real {Parameter 'SIGN' must be given a value.}; exit 1; }; ]
+INCLUDE [ if {{$(THRESH_DB$encode)} == {}} { puts_real {Parameter 'THRESH_DB' must be given a value.}; exit 1; }; ]
+INCLUDE [ if {{$(WATER_MAX$encode)} == {}} { puts_real {Parameter 'WATER_MAX' must be given a value.}; exit 1; }; ]
+INCLUDE [ if {{$(CO_NAME$encode)} == {}} { puts_real {Parameter 'CO_NAME' must be given a value.}; exit 1; }; ]
+INCLUDE [ if {{$(CX_NAME$encode)} == {}} { puts_real {Parameter 'CX_NAME' must be given a value.}; exit 1; }; ]
+#! START_HEADER
+#! START_WB_HEADER
+READER_TYPE MULTI_READER
+WRITER_TYPE MULTI_WRITER
+WRITER_KEYWORD MULTI_DEST
+MULTI_DEST_DATASET null
+#! END_WB_HEADER
+#! START_WB_HEADER
+#! END_WB_HEADER
+#! END_HEADER
+
+LOG_FILENAME "$(FME_MF_DIR)$(WORKSPACE_NAME).log"
+LOG_APPEND NO
+LOG_MAX_FEATURES 200
+LOG_MAX_RECORDED_FEATURES 200
+FME_REPROJECTION_ENGINE FME
+FME_IMPLICIT_CSMAP_REPROJECTION_MODE Auto
+FME_GEOMETRY_HANDLING Enhanced
+FME_STROKE_MAX_DEVIATION 0
+FME_NAMES_ENCODING US-ASCII
+FME_BULK_MODE_THRESHOLD 2000
+LAST_SAVE_BUILD "0.1"
+# -------------------------------------------------------------------------
+
+MULTI_READER_CONTINUE_ON_READER_FAILURE No
+
+# -------------------------------------------------------------------------
+
+MACRO FME_VIEWER_APP fmedatainspector
+DEFAULT_MACRO WB_CURRENT_CONTEXT
+# -------------------------------------------------------------------------
+MACRO FeatureReader_OUTPUT_PORTS_ENCODED GEOTIFF
+MACRO FeatureReader_DIRECTIVES APPLY_GCPS,NO,COORDINATE_SYSTEM,,EXPOSE_ATTRS_GROUP,,FEATURE_TYPE_NAME,FORMAT_NAME,GEOTIFF_EXPOSE_FORMAT_ATTRS,,GEOTIFF_RDR_ADV_PARM_GROUP,,IGNORE_RASTER_TYPE_KEY,No,LENIENT_READ,Yes,NATIVELY_HANDLED_WEBSERVICES,s3connector<comma>azurestorage<comma>google-cloud-storage,PREFER_FILE_CS_UNITS,Yes,PYRAMID_LEVEL,,READ_OFFSETS_IN_CS_UNITS,No,READER_META_ATTRIBUTES,fme_dataset<space>fme_basename,SCALE_COLOR_TO_STANDARD_BIT_DEPTH,YES,SPATIAL_GROUP,,USE_APPROXIMATE_WORLDFILES,no,USE_SEARCH_ENVELOPE,NO
+# Consolidate the attribute merge options to what the factory expects
+DEFAULT_MACRO FeatureReader_COMBINE_ATTRS
+INCLUDE [       if { {<Unused>} == {MERGE} } {          puts "MACRO FeatureReader_COMBINE_ATTRS <Unused>";       } else {          puts "MACRO FeatureReader_COMBINE_ATTRS <Unused>";       };    ]
+INCLUDE [    puts {DEFAULT_MACRO FeatureReaderDataset_FeatureReader @EvaluateExpression(FDIV,STRING_ENCODED,<solidus>data<solidus>nisar<solidus>clips<solidus>$(MISSION$encode)<solidus>stack.tif,FeatureReader)}; ]
+FACTORY_DEF {*} CreationFactory    FACTORY_NAME { FeatureReader_Creator }    OUTPUT { FEATURE_TYPE FeatureReader_____CREATED______ }
+FACTORY_DEF {*} QueryFactory    FACTORY_NAME { FeatureReader }    INPUT { FEATURE_TYPE FeatureReader_____CREATED______ }    FCTQUERY_INTERACTION_TOCHECK { "NONE" "NONE" }    CLIP_TO_INITIATOR_ENVELOPE { "NO" }    COMBINE_ATTRIBUTES  { $(FeatureReader_COMBINE_ATTRS) }    IGNORE_NULLS        { <Unused> }    REJECT_POINTS       { YES }    QUERYFCT_ATTRIBUTE_PREFIX { <Unused> }    COMBINE_GEOMETRY    { <Unused> }    ENABLE_CACHE        { NO }    QUERYFCT_TABLE_SEPARATOR { SPACE }    READER_TYPE         { GEOTIFF  }    READER_DATASET      { "$(FeatureReaderDataset_FeatureReader)" }    QUERYFCT_IDS        { "" }    QUERYFCT_IDS_FORMAT WWJD_PARTS    READER_DIRECTIVES   { METAFILE,GEOTIFF }    QUERYFCT_OUTPUT     { "BASED_ON_CONNECTIONS" }    QUERYFCT_ADD_SCHEMA { "NO" }    QUERYFCT_USE_SCHEMA_CACHE { "YES" }    QUERYFCT_INITIATOR_FIRST_OUTPUT { "default" }    QUERYFCT_DEDUPE_GEOM YES    CONTINUE_ON_READER_ERROR YES    ORDER_RESULTS { "No" }    QUERYFCT_RESULT_TAGS { $(FeatureReader_OUTPUT_PORTS_ENCODED) }    QUERYFCT_SET_FME_FEATURE_TYPE YES    QUERYFCT_SET_FME_META_ATTRS YES    READER_PARAMS_WWJD     { $(FeatureReader_DIRECTIVES) }    TREAT_READER_PARAM_AMPERSANDS_AS_LITERALS YES    HONOR_INITIATOR_COORDSYS YES    OUTPUT { READER_ERROR FEATURE_TYPE FeatureReader_<REJECTED>           }    OUTPUT GEOTIFF FEATURE_TYPE FeatureReader_GEOTIFF
+FACTORY_DEF * BranchingFactory   FACTORY_NAME "FeatureReader_GEOTIFF Brancher -1 25"   INPUT FEATURE_TYPE FeatureReader_GEOTIFF   TARGET_FACTORY "$(WB_CURRENT_CONTEXT)_CREATOR_BRANCH_TARGET"   MAXIMUM_COUNT None   OUTPUT PASSED FEATURE_TYPE *
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME FeatureReader_<Rejected> INPUT FEATURE_TYPE FeatureReader_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, FeatureReader<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF * TeeFactory   FACTORY_NAME "$(WB_CURRENT_CONTEXT)_CREATOR_BRANCH_TARGET"   INPUT FEATURE_TYPE *  OUTPUT FEATURE_TYPE *
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} RasterEvaluationFactory    FACTORY_NAME { ToDecibels }    INPUT A FEATURE_TYPE FeatureReader_GEOTIFF    INTERPRETATION_LIST "REAL32;REAL32;REAL32;REAL32" EXPRESSION_LIST "@if(A[0]>0,10*@log10(A[0]),-99);@if(A[1]>0,10*@log10(A[1]),-99);@if(A[2]>0,10*@log10(A[2]),-99);@if(A[3]>0,10*@log10(A[3]),-99)"    FORCE_FLOAT_DIVISION yes    FLUSH_WHEN_GROUPS_CHANGE { <Unused> }    ATTRIBUTE_ACCUMULATION_MODE { <Unused> }    ATTRIBUTE_CONFLICT_RESOLUTION { <Unused> }    REJECT_INVALID_FEATURES YES    OUTPUT { RESULT FEATURE_TYPE ToDecibels_RESULT          }    OUTPUT { <REJECTED> FEATURE_TYPE ToDecibels_<REJECTED>          }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME ToDecibels_<Rejected> INPUT FEATURE_TYPE ToDecibels_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, ToDecibels<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} RasterConvolverFactory    FACTORY_NAME { Despeckle5x5Median }    INPUT  FEATURE_TYPE ToDecibels_RESULT    CONVOLUTION_FILTER { "UserDefined" }    KERNEL_WEIGHTS { "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1" }    KERNEL_DIVISOR { "1" }    KERNEL_OPERATION { "Median" }    EDGE_HANDLING { ExtendBorderValues }    CENTER_PIXEL_NODATA_HANDLING { OutputNodata }    NEIGHBOR_PIXEL_NODATA_HANDLING { UseCenterPixel }    PRESERVE_BAND_INTERPRETATION { No }    ZERO_WEIGHT_HANDLING { IgnoreZeroWeightValues }    OUTPUT { OUTPUT FEATURE_TYPE Despeckle5x5Median_OUTPUT          }    OUTPUT { <REJECTED> FEATURE_TYPE Despeckle5x5Median_<REJECTED>          }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME Despeckle5x5Median_<Rejected> INPUT FEATURE_TYPE Despeckle5x5Median_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, Despeckle5x5Median<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+INCLUDE [ if {{RowsColumns} == {RowsColumns}} {    puts {MACRO RESAMPLE_ARGS DIMENSIONS, "1024", "1024", Bilinear} } elseif {{RowsColumns} == {CellSize}} {    puts {MACRO RESAMPLE_ARGS CELL_SIZE, "<Unused>", "<Unused>", Bilinear} } elseif {{RowsColumns} == {Percentage}} {    puts {MACRO RESAMPLE_ARGS PERCENTAGE, "<Unused>", "<Unused>", Bilinear} }; ]
+FACTORY_DEF {*} ExecuteFunctionFactory    FACTORY_NAME { Resize1024_RasterResampler }    COMMAND_PARM_EVALUATION SINGLE_PASS    INPUT  FEATURE_TYPE Despeckle5x5Median_OUTPUT    FUNCTION_DEFINITION { @ResampleRaster(REJECTABLE,$(RESAMPLE_ARGS)) }    OUTPUT { COMPLETE FEATURE_TYPE Resize1024_RESAMPLED        }    OUTPUT { REJECTED FEATURE_TYPE Resize1024_<REJECTED>        }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME Resize1024_<Rejected> INPUT FEATURE_TYPE Resize1024_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, Resize1024<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} RasterEvaluationFactory    FACTORY_NAME { ChangeMap }    INPUT A FEATURE_TYPE Resize1024_RESAMPLED    INTERPRETATION_LIST "REAL32;REAL32;REAL32;REAL32;UINT8" EXPRESSION_LIST "A[0];A[1];A[2];A[3];@if((A[0]>-90)&&(A[2]>-90)&&($(SIGN$encode)*@if($(CHANNEL$encode)==0,A[2]-A[0],A[3]-A[1])>$(THRESH_DB$encode))&&(@if($(CHANNEL$encode)==0,A[2],A[3])<$(WATER_MAX$encode)),1,0)"    FORCE_FLOAT_DIVISION yes    FLUSH_WHEN_GROUPS_CHANGE { <Unused> }    ATTRIBUTE_ACCUMULATION_MODE { <Unused> }    ATTRIBUTE_CONFLICT_RESOLUTION { <Unused> }    REJECT_INVALID_FEATURES YES    OUTPUT { RESULT FEATURE_TYPE ChangeMap_RESULT          }    OUTPUT { <REJECTED> FEATURE_TYPE ChangeMap_<REJECTED>          }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME ChangeMap_<Rejected> INPUT FEATURE_TYPE ChangeMap_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, ChangeMap<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} ReprojectFactory    FACTORY_NAME { ToWebMercator }    INPUT  FEATURE_TYPE ChangeMap_RESULT    ENGINE { SOURCE "" DESTINATION "EPSG:3857" }    GEOM_NAME_SELECTION { FME_ALL_GEOMETRIES }    INTERPOLATION_TYPE { Bilinear }    RASTER_CELL_SIZE { SquareCells }    RASTER_TOLERANCE { "0.0" }    OUTPUT { REPROJECTED FEATURE_TYPE ToWebMercator_REPROJECTED          }    OUTPUT { REJECTED FEATURE_TYPE ToWebMercator_<REJECTED>          }
+FACTORY_DEF * TeeFactory   FACTORY_NAME "ToWebMercator REPROJECTED Splitter"   INPUT FEATURE_TYPE ToWebMercator_REPROJECTED   OUTPUT FEATURE_TYPE ToWebMercator_REPROJECTED_0_FmyRwjG+RRM=   OUTPUT FEATURE_TYPE ToWebMercator_REPROJECTED_1_JSj01BhpmH0=   OUTPUT FEATURE_TYPE ToWebMercator_REPROJECTED_2_qLHy4mu7m+o=
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME ToWebMercator_<Rejected> INPUT FEATURE_TYPE ToWebMercator_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, ToWebMercator<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+# check if we have to do the min bounding box calculation
+INCLUDE [    if { {BB} == {MINBB} } {       puts {MACRO ImageFootprint_BBFunc @Force2D() @Bounds(fme_encoded,MIN_BOUNDING,,,<Unused>)};    } elseif { {BB} == {BB} } {       puts {MACRO ImageFootprint_BBFunc @Force2D() @Bounds(fme_encoded,BOUNDING_BOX_AXIS_ALIGNED,,)};    } else {       puts {MACRO ImageFootprint_BBFunc @Bounds(fme_encoded,BOUNDING_CUBE,,)};    } ]
+FACTORY_DEF {*} TeeFactory    FACTORY_NAME { ImageFootprint }    INPUT  FEATURE_TYPE ToWebMercator_REPROJECTED_0_FmyRwjG+RRM=    OUTPUT { FEATURE_TYPE ImageFootprint_BOX         $(ImageFootprint_BBFunc)          }
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} ReprojectFactory    FACTORY_NAME { FootprintToLatLon }    INPUT  FEATURE_TYPE ImageFootprint_BOX    ENGINE { SOURCE "" DESTINATION "EPSG:4326" }    GEOM_NAME_SELECTION { FME_ALL_GEOMETRIES }    INTERPOLATION_TYPE { NearestNeighbor }    RASTER_CELL_SIZE { PreserveCells }    RASTER_TOLERANCE { "0.0" }    OUTPUT { REPROJECTED FEATURE_TYPE FootprintToLatLon_REPROJECTED          }    OUTPUT { REJECTED FEATURE_TYPE FootprintToLatLon_<REJECTED>          }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME FootprintToLatLon_<Rejected> INPUT FEATURE_TYPE FootprintToLatLon_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, FootprintToLatLon<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} TeeFactory    FACTORY_NAME { Corners }    INPUT  FEATURE_TYPE FootprintToLatLon_REPROJECTED    OUTPUT { FEATURE_TYPE Corners_OUTPUT         @Bounds(fme_encoded,_xmin,_xmax,_ymin,_ymax,_zmin,_zmax,GEOMETRIC,PRESERVE_NO_GEOM)          }
+# -------------------------------------------------------------------------
+FACTORY_DEF {CONNECTED} CreationFactory    FACTORY_NAME { MissionJson_Creator }    OUTPUT { FEATURE_TYPE MissionJson_____CREATED______ }
+FACTORY_DEF {*} AttrSetFactory    FACTORY_NAME { MissionJson }    COMMAND_PARM_EVALUATION SINGLE_PASS    INPUT { FEATURE_TYPE MissionJson_____CREATED______ }    INPUT  FEATURE_TYPE Corners_OUTPUT    MULTI_FEATURE_MODE { NO }    NULL_ATTR_MODE { NO_OP }    ATTRSET_CREATE_DIRECTIVES _PROPAGATE_MISSING_FDIV    NUM_OF_COLUMNS 5    ATTR_ACTION { "" "_json" "SET_TO" "{<quote>id<quote>:<quote>$(MISSION$encode)<quote><comma><quote>bbox<quote>:[@Value<openparen>_xmin<closeparen><comma>@Value<openparen>_ymin<closeparen><comma>@Value<openparen>_xmax<closeparen><comma>@Value<openparen>_ymax<closeparen>]<comma><quote>before<quote>:{<quote>date<quote>:<quote>$(BEFORE$encode)<quote><comma><quote>image<quote>:<quote>img0.png<quote>}<comma><quote>after<quote>:{<quote>date<quote>:<quote>$(AFTER$encode)<quote><comma><quote>image<quote>:<quote>img1.png<quote>}<comma><quote>change_overlay<quote>:<quote>img2.png<quote><comma><quote>channels<quote>:{<quote>CO<quote>:<quote>$(CO_NAME$encode)<quote><comma><quote>CX<quote>:<quote>$(CX_NAME$encode)<quote>}<comma><quote>layers<quote>:{<quote>before<quote>:{<quote>CO<quote>:<quote>img3.png<quote><comma><quote>CX<quote>:<quote>img4.png<quote><comma><quote>RATIO<quote>:<quote>img7.png<quote>}<comma><quote>after<quote>:{<quote>CO<quote>:<quote>img5.png<quote><comma><quote>CX<quote>:<quote>img6.png<quote><comma><quote>RATIO<quote>:<quote>img8.png<quote>}}<comma><quote>layer_scale<quote>:{<quote>CO_CX<quote>:{<quote>db_at_0<quote>:-35<comma><quote>db_at_255<quote>:5}<comma><quote>RATIO<quote>:{<quote>db_at_0<quote>:0<comma><quote>db_at_255<quote>:20}}<comma><quote>change_rule<quote>:{<quote>channel<quote>:$(CHANNEL$encode)<comma><quote>sign<quote>:$(SIGN$encode)<comma><quote>thresh_db<quote>:$(THRESH_DB$encode)<comma><quote>water_max_db<quote>:$(WATER_MAX$encode)}<comma><quote>grid<quote>:{<quote>rows<quote>:12<comma><quote>cols<quote>:12<comma><quote>geojson<quote>:<quote>grid.geojson<quote>}<comma><quote>sensor<quote>:<quote>NISAR<space>L-band<space><openparen>NASA-ISRO<closeparen><comma><space>ASF<space>DAAC<quote>}" "buffer" }    OUTPUT { OUTPUT FEATURE_TYPE MissionJson_OUTPUT        }
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} ExecuteFunctionFactory    FACTORY_NAME { WriteMissionJson }    INPUT  FEATURE_TYPE MissionJson_OUTPUT    FUNCTION_DEFINITION { @File(REJECTABLE,ENCODED_PARAMS,DestWriteSrcRead,_json,"@EvaluateExpression(FDIV,STRING_ENCODED,/data/nisar/out/$(MISSION$encode)/mission.json,WriteMissionJson)",UTF-8) }    OUTPUT { COMPLETE FEATURE_TYPE WriteMissionJson_OUTPUT        }    OUTPUT { REJECTED FEATURE_TYPE WriteMissionJson_<REJECTED>        }
+FACTORY_DEF * TeeFactory   FACTORY_NAME "WriteMissionJson OUTPUT Transformer Output Nuker"   INPUT FEATURE_TYPE WriteMissionJson_OUTPUT
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME WriteMissionJson_<Rejected> INPUT FEATURE_TYPE WriteMissionJson_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, WriteMissionJson<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} RasterSubsetFactory    FACTORY_NAME { Grid12x12 }    INPUT  FEATURE_TYPE ToWebMercator_REPROJECTED_1_JSj01BhpmH0=    NUM_TILE_ROWS "<Unused>"    NUM_TILE_COLUMNS "<Unused>"    NUM_HORIZONTAL_TILES "12"    NUM_VERTICAL_TILES "12"    FORCE_EQUAL_SIZED_TILES { No }    RASTER_INDEX_ATTRIBUTE { "_raster_index" }    TILE_ROW_ATTRIBUTE { "_tile_row" }    TILE_COLUMN_ATTRIBUTE { "_tile_column" }    NUM_HORIZONTAL_TILES_ATTRIBUTE { "_num_tile_columns" }    NUM_VERTICAL_TILES_ATTRIBUTE { "_num_tile_rows" }    REJECT_INVALID_GEOM YES    OUTPUT { TILES FEATURE_TYPE Grid12x12_TILES        }    OUTPUT { REJECTED FEATURE_TYPE Grid12x12_<REJECTED>        }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME Grid12x12_<Rejected> INPUT FEATURE_TYPE Grid12x12_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, Grid12x12<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} RasterStatisticsFactory    FACTORY_NAME { ChangedShare }    INPUT  FEATURE_TYPE Grid12x12_TILES    RASTER_LEVEL { BAND_ONLY }    RASTER_STATS { 4   MEAN       }    OUTPUT { OUTPUT FEATURE_TYPE ChangedShare_OUTPUT          }    OUTPUT { <REJECTED> FEATURE_TYPE ChangedShare_<REJECTED>          }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME ChangedShare_<Rejected> INPUT FEATURE_TYPE ChangedShare_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, ChangedShare<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+# check if we have to do the min bounding box calculation
+INCLUDE [    if { {BB} == {MINBB} } {       puts {MACRO TileToCell_BBFunc @Force2D() @Bounds(fme_encoded,MIN_BOUNDING,,,<Unused>)};    } elseif { {BB} == {BB} } {       puts {MACRO TileToCell_BBFunc @Force2D() @Bounds(fme_encoded,BOUNDING_BOX_AXIS_ALIGNED,,)};    } else {       puts {MACRO TileToCell_BBFunc @Bounds(fme_encoded,BOUNDING_CUBE,,)};    } ]
+FACTORY_DEF {*} TeeFactory    FACTORY_NAME { TileToCell }    INPUT  FEATURE_TYPE ChangedShare_OUTPUT    OUTPUT { FEATURE_TYPE TileToCell_BOX         $(TileToCell_BBFunc)          }
+# -------------------------------------------------------------------------
+FACTORY_DEF {CONNECTED} CreationFactory    FACTORY_NAME { HitOrNot_Creator }    OUTPUT { FEATURE_TYPE HitOrNot_____CREATED______ }
+FACTORY_DEF {*} AttrSetFactory    FACTORY_NAME { HitOrNot }    COMMAND_PARM_EVALUATION SINGLE_PASS    INPUT { FEATURE_TYPE HitOrNot_____CREATED______ }    INPUT  FEATURE_TYPE TileToCell_BOX    MULTI_FEATURE_MODE { NO }    NULL_ATTR_MODE { NO_OP }    ATTRSET_CREATE_DIRECTIVES _PROPAGATE_MISSING_FDIV    NUM_OF_COLUMNS 5    ATTR_ACTION { "" "hit" "SET_TO" "@Evaluate<openparen>@Value<openparen>band4.mean<closeparen>>=0.2<closeparen>" "uint8" }      ATTR_ACTION { "" "share" "SET_TO" "@Value<openparen>band4.mean<closeparen>" "real64" }      ATTR_ACTION { "" "row" "SET_TO" "@Value<openparen>_tile_row<closeparen>" "uint16" }      ATTR_ACTION { "" "col" "SET_TO" "@Value<openparen>_tile_column<closeparen>" "uint16" }    OUTPUT { OUTPUT FEATURE_TYPE HitOrNot_OUTPUT        }
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} ReprojectFactory    FACTORY_NAME { CellsToLatLon }    INPUT  FEATURE_TYPE HitOrNot_OUTPUT    ENGINE { SOURCE "" DESTINATION "EPSG:4326" }    GEOM_NAME_SELECTION { FME_ALL_GEOMETRIES }    INTERPOLATION_TYPE { NearestNeighbor }    RASTER_CELL_SIZE { PreserveCells }    RASTER_TOLERANCE { "0.0" }    OUTPUT { REPROJECTED FEATURE_TYPE CellsToLatLon_REPROJECTED          }    OUTPUT { REJECTED FEATURE_TYPE CellsToLatLon_<REJECTED>          }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME CellsToLatLon_<Rejected> INPUT FEATURE_TYPE CellsToLatLon_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, CellsToLatLon<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+INCLUDE [    puts {DEFAULT_MACRO FeatureWriterDataset_FeatureWriter_2 @EvaluateExpression(FDIV,STRING_ENCODED,<solidus>data<solidus>nisar<solidus>out<solidus>$(MISSION$encode)<solidus>grid.geojson,FeatureWriter_2)}; ]
+FACTORY_DEF {*} WriterFactory    COMMAND_PARM_EVALUATION SINGLE_PASS    FEATURE_TABLE_SHIM_SUPPORT INPUT_SPEC_ONLY    FLUSH_WHEN_GROUPS_CHANGE { <Unused> }    FACTORY_NAME { FeatureWriter_2 }    FACTORY_CONFIG_PARAMETERS { ESCAPE_COMMAS_IN_FTP_FORMAT_PARAMETERS,no }    WRITER_TYPE { GEOJSON }    WRITER_DATASET { "$(FeatureWriterDataset_FeatureWriter_2)" }    WRITER_SETTINGS { "RUNTIME_MACROS,WRITER_CHARSET<comma>UTF-8<comma>WRITE_BOM<comma>No<comma>FILE_STRUCTURE<comma>SINGLE_FEATURE_COLLECTION<comma>WRITE_FEATURE_IDS<comma>Yes<comma>WRITE_NESTED<comma>YES<comma>PRETTY_PRINT<comma>YES<comma>INDENT_SIZE<comma>0<comma>SPATIAL_GROUP<comma><comma>COORDINATE_SYSTEM<comma><comma>MAX_COORDINATE_PRECISION<comma>10<comma>COUNTER_CLOCKWISE_AREAS<comma>Yes<comma>WGS84_REPROJECTION<comma>Yes<comma>DESTINATION_DATASETTYPE_VALIDATION<comma>Yes,METAFILE,GEOJSON" }    WRITER_METAFILE { "ATTRIBUTE_CASE,ANY,ATTRIBUTE_INVALID_CHARS,,ATTRIBUTE_LENGTH,600,ATTR_TYPE_MAP,string<comma>fme_buffer<comma>string<comma>fme_binarybuffer<comma>string<comma>fme_xml<comma>string<comma>fme_varchar<openparen>width<closeparen><comma>string<comma>fme_varbinary<openparen>width<closeparen><comma>boolean<comma>fme_boolean<comma>string<comma>fme_char<openparen>width<closeparen><comma>string<comma>fme_binary<openparen>width<closeparen><comma>string<comma>fme_datetime<comma>string<comma>fme_time<comma>string<comma>fme_date<comma>float<comma>fme_real64<comma>float<comma>fme_real32<comma>int<comma>fme_int64<comma>string<comma>fme_uint64<comma>int<comma>fme_int32<comma>int<comma>fme_uint32<comma>int<comma>fme_int16<comma>int<comma>fme_uint16<comma>int<comma>fme_int8<comma>int<comma>fme_uint8<comma>string<comma><quote>fme_decimal<openparen>width<comma>decimal<closeparen><quote><comma>json<comma>fme_json,DEST_ILLEGAL_ATTR_LIST,,FEATURE_TYPE_CASE,ANY,FEATURE_TYPE_INVALID_CHARS,,FEATURE_TYPE_LENGTH,0,FEATURE_TYPE_LENGTH_INCLUDES_PREFIX,false,FEATURE_TYPE_RESERVED_WORDS,,FORMAT_METAFILE,$(FME_HOME_ENCODED)metafile<solidus>geojson.fmf,FORMAT_NAME,GEOJSON,GEOM_MAP,json_point<comma>fme_point<comma>json_line<comma>fme_line<comma>json_polygon<comma>fme_polygon<comma>json_text<comma>fme_text<comma>json_ellipse<comma>fme_ellipse<comma>json_arc<comma>fme_arc<comma>json_rectangle<comma>fme_rectangle<comma>json_rounded_rectangle<comma>fme_rounded_rectangle<comma>json_raster<comma>fme_raster<comma>json_no_geom<comma>fme_no_geom<comma>json_collection<comma>fme_collection<comma>json_line<comma>fme_surface<comma>json_line<comma>fme_solid<comma>json_polygon<comma>fme_point_cloud,READER_ATTR_INDEX_TYPES,,READER_FORMAT_TYPE,,READER_USES_DEF,yes,SOURCE,no,SUPPORTS_FEAT_TYPE_FANOUT,yes,SUPPORTS_MULTI_GEOM,yes,WORKBENCH_CANNED_SCHEMA,,WRITER,GEOJSON,WRITER_ATTR_INDEX_TYPES,,WRITER_DEFLINE_PARMS,,WRITER_DEF_LINE_TEMPLATE,<opencurly>FME_GEN_GROUP_NAME<closecurly>,WRITER_FORMAT_PARAMETER,MIME_TYPE<comma><quote>application<solidus>geo+json<space>ADD_DISPOSITION<quote><comma>WRITER_SPATIAL_DEFINITION_TABLE<comma>YES<comma>READER_DATASET_HINT<comma><quote>Select<space>the<space>GeoJSON<space>file<openparen>s<closeparen><space>or<space>type<space>the<space>GeoJSON<space>URL<quote><comma>WRITER_DATASET_HINT<comma><quote>Specify<space>a<space>name<space>for<space>the<space>GeoJSON<space>file<quote>,WRITER_FORMAT_TYPE,,WRITER_HAS_DEFLINE_ATTRS,yes,WRITER_USES_DEF,yes" }    WRITER_FEATURE_TYPES { "grid:NewFeatureType,ftp_feature_type_name,grid,ftp_writer,GEOJSON,ftp_dynamic_schema,no,ftp_dynamic_feature_type_name_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_geometry_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_schema_def_name_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_schema_sources,<lt>lt<gt>Unused<lt>gt<gt>,ftp_attribute_source,0,ftp_user_attributes,hit<comma>int<comma>share<comma>float<comma>row<comma>int<comma>col<comma>int<comma>_raster_index<comma>int<comma>_tile_column<comma>int<comma>_tile_row<comma>int<comma>_num_tile_columns<comma>int<comma>_num_tile_rows<comma>int<comma>band4.mean<comma>float,ftp_user_attribute_values,<comma><comma><comma><comma><comma><comma><comma><comma><comma>,ftp_uses_spatial_definition,yes,ftp_spatial_definition,geom_name<comma><comma>geom_string<comma><comma>spatial_type<comma>" }    WRITER_PARAMS { "COORDINATE_SYSTEM,,COUNTER_CLOCKWISE_AREAS,Yes,DESTINATION_DATASETTYPE_VALIDATION,Yes,FILE_STRUCTURE,SINGLE_FEATURE_COLLECTION,INDENT_SIZE,0,MAX_COORDINATE_PRECISION,10,PRETTY_PRINT,YES,SPATIAL_GROUP,,WGS84_REPROJECTION,Yes,WRITE_BOM,No,WRITE_FEATURE_IDS,Yes,WRITE_NESTED,YES,WRITER_CHARSET,UTF-8" }    DATASET_ATTR { "_dataset" }    FEATURE_TYPE_LIST_ATTR { "_feature_types" }    TOTAL_FEATURES_WRITTEN_ATTR { "_total_features_written" }    OUTPUT_PORTS { "" }    INPUT NewFeatureType FEATURE_TYPE CellsToLatLon_REPROJECTED  @FeatureType(ENCODED,@EvaluateExpression(FDIV,STRING_ENCODED,grid,FeatureWriter_2))    OUTPUT { REJECTED FEATURE_TYPE FeatureWriter_2_<REJECTED>        }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME FeatureWriter_2_<Rejected> INPUT FEATURE_TYPE FeatureWriter_2_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, FeatureWriter_2<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} RasterEvaluationFactory    FACTORY_NAME { PaintAll }    INPUT A FEATURE_TYPE ToWebMercator_REPROJECTED_2_qLHy4mu7m+o=    INTERPRETATION_LIST "RED8;GREEN8;BLUE8;ALPHA8;RED8;GREEN8;BLUE8;ALPHA8;RED8;GREEN8;BLUE8;ALPHA8;RED8;GREEN8;BLUE8;ALPHA8;RED8;GREEN8;BLUE8;ALPHA8;RED8;GREEN8;BLUE8;ALPHA8;RED8;GREEN8;BLUE8;ALPHA8;RED8;GREEN8;BLUE8;ALPHA8;RED8;GREEN8;BLUE8;ALPHA8" EXPRESSION_LIST "@if((A[0]+25)*10.2<0,0,@if((A[0]+25)*10.2>255,255,(A[0]+25)*10.2));@if((A[1]+32)*10.625<0,0,@if((A[1]+32)*10.625>255,255,(A[1]+32)*10.625));@if((A[0]+25)*10.2<0,0,@if((A[0]+25)*10.2>255,255,(A[0]+25)*10.2));@if(A[0]>-90,255,0);@if((A[2]+25)*10.2<0,0,@if((A[2]+25)*10.2>255,255,(A[2]+25)*10.2));@if((A[3]+32)*10.625<0,0,@if((A[3]+32)*10.625>255,255,(A[3]+32)*10.625));@if((A[2]+25)*10.2<0,0,@if((A[2]+25)*10.2>255,255,(A[2]+25)*10.2));@if(A[2]>-90,255,0);255;40;40;A[4]*170;@if((A[0]+35)*6.375<0,0,@if((A[0]+35)*6.375>255,255,(A[0]+35)*6.375));@if((A[0]+35)*6.375<0,0,@if((A[0]+35)*6.375>255,255,(A[0]+35)*6.375));@if((A[0]+35)*6.375<0,0,@if((A[0]+35)*6.375>255,255,(A[0]+35)*6.375));@if(A[0]>-90,255,0);@if((A[1]+35)*6.375<0,0,@if((A[1]+35)*6.375>255,255,(A[1]+35)*6.375));@if((A[1]+35)*6.375<0,0,@if((A[1]+35)*6.375>255,255,(A[1]+35)*6.375));@if((A[1]+35)*6.375<0,0,@if((A[1]+35)*6.375>255,255,(A[1]+35)*6.375));@if(A[1]>-90,255,0);@if((A[2]+35)*6.375<0,0,@if((A[2]+35)*6.375>255,255,(A[2]+35)*6.375));@if((A[2]+35)*6.375<0,0,@if((A[2]+35)*6.375>255,255,(A[2]+35)*6.375));@if((A[2]+35)*6.375<0,0,@if((A[2]+35)*6.375>255,255,(A[2]+35)*6.375));@if(A[2]>-90,255,0);@if((A[3]+35)*6.375<0,0,@if((A[3]+35)*6.375>255,255,(A[3]+35)*6.375));@if((A[3]+35)*6.375<0,0,@if((A[3]+35)*6.375>255,255,(A[3]+35)*6.375));@if((A[3]+35)*6.375<0,0,@if((A[3]+35)*6.375>255,255,(A[3]+35)*6.375));@if(A[3]>-90,255,0);@if((A[0]-A[1])*12.75<0,0,@if((A[0]-A[1])*12.75>255,255,(A[0]-A[1])*12.75));@if((A[0]-A[1])*12.75<0,0,@if((A[0]-A[1])*12.75>255,255,(A[0]-A[1])*12.75));@if((A[0]-A[1])*12.75<0,0,@if((A[0]-A[1])*12.75>255,255,(A[0]-A[1])*12.75));@if((A[0]>-90)&&(A[1]>-90),255,0);@if((A[2]-A[3])*12.75<0,0,@if((A[2]-A[3])*12.75>255,255,(A[2]-A[3])*12.75));@if((A[2]-A[3])*12.75<0,0,@if((A[2]-A[3])*12.75>255,255,(A[2]-A[3])*12.75));@if((A[2]-A[3])*12.75<0,0,@if((A[2]-A[3])*12.75>255,255,(A[2]-A[3])*12.75));@if((A[2]>-90)&&(A[3]>-90),255,0)"    FORCE_FLOAT_DIVISION yes    FLUSH_WHEN_GROUPS_CHANGE { <Unused> }    ATTRIBUTE_ACCUMULATION_MODE { <Unused> }    ATTRIBUTE_CONFLICT_RESOLUTION { <Unused> }    REJECT_INVALID_FEATURES YES    OUTPUT { RESULT FEATURE_TYPE PaintAll_RESULT          }    OUTPUT { <REJECTED> FEATURE_TYPE PaintAll_<REJECTED>          }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME PaintAll_<Rejected> INPUT FEATURE_TYPE PaintAll_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, PaintAll<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} TeeFactory    FACTORY_NAME { NineImages_Cloner }    INPUT  FEATURE_TYPE PaintAll_RESULT    NUMBER_OF_COPIES { "9" }    COPY_NUMBER_ATTRIBUTE { _copynum }    REJECT_INVALID YES    OUTPUT { COPY NineImages_COPY         }
+# -------------------------------------------------------------------------
+FACTORY_DEF {CONNECTED} CreationFactory    FACTORY_NAME { BandsForThisCopy_Creator }    OUTPUT { FEATURE_TYPE BandsForThisCopy_____CREATED______ }
+FACTORY_DEF {*} AttrSetFactory    FACTORY_NAME { BandsForThisCopy }    COMMAND_PARM_EVALUATION SINGLE_PASS    INPUT { FEATURE_TYPE BandsForThisCopy_____CREATED______ }    INPUT  FEATURE_TYPE NineImages_COPY    MULTI_FEATURE_MODE { NO }    NULL_ATTR_MODE { NO_OP }    ATTRSET_CREATE_DIRECTIVES _PROPAGATE_MISSING_FDIV    NUM_OF_COLUMNS 5    ATTR_ACTION { "" "_bands" "SET_TO" "@Evaluate<openparen>@Value<openparen>_copynum<closeparen>*4+0<closeparen>:ALL;@Evaluate<openparen>@Value<openparen>_copynum<closeparen>*4+1<closeparen>:ALL;@Evaluate<openparen>@Value<openparen>_copynum<closeparen>*4+2<closeparen>:ALL;@Evaluate<openparen>@Value<openparen>_copynum<closeparen>*4+3<closeparen>:ALL" "buffer" }    OUTPUT { OUTPUT FEATURE_TYPE BandsForThisCopy_OUTPUT        }
+# -------------------------------------------------------------------------
+INCLUDE [ if { ({ATTRIBUTE} == {USER}) } {    puts {MACRO SELECTION_ARGS "<Unused>"}; } else {    puts {MACRO SELECTION_ARGS @Value("_bands")}; } ]
+FACTORY_DEF {*} ExecuteFunctionFactory    FACTORY_NAME { KeepFourBands }    INPUT  FEATURE_TYPE BandsForThisCopy_OUTPUT    FUNCTION_DEFINITION { @SelectRaster(REJECTABLE, $(SELECTION_ARGS)) }    OUTPUT { COMPLETE FEATURE_TYPE KeepFourBands_OUTPUT        }    OUTPUT { REJECTED FEATURE_TYPE KeepFourBands_<REJECTED>        }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME KeepFourBands_<Rejected> INPUT FEATURE_TYPE KeepFourBands_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, KeepFourBands<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+FACTORY_DEF {*} ExecuteFunctionFactory    FACTORY_NAME { DropOtherBands }    INPUT  FEATURE_TYPE KeepFourBands_OUTPUT    FUNCTION_DEFINITION { @RemoveRasterBands(REJECTABLE, KEEP) }    OUTPUT { COMPLETE FEATURE_TYPE DropOtherBands_OUTPUT        }    OUTPUT { REJECTED FEATURE_TYPE DropOtherBands_<REJECTED>        }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME DropOtherBands_<Rejected> INPUT FEATURE_TYPE DropOtherBands_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, DropOtherBands<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+INCLUDE [    puts {DEFAULT_MACRO FeatureWriterDataset_FeatureWriter @EvaluateExpression(FDIV,STRING_ENCODED,<solidus>data<solidus>nisar<solidus>out<solidus>$(MISSION$encode),FeatureWriter)}; ]
+FACTORY_DEF {*} WriterFactory    COMMAND_PARM_EVALUATION SINGLE_PASS    FEATURE_TABLE_SHIM_SUPPORT INPUT_SPEC_ONLY    FLUSH_WHEN_GROUPS_CHANGE { <Unused> }    FACTORY_NAME { FeatureWriter }    FACTORY_CONFIG_PARAMETERS { ESCAPE_COMMAS_IN_FTP_FORMAT_PARAMETERS,no }    WRITER_TYPE { PNGRASTER }    WRITER_DATASET { "$(FeatureWriterDataset_FeatureWriter)" }    WRITER_SETTINGS { "RUNTIME_MACROS,FORMAT_ATTRIBUTES_OVERRIDE_FEATURE_TYPE_PARAMETERS<comma>No<comma>COORDINATE_SYSTEM_GRANULARITY<comma>FEATURE<comma>SPATIAL_GROUP<comma><comma>COORDINATE_SYSTEM<comma>,METAFILE,PNGRASTER" }    WRITER_METAFILE { "ATTRIBUTE_CASE,ANY_FIRST_NONNUMERIC,ATTRIBUTE_INVALID_CHARS,<quote><space><openparen><closeparen>,ATTRIBUTE_LENGTH,64,ATTR_TYPE_MAP,char<openparen>width<closeparen><comma>fme_varchar<openparen>width<closeparen><comma>char<openparen>width<closeparen><comma>fme_varbinary<openparen>width<closeparen><comma>char<openparen>width<closeparen><comma>fme_char<openparen>width<closeparen><comma>char<openparen>width<closeparen><comma>fme_binary<openparen>width<closeparen><comma>char<openparen>254<closeparen><comma>fme_buffer<comma>char<openparen>254<closeparen><comma>fme_binarybuffer<comma>char<openparen>254<closeparen><comma>fme_xml<comma>char<openparen>254<closeparen><comma>fme_json<comma>datetime<comma>fme_datetime<comma>time<comma>fme_time<comma>date<comma>fme_date<comma><quote>decimal<openparen>width<comma>decimal<closeparen><quote><comma><quote>fme_decimal<openparen>width<comma>decimal<closeparen><quote><comma>float<comma>fme_real64<comma>float<comma>fme_real32<comma>integer<comma>fme_int32<comma>largeint<comma>fme_int64<comma><quote>decimal<openparen>20<comma>0<closeparen><quote><comma>fme_uint64<comma>largeint<comma>fme_uint32<comma>logical<comma>fme_boolean<comma>smallint<comma>fme_int16<comma>integer<comma>fme_uint16<comma>smallint<comma>fme_int8<comma>smallint<comma>fme_uint8,DEST_ILLEGAL_ATTR_LIST,,FEATURE_TYPE_CASE,ANY,FEATURE_TYPE_INVALID_CHARS,<quote>:?*<lt><gt><pipe>,FEATURE_TYPE_LENGTH,0,FEATURE_TYPE_LENGTH_INCLUDES_PREFIX,false,FEATURE_TYPE_RESERVED_WORDS,,FORMAT_METAFILE,$(FME_HOME_ENCODED)metafile<solidus>pngraster.fmf,FORMAT_NAME,PNGRASTER,GEOM_MAP,pngraster_raster<comma>fme_raster<comma>pngraster_none<comma>fme_no_geom<comma>fme_no_map<comma>fme_point<comma>fme_no_map<comma>fme_text<comma>fme_no_map<comma>fme_line<comma>fme_no_map<comma>fme_arc<comma>fme_no_map<comma>fme_polygon<comma>fme_no_map<comma>fme_ellipse<comma>fme_no_map<comma>fme_rectangle<comma>fme_no_map<comma>fme_rounded_rectangle<comma>fme_no_map<comma>fme_no_geom<comma>fme_no_map<comma>fme_surface<comma>fme_no_map<comma>fme_solid<comma>fme_no_map<comma>fme_point_cloud<comma>pngraster_none<comma>fme_collection,READER_ATTR_INDEX_TYPES,,READER_FORMAT_TYPE,,READER_USES_DEF,yes,SOURCE,no,SUPPORTS_FEAT_TYPE_FANOUT,yes,SUPPORTS_MULTI_GEOM,yes,WORKBENCH_CANNED_SCHEMA,,WRITER,PNGRASTER,WRITER_ATTR_INDEX_TYPES,,WRITER_DEFLINE_PARMS,<quote>GUI<space>NAMEDGROUP<space>pngraster_layer_group<space>pngraster_world_file_generation%pngraster_tab_file_generation%pngraster_optimize<space><space>Raster<quote><comma><comma><quote>GUI<space>CHOICE_OR_ATTR<space>pngraster_world_file_generation<space>yes%no<space>World<space>File<space>Generation<quote><comma>yes<comma><quote>GUI<space>CHOICE_OR_ATTR<space>pngraster_tab_file_generation<space>yes%no<space>TAB<space>File<space>Generation<quote><comma>no<comma><quote>GUI<space>CHOICE_OR_ATTR<space>pngraster_optimize<space>No_optimization%Level_1_<openparen>recommended<closeparen>%Level_2%Level_3%Level_4%Level_5%Level_6%Level_7_<openparen>slow<closeparen><space>PNG<space>Optimization<space>Level<space><openparen>reduces<space>file<space>size<closeparen><quote><comma>No_optimization,WRITER_DEF_LINE_TEMPLATE,<opencurly>FME_GEN_GROUP_NAME<closecurly><comma>pngraster_world_file_generation<comma><dollar><openbracket>_PNGRASTER_WRITER_WORLD_FILE_GENERATION<closebracket><comma>pngraster_tab_file_generation<comma><dollar><openbracket>_PNGRASTER_WRITER_TAB_FILE_GENERATION<closebracket><comma>pngraster_optimize<comma><dollar><openbracket>_PNGRASTER_WRITER_OPTIMIZE<closebracket>,WRITER_FORMAT_PARAMETER,AUTO_FANOUT_ATTRIBUTE<comma>fme_basename<comma>READER_AUTO_EXPOSE<comma><quote>fme_basename<space>char<openparen>50<closeparen><quote><comma>MIME_TYPE<comma>image<solidus>PNG<comma>ADVANCED_PARMS<comma>PNGRASTER_IN_SCALE_COLOR_TO_STANDARD_BIT_DEPTH<comma>FEATURE_TYPE_NAME<comma><quote>Raster<space>File<quote><comma>FEATURE_TYPE_DEFAULT_NAME<comma>Raster1<comma>READER_DATASET_HINT<comma><quote>Select<space>the<space>PNG<space>raster<space>file<openparen>s<closeparen><quote><comma>WRITER_DATASET_HINT<comma><quote>Specify<space>a<space>folder<space>for<space>the<space>PNG<space>raster<space>file<quote>,WRITER_FORMAT_TYPE,,WRITER_HAS_DEFLINE_ATTRS,yes,WRITER_USES_DEF,yes" }    WRITER_FEATURE_TYPES { "img<at>Value<openparen>_copynum<closeparen>:Raster1,ftp_feature_type_name,img<at>Value<openparen>_copynum<closeparen>,ftp_writer,PNGRASTER,ftp_dynamic_schema,no,ftp_dynamic_feature_type_name_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_geometry_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_schema_def_name_type,DYN_SCHEMA_PROP_AUTO,ftp_dynamic_schema_sources,<lt>lt<gt>Unused<lt>gt<gt>,ftp_attribute_source,0,ftp_user_attributes,_bands<comma>char<lt>openparen<gt>254<lt>closeparen<gt><comma>_copynum<comma>largeint,ftp_user_attribute_values,<comma>,ftp_format_parameters,pngraster_layer_group<comma><comma>pngraster_world_file_generation<comma>no<comma>pngraster_tab_file_generation<comma>no<comma>pngraster_optimize<comma>No_optimization" }    WRITER_PARAMS { "COORDINATE_SYSTEM,,COORDINATE_SYSTEM_GRANULARITY,FEATURE,FORMAT_ATTRIBUTES_OVERRIDE_FEATURE_TYPE_PARAMETERS,No,SPATIAL_GROUP," }    DATASET_ATTR { "_dataset" }    FEATURE_TYPE_LIST_ATTR { "_feature_types" }    TOTAL_FEATURES_WRITTEN_ATTR { "_total_features_written" }    OUTPUT_PORTS { "" }    INPUT Raster1 FEATURE_TYPE DropOtherBands_OUTPUT  @FeatureType(ENCODED,@EvaluateExpression(FDIV,STRING_ENCODED,img<at>Value<openparen>_copynum<closeparen>,FeatureWriter))    OUTPUT { REJECTED FEATURE_TYPE FeatureWriter_<REJECTED>        }
+DEFAULT_MACRO _WB_BYPASS_TERMINATION No
+FACTORY_DEF * TeeFactory FACTORY_NAME FeatureWriter_<Rejected> INPUT FEATURE_TYPE FeatureWriter_<REJECTED>  NO_LOGGING   OUTPUT FAILED FEATURE_TYPE * @Abort(ENCODED, FeatureWriter<space>output<space>a<space><lt>Rejected<gt><space>feature.<space><space>To<space>continue<space>translation<space>when<space>features<space>are<space>rejected<comma><space>change<space><apos>Workspace<space>Parameters<apos><space><gt><space>Log<space>and<space>Troubleshoot<space><gt><space><apos>Rejected<space>Feature<space>Handling<apos><space>to<space><apos>Continue<space>Translation<apos>)
+# -------------------------------------------------------------------------
+
+FACTORY_DEF * RoutingFactory FACTORY_NAME "Destination Feature Type Routing Correlator"   COMMAND_PARM_EVALUATION SINGLE_PASS   INPUT FEATURE_TYPE *   FEATURE_TYPE_ATTRIBUTE __wb_out_feat_type__   OUTPUT ROUTED FEATURE_TYPE *    OUTPUT NOT_ROUTED FEATURE_TYPE __nuke_me__ @Tcl2("FME_StatMessage 818059 [FME_GetAttribute fme_template_feature_type] 818060 818061 fme_warn")
+# -------------------------------------------------------------------------
+
+FACTORY_DEF * TeeFactory   FACTORY_NAME "Final Output Nuker"   INPUT FEATURE_TYPE __nuke_me__
+

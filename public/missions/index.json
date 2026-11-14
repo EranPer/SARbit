@@ -1,0 +1,50 @@
+[
+ {
+  "id": "A1",
+  "topic": "agriculture",
+  "title": "Rice season",
+  "lat": 30.5,
+  "lon": 75.5,
+  "difficulty": 1
+ },
+ {
+  "id": "A3",
+  "topic": "agriculture",
+  "title": "Summer harvest (home mission)",
+  "lat": 32.62,
+  "lon": 35.3,
+  "difficulty": 2
+ },
+ {
+  "id": "D1",
+  "topic": "forest",
+  "title": "Clearing along BR-163",
+  "lat": -7.1,
+  "lon": -55.4,
+  "difficulty": 2
+ },
+ {
+  "id": "D3",
+  "topic": "forest",
+  "title": "Nickel mine eats the rainforest",
+  "lat": 0.45,
+  "lon": 127.95,
+  "difficulty": 1
+ },
+ {
+  "id": "M3",
+  "topic": "marine",
+  "title": "Mississippi Delta wetland loss",
+  "lat": 29.4,
+  "lon": -89.9,
+  "difficulty": 3
+ },
+ {
+  "id": "W2",
+  "topic": "floods",
+  "title": "Limpopo floods",
+  "lat": -24.5,
+  "lon": 33.0,
+  "difficulty": 1
+ }
+]
