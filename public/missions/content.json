@@ -136,7 +136,7 @@
     "db": 3,
     "water_max": 99
    },
-   "loops": 4
+   "loops": 5
   },
   "camera": {
    "clouds": "yes",

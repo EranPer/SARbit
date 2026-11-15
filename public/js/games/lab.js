@@ -190,7 +190,9 @@
         M.labResult = { stars: s, f1 };
         api.next("Score it ⭐", true);
       };
-      M.finishGame = () => { const r = M.labResult || { stars: 0, f1: M.labThr.f1 };
+      M.finishGame = () => {
+        if (!locked) api.kit.querySelector("#det-lock").click();   // "Score it" without locking: score the setting on screen
+        const r = M.labResult || { stars: 0, f1: M.labThr.f1 };
         api.done({ got: r.stars, total: 3, stars: r.stars, line: `Your flood detector matched the science team's map by <b>${Math.round(r.f1 * 100)} %</b>` }); };
       api.say("Every radar picture is a bit grainy, so everything changes a little. Slide to choose how much darker a place must get before you call it flooded.");
       api.next("Score it ⭐", true);
@@ -261,7 +263,9 @@
         M.labResult = { stars: s, b };
         api.next("Score it ⭐", true);
       };
-      M.finishGame = () => { const r = M.labResult || { stars: 0, b: runs[bestI].r * 2 + 1 };
+      M.finishGame = () => {
+        if (!locked) api.kit.querySelector("#sp-lock").click();   // "Score it" without locking: score the window on screen
+        const r = M.labResult || { stars: 0, b: runs[bestI].r * 2 + 1 };
         api.done({ got: r.stars, total: 3, stars: r.stars, line: `You cleaned the speckle; the best window here was <b>${r.b} × ${r.b}</b> pixels` }); };
       api.say("Look how grainy the radar is! Slide to average neighbouring pixels and watch the grainy dots and the shore.");
       api.next("Score it ⭐", true);

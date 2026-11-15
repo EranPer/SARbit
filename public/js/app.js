@@ -326,6 +326,7 @@
 
   async function openMission(id, lab = null) {
     show("screen-mission");
+    next("Loading the radar pictures… ⏳", false);   // the last mission's button must not fire while this one loads
     $("#screen-mission").classList.toggle("lab", !!lab);
     const base = `missions/${id}/`;
     const info = await (await fetch(base + "mission.json")).json();
@@ -706,25 +707,28 @@
     if (first) { sfx("glow"); react("happy"); log("meter", { best: M.best }); }
   }
 
+  // the step-3 button says what comes next in THIS mission's game
+  const NEXT3 = () => ({ quiz: "Next: check the fields 📍", lasso: "Next: catch the clearings ⭕", hunt: "Next: hunt the platforms 🛢️",
+    order: "Next: put them in order 🕰️" })[M.game.type] || "Next: find the glowing spots 🎯";
   function glowHint() {
     const { red, cyan } = M.buckets;
     if (!red || !cyan) {
       say(!red && !cyan
         ? "Drag the BEFORE card into the RED bucket. (Or tap the card, then tap the bucket.)"
         : "Now drag the other card into the empty bucket.");
-      return next("Next: find the glowing spots 🎯", false);
+      return next(NEXT3(), false);
     }
     award("glow", PTS.glow);
     if (!M.measured && M.info.channels.CO !== M.info.channels.CX) { M.best = glowShare("CX") > glowShare("CO") ? "CX" : "CO"; M.measured = true; }
     glowMeter();
     if (M.tried.size === 2) {
-      next("Next: find the glowing spots 🎯", true);
+      next(NEXT3(), true);
       return say(glassesWhy() + (M.glasses === M.best ? ` You're wearing them: +${PTS.glasses} bonus when you go on!` : " Switch to them for a bonus!"));
     }
     say(((M.content.say || {}).glow && red === "before" ? M.content.say.glow : red === "before"
       ? "It glows! RED = it got darker, BLUE-GREEN = it got brighter, GREY = nothing changed."
       : "It glows! BLUE-GREEN = it got darker, RED = it got brighter, GREY = nothing changed.") + glassesTip());
-    next("Next: find the glowing spots 🎯", true);
+    next(NEXT3(), true);
   }
   function drop(bucket, date) {
     if (!date) return;
@@ -1041,7 +1045,7 @@
         <li>🌗 <b>Bright</b> = strong echo (rough, tall crops) · <b>dark</b> = weak echo (smooth, bare)</li>
         <li>✨ <b>Red + blue-green</b> makes every change glow</li>
         <li>🕶 <b>HH / HV glasses</b>: HV hears the plants</li></ul>` : "";
-    box.innerHTML = `<img class="done-alien" src="art/alien-${st >= 2 ? "happy" : "wave"}.webp" alt="">
+    box.innerHTML = `<div class="done-alien-wrap"><img class="done-alien" src="art/alien-${st >= 2 ? "happy" : "wave"}.webp" alt=""><span class="ai-tag">AI art</span></div>
       <p class="done-kicker">${M.tutorial ? "Training complete! 🎓" : M.lab ? "Radar Lab done" : "Mission complete!"}</p>
       <h2>${esc(title)}</h2>
       <div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>

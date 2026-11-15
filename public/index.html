@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SARbit · Radar Cleanup</title>
+  <meta name="description" content="A kids' game for NASA Space Apps 2026 (Dancing with the SARs): an alien with a radar shows how real NISAR radar sees floods, cut forests and harvests through clouds and darkness.">
+  <link rel="icon" href="art/ufo.webp" type="image/webp">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SARbit · Radar Cleanup">
+  <meta property="og:description" content="Help an alien find what changed on Earth, using real NASA-ISRO NISAR radar. A kids' game for NASA Space Apps 2026.">
+  <meta property="og:url" content="https://sarbit-radar-cleanup.vercel.app/">
+  <meta property="og:image" content="https://sarbit-radar-cleanup.vercel.app/pitch/img/glow.jpg">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -38,7 +46,7 @@
           <input id="name-input" maxlength="20" placeholder="Your cadet name (a nickname)" required autocomplete="off">
           <button type="submit">Start mission</button>
         </form>
-        <p class="credit">Real data: NASA-ISRO NISAR L-band radar, 2026.</p>
+        <p class="credit">Real data: NASA-ISRO NISAR L-band radar, 2026. Alien, icons and mission cards: AI-generated art (Grok Imagine).</p>
         <a class="menasim" href="https://www.menasim.org/home-en" target="_blank" rel="noopener noreferrer"><img src="art/menasim.webp" alt="MENASIM logo">
           <span>Made by a <b>MENASIM</b> team: engineers who volunteer for environmental challenges. Mentor: Yakov Geltser.</span></a>
       </div>
@@ -63,6 +71,8 @@
         <p class="info-row"><button id="btn-world-board" class="ghost small"><img class="ico" src="art/ui-board.webp" alt="">Full scoreboard</button>
           <button id="btn-world-finish" class="ghost small"><img class="ico" src="art/ui-finish.webp" alt="">Finish</button></p>
       </div>
+      <p class="credit">Radar: NASA-ISRO NISAR (ASF DAAC). Camera photos: NASA GIBS. Maps: © OpenStreetMap, Esri.
+        Alien, icons and mission cards: AI-generated art (Grok Imagine).</p>
     </aside>
     <div id="world-map"></div>
   </section>
