@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SARbit · Project Demo</title>
+<meta name="description" content="SARbit: NASA Space Apps Challenge 2026 project demo (7 slides). Challenge: Dancing with the SARs.">
+<style>
+  :root { --bg: #0b1020; --panel: #121a33; --panel2: #18223f; --line: #26335c; --text: #e8ecff; --muted: #9aa6cf;
+          --accent: #7cf3c7; --red: #ff5a5a; --gold: #ffc24a; --blue: #5aa8ff; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #05070f; color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 24px 0; }
+  .slide { width: 1280px; height: 720px; flex: none; position: relative; overflow: hidden; border-radius: 14px;
+           background: radial-gradient(1200px 600px at 85% -10%, #2a1f5c 0%, transparent 60%), radial-gradient(900px 500px at -10% 110%, #0f3a3a 0%, transparent 60%), var(--bg);
+           padding: 56px 64px; display: flex; flex-direction: column; }
+  .num { position: absolute; right: 28px; bottom: 20px; color: var(--muted); font-size: 15px; }
+  .foot { position: absolute; left: 64px; bottom: 20px; color: var(--muted); font-size: 14px; }
+  h1 { font-size: 76px; line-height: 1; margin: 0; letter-spacing: -1px; }
+  h1 .acc, h2 .acc { color: var(--accent); }
+  h2 { font-size: 46px; line-height: 1.1; margin: 0 0 22px; letter-spacing: -0.5px; }
+  .kicker { color: var(--accent); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; font-size: 16px; margin: 0 0 12px; }
+  p, li { font-size: 24px; line-height: 1.4; }
+  .muted { color: var(--muted); }
+  .cols { display: flex; gap: 40px; flex: 1; min-height: 0; }
+  .cols > * { min-width: 0; }
+  .shot { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid var(--line); box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+  .ai { position: absolute; right: 8px; bottom: 8px; background: rgba(5,7,15,.82); color: #fff; font-size: 12px; font-weight: 700;
+        padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,.35); }
+  .tag { display: inline-block; background: var(--panel2); border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; font-size: 18px; margin: 0 6px 8px 0; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+  .step { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+  .step b { display: block; font-size: 24px; margin-bottom: 4px; }
+  .step > span { font-size: 17px; color: var(--muted); line-height: 1.35; display: block; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 22px; color: var(--accent); }
+  .card p { margin: 0; font-size: 18px; color: var(--text); }
+  ul.tight { margin: 0; padding-left: 26px; } ul.tight li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 18px; }
+  td { padding: 6px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  td:first-child { white-space: nowrap; font-weight: 700; }
+  .big-q { font-size: 30px; line-height: 1.35; margin: 0 0 18px; }
+  .acc { color: var(--accent); }
+  .red { color: var(--red); } .gold { color: var(--gold); }
+  a { color: var(--accent); }
+  @media screen and (max-width: 1320px) { .deck { zoom: calc(100vw / 1330px); } }
+  @media print {
+    @page { size: 1280px 720px; margin: 0; }
+    html, body { background: var(--bg); }
+    .deck { padding: 0; gap: 0; display: block; zoom: 1 !important; }
+    .slide { border-radius: 0; page-break-after: always; break-after: page; }
+  }
+</style>
+</head>
+<body>
+<main class="deck">
+
+<!-- 1 · title -->
+<section class="slide">
+  <div class="cols" style="align-items:center">
+    <div style="flex:1.05">
+      <p class="kicker">NASA Space Apps Challenge 2026 · Dancing with the SARs</p>
+      <h1>SAR<span class="acc">bit</span></h1>
+      <p style="font-size:32px;margin:18px 0 26px;line-height:1.3">An alien with a radar teaches kids to see how Earth changes, <b>through clouds and darkness</b>.</p>
+      <p style="margin:0 0 6px"><b>Team:</b> SARbit, a MENASIM team</p>
+      <p style="margin:0 0 6px"><b>Members:</b> Eran · Yonatan · Ben</p>
+      <p style="margin:0 0 22px"><b>Mentor:</b> Yakov Geltser</p>
+      <p class="muted" style="font-size:20px;margin:0">▶ Play: <a href="https://sarbit-radar-cleanup.vercel.app">sarbit-radar-cleanup.vercel.app</a><br>Code: <a href="https://github.com/EranPer/SARbit">github.com/EranPer/SARbit</a></p>
+    </div>
+    <div class="shot" style="flex:1;height:520px"><img src="img/intro.jpg" alt="SARbit start screen"><span class="ai">Alien art: AI-generated (Grok Imagine)</span></div>
+  </div>
+  <span class="num">1 / 7</span>
+</section>
+
+<!-- 2 · intro: the problem -->
+<section class="slide">
+  <p class="kicker">Why</p>
+  <h2>Radar sees what cameras can't.<br><span class="acc">But almost nobody can read it.</span></h2>
+  <div class="cols">
+    <div style="flex:1">
+      <ul class="tight">
+        <li>Floods, storms and fires come with <b>clouds and smoke</b>. A camera from space often sees nothing.</li>
+        <li><b>NISAR</b> (NASA-ISRO) radar sends its own waves: it sees the ground <b>day and night, through clouds</b>.</li>
+        <li>But radar pictures are grey, grainy and look "backwards": water is black, forests glow.</li>
+      </ul>
+      <p class="big-q" style="margin-top:22px">Our goal: a <b class="acc">10-year-old</b> reads a real radar change map in <b class="acc">5 minutes</b>, and knows why it matters.</p>
+    </div>
+    <div class="shot" style="flex:1"><img src="img/look.jpg" alt="Valencia floods: before and after radar pictures with a slider"><span class="ai">Alien art: AI-generated (Grok Imagine)</span></div>
+  </div>
+  <span class="foot">Valencia flash floods, Oct 2026: NISAR before ⇄ after, the swipe step</span>
+  <span class="num">2 / 7</span>
+</section>
+
+<!-- 3 · how it plays -->
+<section class="slide">
+  <p class="kicker">How it plays</p>
+  <h2>Four steps per mission: <span class="acc">look, glow, find, score</span></h2>
+  <div class="steps">
+    <div class="step"><b>👀 Look</b><span>Slide between the BEFORE and AFTER radar pictures. What changed?</span></div>
+    <div class="step"><b>✨ Glow</b><span>Drag BEFORE into <span class="red">red</span>, AFTER into blue-green: every change lights up.</span></div>
+    <div class="step"><b>🎯 Find</b><span>Tap the glowing spots, lasso cut forest, hunt oil platforms, order the seasons.</span></div>
+    <div class="step"><b>⭐ Score</b><span>Stars, points, and NISAR's own change map to compare with.</span></div>
+  </div>
+  <div class="cols">
+    <div class="shot" style="flex:1"><img src="img/glow.jpg" alt="The glow step: flooded fields glow red near Valencia"><span class="ai">Alien art: AI-generated (Grok Imagine)</span></div>
+    <div class="shot" style="flex:1"><img src="img/lasso.jpg" alt="The lasso game: loops catch forest clearings along the BR-163 highway"><span class="ai">Alien art: AI-generated (Grok Imagine)</span></div>
+  </div>
+  <span class="num">3 / 7</span>
+</section>
+
+<!-- 4 · what's in it -->
+<section class="slide">
+  <p class="kicker">What we built in 2 days</p>
+  <h2>7 real events from 2026, <span class="acc">5 game types</span>, a Radar Lab</h2>
+  <div class="cols">
+    <div class="shot" style="flex:1.1"><img src="img/world.jpg" alt="World map of SARbit missions"><span class="ai">Mission cards: AI-generated (Grok Imagine)</span></div>
+    <div style="flex:1">
+      <table>
+        <tr><td>🌊 Floods</td><td>Valencia (Spain), Limpopo (Mozambique): find the flooded spots</td></tr>
+        <tr><td>🌳 Forest</td><td>BR-163, Amazon: lasso the new clearings</td></tr>
+        <tr><td>🌾 Farms</td><td>Punjab rice season, Jezreel Valley harvest</td></tr>
+        <tr><td>🏜 Land</td><td>Shrinking Great Salt Lake (Utah)</td></tr>
+        <tr><td>🛢 Sea</td><td>Mississippi Delta: hunt the 7 oil platforms</td></tr>
+      </table>
+      <div class="card" style="margin-top:16px"><h3>🧪 Radar Lab: real SAR tricks as games</h3>
+        <p>Paint with polarisations (HH/HV → RGB) · tune a flood threshold in dB · clean speckle (multi-looking) · sort echoes by backscatter</p></div>
+      <p class="muted" style="font-size:18px;margin-top:14px">Plays in any browser and on phones · several players per device · live world leaderboard</p>
+    </div>
+  </div>
+  <span class="num">4 / 7</span>
+</section>
+
+<!-- 5 · NASA data -->
+<section class="slide">
+  <p class="kicker">NASA data makes it possible</p>
+  <h2>Every glowing pixel is <span class="acc">real NISAR radar</span></h2>
+  <div class="cols">
+    <div style="flex:1;display:grid;gap:14px;align-content:start">
+      <div class="card"><h3>📡 NISAR L-band GCOV (NASA-ISRO, ASF DAAC)</h3><p>HH and HV backscatter, two dates per event, same orbit track, so the change is real and not geometry.</p></div>
+      <div class="card"><h3>📷 NASA GIBS: VIIRS + HLS (Landsat / Sentinel-2)</h3><p>"Can a normal camera see the ground that day?" Players compare the cloudy photo with the radar.</p></div>
+      <div class="card"><h3>🛠 Pipeline</h3><p>NISAR HDF5 → GDAL clip → FME → web pictures + answer grid. <code>from_geotiff.py</code> turns any GeoTIFF method into a new mission.</p></div>
+    </div>
+    <div style="flex:1;display:grid;gap:14px;align-content:start">
+      <div class="card"><h3>✅ The glow never lies</h3><p>The game works out the answer in the browser from the <b>same radar layers the player sees</b>: blocks whose backscatter moved ≥ 3 dB, joined into spots. No hand-drawn answers.</p></div>
+      <div class="card"><h3>🤝 Space Agency Partner data</h3><p>ISRO co-built NISAR. ESA Sentinel-2 comes in through NASA's HLS. Maps: OpenStreetMap.</p></div>
+      <div class="card"><h3>🔬 Honest science</h3><p>We dropped a "ship or platform" game when the data showed no ships, and we flag missions where L-band can't tell the story.</p></div>
+    </div>
+  </div>
+  <span class="num">5 / 7</span>
+</section>
+
+<!-- 6 · tested with players -->
+<section class="slide">
+  <p class="kicker">Tested with players, changed by them</p>
+  <h2>Players tried it. <span class="acc">We fixed what confused them.</span></h2>
+  <div class="cols">
+    <div style="flex:1">
+      <ul class="tight">
+        <li>A 10-minute playtest guide plus an in-game recorder (<code>#playtest</code>) that logs where players get stuck.</li>
+        <li>Feedback round, 15 Nov: the alien now <b>pops up in the middle</b> with each step's instructions.</li>
+        <li><b>Clear layer switches</b>: radar, glow, towns, rivers, the NASA camera photo.</li>
+        <li>A <b>"Mission complete!"</b> screen, and the lasso can now move the map.</li>
+      </ul>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:14px">
+      <div class="shot" style="flex:1"><img src="img/popup.jpg" alt="The alien's instructions pop up in the middle of the screen"><span class="ai">Alien art: AI-generated (Grok Imagine)</span></div>
+      <div class="shot" style="flex:1"><img src="img/done.jpg" alt="Mission complete pop-up with stars and points" style="object-position:center 30%"><span class="ai">Alien art: AI-generated (Grok Imagine)</span></div>
+    </div>
+  </div>
+  <span class="num">6 / 7</span>
+</section>
+
+<!-- 7 · future -->
+<section class="slide">
+  <p class="kicker">What's next</p>
+  <h2>Every new NISAR pass can become <span class="acc">a classroom mission</span></h2>
+  <div class="cols">
+    <div style="flex:1;display:grid;gap:14px;align-content:start">
+      <div class="card"><h3>🏫 Classroom mode</h3><p>A teacher picks this week's disaster; the class plays it the next morning, with the news side by side.</p></div>
+      <div class="card"><h3>🌈 More radar science</h3><p>InSAR "count the rainbow rings" for volcanoes and earthquakes, Sentinel-1 C-band vs NISAR L-band, a Hard mode.</p></div>
+      <div class="card"><h3>🌍 For every kid</h3><p>Hebrew, Arabic, Spanish… and new events built from any open data with one script.</p></div>
+    </div>
+    <div style="flex:1">
+      <div class="card" style="height:100%">
+        <h3>AI use (disclosed)</h3>
+        <p style="margin-bottom:10px">Alien, icons and mission cards: generated with <b>Grok Imagine</b> (AI), marked on every screenshot.</p>
+        <p style="margin-bottom:10px">Code and texts written with help from <b>Claude Code</b> (AI); data checks and science choices by the team.</p>
+        <h3 style="margin-top:16px">Credits</h3>
+        <p>NISAR (NASA-ISRO) via ASF DAAC · NASA GIBS (VIIRS, HLS) · OpenStreetMap · Esri imagery · Leaflet · GDAL · FME · MENASIM</p>
+        <p style="margin-top:16px;font-size:22px">▶ <a href="https://sarbit-radar-cleanup.vercel.app">sarbit-radar-cleanup.vercel.app</a></p>
+      </div>
+    </div>
+  </div>
+  <span class="num">7 / 7</span>
+</section>
+
+</main>
+</body>
+</html>
