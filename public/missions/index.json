@@ -1,19 +1,20 @@
 [
  {
+  "id": "A3",
+  "topic": "agriculture",
+  "title": "Radar school: Jezreel Valley",
+  "lat": 32.62,
+  "lon": 35.3,
+  "difficulty": 1,
+  "tutorial": true
+ },
+ {
   "id": "A1",
   "topic": "agriculture",
   "title": "Rice season",
   "lat": 30.5,
   "lon": 75.5,
   "difficulty": 1
- },
- {
-  "id": "A3",
-  "topic": "agriculture",
-  "title": "Summer harvest (home mission)",
-  "lat": 32.62,
-  "lon": 35.3,
-  "difficulty": 2
  },
  {
   "id": "D1",

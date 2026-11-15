@@ -1,5 +1,5 @@
 {
- "_how": "Text and game settings per mission. Safe to edit without coding: change the words, add facts or news links. game.rule: sign -1 = only 'got darker' counts, 1 = only 'got brighter', 0 = both; db = how strong the change must be; water_max = after must be darker than this dB (99 = off). game.focus = [left, top, right, bottom] as fractions of the picture (optional): only change inside counts. camera: {clouds: 'yes'|'no'} asks in step 1 whether a normal camera could see the ground that day (NASA GIBS photo); false hides the photo layer. layers: which map layers start switched on (towns, roads, rivers). bonus: a list of questions asked after the game, answers worked out from the radar + OpenStreetMap: {type: town|river|area|share, question, explain, of (share: change|land|wet)}; see js/games/bonus.js. camera.layer 'hls' = the sharp Landsat/Sentinel-2 photo (needs a clear date). say: {glow, find} replace the guide's text in steps 2 and 3. game.glow: 'plain' shows every change instead of greying what doesn't count. why: replaces the 'Why?' line on the score screen. offer: extra layers this mission may show in 🗺 Layers (wet_before, wet_after); the wet layers appear nowhere else.",
+ "_how": "Text and game settings per mission. Safe to edit without coding: change the words, add facts or news links. game.rule: sign -1 = only 'got darker' counts, 1 = only 'got brighter', 0 = both; db = how strong the change must be; water_max = after must be darker than this dB (99 = off). game.focus = [left, top, right, bottom] as fractions of the picture (optional): only change inside counts. camera: {clouds: 'yes'|'no'} asks in step 1 whether a normal camera could see the ground that day (NASA GIBS photo); false hides the photo layer. layers: which map layers start switched on (towns, roads, rivers). bonus: a list of questions asked after the game, answers worked out from the radar + OpenStreetMap: {type: town|river|area|share, question, explain, of (share: change|land|wet)}; see js/games/bonus.js. camera.layer 'hls' = the sharp Landsat/Sentinel-2 photo (needs a clear date). say: {glow, find} replace the guide's text in steps 2 and 3. game.glow: 'plain' shows every change instead of greying what doesn't count. why: replaces the 'Why?' line on the score screen. offer: extra layers this mission may show in 🗺 Layers (wet_before, wet_after); the wet layers appear nowhere else. tutorial: true makes this the training mission (js/tutorial.js): it comes first, opens by itself for new players, and the alien explains every step.",
  "W1": {
   "story": "In October 2026 a storm called DANA Adam poured rain on the coast near Gandia, Spain, and fields and streets filled with water.",
   "facts": [
@@ -258,7 +258,7 @@
   ]
  },
  "A3": {
-  "story": "In the Jezreel Valley in Israel, summer crops grow in June and are harvested by October.",
+  "story": "Training mission: in the Jezreel Valley in Israel, summer crops grew in June and were harvested by October. Learn how radar sees it, step by step.",
   "facts": [
    "The Jezreel Valley is called the breadbasket of Israel.",
    "Farmers grow wheat, cotton, sunflowers, corn, chickpeas and watermelons.",
@@ -306,7 +306,8 @@
     "question": "How much farmland was harvested, all together? The yellow square is 1 km × 1 km.",
     "explain": "Radar can count harvests for a whole country, even at night."
    }
-  ]
+  ],
+  "tutorial": true
  },
  "L3": {
   "story": "The Great Salt Lake in Utah is shrinking. Where water dries up, the lakebed is left bare, and the wind blows its dust into the cities. Find the newly dried lakebed!",

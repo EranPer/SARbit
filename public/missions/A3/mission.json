@@ -54,9 +54,9 @@
  },
  "sensor": "NISAR L-band (NASA-ISRO), ASF DAAC",
  "topic": "agriculture",
- "title": "Summer harvest (home mission)",
+ "title": "Radar school: Jezreel Valley",
  "place": "Jezreel Valley, Israel",
  "lat": 32.62,
  "lon": 35.3,
- "difficulty": 2
+ "difficulty": 1
 }

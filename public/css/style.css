@@ -471,3 +471,25 @@ img.medal { height: 28px; vertical-align: middle; }
 #layer-list label.sw input:checked { background: var(--accent); }
 #layer-list label.sw input:checked::before { transform: translateX(16px); }
 #guide-panel:not(.pop):not(.min) .guide-body { padding-right: 54px; }
+
+/* ---- the training mission (js/tutorial.js) ---- */
+.tut-target { outline: 3px solid #ffe14a !important; outline-offset: 3px; border-radius: 10px; animation: tutpulse 1.2s ease-in-out infinite; }
+#mission-map.tut-target { outline-offset: -6px; }
+@keyframes tutpulse { 50% { outline-color: rgba(255, 225, 74, .25); } }
+.tut-on #guide-panel:not(.pop):not(.min) { width: min(520px, calc(100% - 400px)); border: 2px solid var(--accent); }
+.tut-on #guide-panel:not(.pop) .guide-ok.tut-show { display: block; width: auto; margin-top: 8px; padding: 8px 18px; font-size: 15px; }
+.tut-on #guide-panel:not(.pop):not(.min) .guide-title { display: block; font-size: 16px !important; }
+#tut-skip { margin-top: 8px; font-size: 12px; padding: 4px 10px; opacity: .8; }
+#guide-panel.pop #tut-skip { float: right; }
+#mission-list li.tutorial { border: 2px solid var(--accent); background: rgba(124, 243, 199, .08); }
+#mission-list li.tutorial > span:nth-child(2)::before { content: "🎓 "; }
+#mission-list li.tutorial::after { content: "START HERE"; margin-left: auto; background: var(--accent); color: #062018; font-size: 11px;
+  font-weight: 800; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.pop-card ul.learnt { text-align: left; margin: 4px 0 8px; padding-left: 20px; font-size: 14px; line-height: 1.45; }
+@media (max-width: 820px) { .tut-on #guide-panel:not(.pop):not(.min) { width: auto; } }
+#mission-map.tut-target { outline: none !important; animation: none; }
+#mission-map.tut-target::after { content: ""; position: absolute; inset: 6px; z-index: 1000; pointer-events: none; border: 4px solid #ffe14a;
+  border-radius: 12px; animation: tutframe 1.2s ease-in-out infinite; }
+@keyframes tutframe { 50% { border-color: rgba(255, 225, 74, .25); } }
+.tut-on #guide-panel .info-row { display: none; }
+.tut-on #swipe-bar { bottom: auto; top: 62px; }   /* the tip bubble is wide in the training: the slider moves up out of its way */

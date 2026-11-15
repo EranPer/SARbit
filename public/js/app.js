@@ -124,14 +124,14 @@
     $("#players").hidden = !names.length;
     $("#player-list").innerHTML = names.map((n) => `<button class="player ghost" data-name="${esc(n)}"><span>${ART("ui-player")}${esc(n)}</span>
       <small>${ART("star-on")}${sum(players[n].stars)} · ${sum(players[n].scores)} pts</small></button>`).join("");
-    $("#player-list").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { usePlayer(b.dataset.name); openWorld(); }));
+    $("#player-list").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { usePlayer(b.dataset.name); startPlaying(); }));
     $("#name-input").value = names.length ? "" : player;
   }
   function switchPlayer() { if (M && M.cleanup) { M.cleanup(); M.cleanup = null; } show("screen-intro"); renderPlayers(); $("#name-input").focus(); }
   $("#name-form").addEventListener("submit", (e) => {
     e.preventDefault();
     usePlayer($("#name-input").value.trim().slice(0, 20) || "Cadet");
-    openWorld();
+    startPlaying();
   });
   $("#hud-name").addEventListener("click", switchPlayer);
   $("#btn-switch").addEventListener("click", switchPlayer);
@@ -156,7 +156,7 @@
               `<i style="border-top-color:${t.color}"></i>${done ? `<span class="stars">${starText(st)}</span>` : ""}` });
       L.marker([m.lat, m.lon], { icon: pin, title: m.title, riseOnHover: true })
         .addTo(worldMap).bindTooltip(`${m.title} · ${t.label}${done ? " · done ✓" : ""}`, { direction: "top" }).on("click", () => pick(m));
-      const li = el("li", { class: done ? "done" : "" }, [
+      const li = el("li", { class: (done ? "done" : "") + (m.tutorial && !done ? " tutorial" : "") }, [
         el("span", { class: "chip", style: `background:${t.color}` }),
         el("span", { text: m.title }),
       ]);
@@ -167,6 +167,13 @@
       list.appendChild(li);
     });
     drawBoard(); drawLabs();
+  }
+  // a new cadet (nothing played yet) goes straight into the training mission
+  async function startPlaying() {
+    if (!missions.length) missions = await (await fetch("missions/index.json")).json();
+    const tut = missions.find((m) => m.tutorial);
+    if (tut && !Object.keys(scores).length) return openMission(tut.id);
+    openWorld();
   }
 
   // the Radar Lab: extra games, each set at the mission where its idea shows best; closed once played, like missions
@@ -299,12 +306,16 @@
   };
   // a new step (M.popNext) opens the alien in the middle of the screen; later tips go to the small bubble
   const say = (t) => {
+    if (M && M.tutHold) return;   // the tutorial (js/tutorial.js) is talking: game tips wait
     $("#guide-text").textContent = t;
     if (M && M.popNext) { M.popNext = false; return guideMode("pop"); }
     if (guideMin) { const g = $("#guide-panel"); g.classList.remove("ping"); void g.offsetWidth; g.classList.add("ping"); }
   };
   const PLAYTEST = location.hash.includes("playtest");
+  // every game event also goes out as a "sarbit" window event, so add-ons (js/tutorial.js) can follow the player
+  const emit = (ev, data = {}) => window.dispatchEvent(new CustomEvent("sarbit", { detail: { ev, ...data } }));
   function log(ev, data = {}) {
+    emit(ev, data);
     if (!PLAYTEST || !M) return;
     (M.log = M.log || []).push({ t: Math.round((Date.now() - M.opened) / 100) / 10, ev, ...data });
   }
@@ -328,7 +339,7 @@
           picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS,
           content: extra, rule: { sign: 0, db: CHANGE_DB, water_max: 99, ...((extra.game || {}).rule || {}) },
           focus: (extra.game || {}).focus || [0, 0, 1, 1], anaCache: {}, game: extra.game || { type: "spots" }, result: null, onTap: null,
-          lab, key: lab ? `lab-${lab.id}` : id };
+          lab, key: lab ? `lab-${lab.id}` : id, tutorial: !lab && !!extra.tutorial };   // tutorial: js/tutorial.js leads the way
     const STEP3 = { spots: ART("icon-find") + "Find", quiz: ART("icon-inspect") + "Inspect", order: ART("ui-undo") + "Order", lasso: ART("icon-circle") + "Circle", hunt: ART("icon-rig") + "Hunt" };
     $('.steps li[data-step="3"]').innerHTML = STEP3[M.game.type] || "🎯 Play";
 
@@ -391,7 +402,11 @@
     backdrop();
     if (pop) $("#btn-guide-ok").focus({ preventScroll: true });
   }
-  const guideClose = () => $("#guide-panel").classList.contains("pop") && guideMode("bubble");
+  const guideClose = () => {
+    if (!$("#guide-panel").classList.contains("pop")) return;
+    if (M && M.tutNext) return M.tutNext();   // in the tutorial, "Next" moves on to the next card
+    guideMode("bubble");
+  };
   function guideSize(min) { guideMode(min ? "min" : "bubble"); }
   $("#btn-guide-min").addEventListener("click", () => guideMode("min"));
   $("#btn-guide-big").addEventListener("click", () => guideMode("pop"));
@@ -526,10 +541,10 @@
     box.innerHTML = `<p class="quiz-q">${ART("icon-camera")} Bonus: NASA's camera satellite flew over on ${date}. Can a normal camera see the ground?</p>
       <button id="cam-show" class="ghost small">📷 Show me the camera photo</button>
       <div class="quiz-a" hidden><button data-c="yes">☁️ No, clouds hide it</button><button data-c="no">🌍 Yes, I can see it</button></div>`;
-    $("#cam-show").onclick = () => { setLayer("camera", true); $("#cam-show").hidden = true; box.querySelector(".quiz-a").hidden = false;
+    $("#cam-show").onclick = () => { setLayer("camera", true); $("#cam-show").hidden = true; box.querySelector(".quiz-a").hidden = false; emit("camera-show");
       say(`This is a normal photo from space, taken on ${date}. Can you see the ground, or only clouds?`); };
     box.querySelectorAll("button[data-c]").forEach((b) => (b.onclick = () => {
-      const ok = b.dataset.c === c.clouds;
+      const ok = b.dataset.c === c.clouds; emit("camera", { ok });
       if (ok) { award("camera", 100); sfx("hit"); react("happy"); } else { sfx("miss"); react("oops"); }
       say((ok ? "Right! " : "Look again: ") + (c.clouds === "yes"
         ? "Clouds hid everything from the camera. My radar waves fly right through clouds, so I could still see!"
@@ -550,7 +565,7 @@
   function goStep(step) {
     M.step = step;
     // the first tip of each step pops up big in the middle (step 4 has its own "mission complete" pop-up)
-    M.popNext = step < 4; M.popStory = step === 1 ? $("#m-story").textContent : "";
+    M.popNext = step < 4 && !M.tutorial; M.popStory = step === 1 ? $("#m-story").textContent : "";
     M.popTitle = step === 1 ? `🛸 New mission: ${M.info.title || M.id}` : STEP_NAME[step];
     document.querySelectorAll(".steps li").forEach((li) => {
       li.classList.toggle("now", +li.dataset.step === step); li.classList.toggle("past", +li.dataset.step < step);
@@ -606,7 +621,7 @@
     $("#swipe-bar").hidden = false;
     const clip = () => before.getElement() && (before.getElement().style.clipPath = `inset(0 ${100 - $("#swipe").value}% 0 0)`);
     before.once("load", clip); clip();
-    $("#swipe").oninput = clip;
+    $("#swipe").oninput = () => { clip(); emit("swipe", { v: +$("#swipe").value }); };
   }
   function stopSwipe() {
     if (M && M.swipe) { M.swipe.forEach((l) => missionMap.removeLayer(l)); M.swipe = null; }
@@ -1001,12 +1016,17 @@
   // the "mission complete" pop-up: stars, points, and where to go next
   function missionDone(st, cheer, line) {
     const box = $("#done-pop"), title = M.lab ? M.lab.title : M.info.title || M.id;
+    const learnt = M.tutorial ? `<ul class="learnt">
+        <li>📡 <b>SAR</b> radar sends its own waves, so it sees at night and through clouds</li>
+        <li>🌗 <b>Bright</b> = strong echo (rough, tall crops) · <b>dark</b> = weak echo (smooth, bare)</li>
+        <li>✨ <b>Red + blue-green</b> makes every change glow</li>
+        <li>🕶 <b>HH / HV glasses</b>: HV hears the plants</li></ul>` : "";
     box.innerHTML = `<img class="done-alien" src="art/alien-${st >= 2 ? "happy" : "wave"}.webp" alt="">
-      <p class="done-kicker">${M.lab ? "Radar Lab done" : "Mission complete!"}</p>
+      <p class="done-kicker">${M.tutorial ? "Training complete! 🎓" : M.lab ? "Radar Lab done" : "Mission complete!"}</p>
       <h2>${esc(title)}</h2>
       <div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>
-      <p><b>${cheer}</b><br>${line}.</p>
-      <div class="actions"><button id="done-next">🌍 Next mission</button><button id="done-look" class="ghost">🔍 Look at my map</button></div>`;
+      <p><b>${cheer}</b><br>${line}.</p>${learnt ? `<p class="muted small">You learnt how radar scientists work:</p>${learnt}` : ""}
+      <div class="actions"><button id="done-next">🌍 ${M.tutorial ? "Pick your first real mission" : "Next mission"}</button><button id="done-look" class="ghost">🔍 Look at my map</button></div>`;
     box.hidden = false; backdrop();
     $("#done-next").onclick = () => { box.hidden = true; backdrop(); openWorld(); };
     $("#done-look").onclick = () => { box.hidden = true; backdrop(); };
@@ -1048,5 +1068,6 @@
 
   if (player) usePlayer(player);
   renderPlayers(); updateHud();
+  window.SARbitCore = { get M() { return M; }, guideMode, sfx, react, setCalm, newsOpen };   // for js/tutorial.js
   if (location.hash.includes("debug")) window.SARBIT = { get M() { return M; }, get map() { return missionMap; }, openMission };
 })();

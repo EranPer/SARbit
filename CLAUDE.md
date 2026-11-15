@@ -179,6 +179,8 @@ address + token) or plain Redis (`REDIS_URL`). **To switch it on:** connect the 
 Easy mode (`MODE` in `app.js`): "?" explanations, hint ring, story line. Sounds are made in the browser (🔊 toggle).
 Open `/#debug` to get `window.SARBIT` (current mission, map, `openMission`) for scripted testing.
 
+**🎓 Training mission** (`js/tutorial.js`): the mission with `"tutorial": true` in `content.json` and `index.json` (today A3, Jezreel Valley) is first on the list, marked START HERE, and opens by itself for a cadet with no missions yet. The alien leads 19 cards, one SAR idea each (echo, synthetic aperture, bright/dark, colour trick, polarisation), and waits for the player to do each action (slider, camera, layers, cards, glasses, first pin). It only listens to the `sarbit` window events that `app.js` sends from `log()`/`emit()`; card texts live in `script()` at the top of the file. Claims that depend on the data (which glasses win) are read from the mission, never assumed.
+
 **Game types (step 3), chosen per mission in `public/missions/content.json`:**
 
 | type | file | missions | how it plays |
