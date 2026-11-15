@@ -493,3 +493,10 @@ img.medal { height: 28px; vertical-align: middle; }
 @keyframes tutframe { 50% { border-color: rgba(255, 225, 74, .25); } }
 .tut-on #guide-panel .info-row { display: none; }
 .tut-on #swipe-bar { bottom: auto; top: 62px; }   /* the tip bubble is wide in the training: the slider moves up out of its way */
+/* step 1: the line where BEFORE and AFTER meet (it follows the slider knob) */
+.swipe-line { position: absolute; z-index: 450; width: 0; border-left: 3px solid #ffe14a; box-shadow: 0 0 6px rgba(0, 0, 0, .6); pointer-events: none; }
+.swipe-line .tag { position: absolute; top: 10px; white-space: nowrap; font-size: 12px; font-weight: 800; padding: 3px 8px; border-radius: 8px;
+  background: rgba(11, 16, 32, .88); color: #ffe14a; border: 1px solid #ffe14a; }
+.swipe-line .tag.a { right: 8px; } .swipe-line .tag.b { left: 8px; }
+.swipe-line.at-start .tag.a, .swipe-line.at-end .tag.b { display: none; }
+.swipe-line.at-start .tag.b { left: 8px; } .swipe-line.at-end .tag.a { right: 8px; }

@@ -35,7 +35,8 @@
         text: `There are <b>two</b> radar pictures here: <b>BEFORE</b> (${b}) and <b>AFTER</b> (${a}). ` +
           `Drag the <b>slider</b> at the top right of the map, left and right.` },
       { step: 1, title: "What changed?", target: "#mission-map", button: "Next ▶",
-        text: `Left of the line = June, right = October. Each little square is a <b>field</b>. Did some fields turn <b>darker</b>? ` +
+        text: `Slider at <b>BEFORE</b> = June, at <b>AFTER</b> = October; the yellow line shows where they meet. ` +
+          `Each little square is a <b>field</b>. Did some fields turn <b>darker</b>? ` +
           `In June the crops stood tall and rough: strong echo. After the <b>harvest</b> the soil is bare and smooth: weak echo.` },
       { step: 1, title: "Could a normal camera see it?", target: "#cam-show", wait: (e) => e.ev === "camera-show", skip: "Skip ▶",
         when: () => !$("#camera-kit").hidden && $("#cam-show"),

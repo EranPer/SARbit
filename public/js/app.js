@@ -287,7 +287,8 @@
   const INFO = {
     radar: () => "My radar sends invisible waves down to Earth and listens for the echo, like a bat. " +
       "Strong echo = bright, weak echo = dark. It even works at night and through clouds!",
-    swipe: () => "Drag the slider on the map. Left of the line is BEFORE, right of the line is AFTER. " +
+    swipe: () => "Drag the slider. All the way to BEFORE: you see the old picture. All the way to AFTER: the new one. " +
+      "In between, the yellow line on the map shows where they meet: AFTER on its left, BEFORE on its right. " +
       "Move it back and forth and look for places that change.",
     cards: () => "Both cards are radar pictures of the SAME place. BEFORE was taken before the event, AFTER was taken after it.",
     buckets: () => "I paint the BEFORE picture red and the AFTER picture blue-green. Where nothing changed, the two " +
@@ -486,6 +487,7 @@
     if (!M) return;
     const radar = M.on.has("radar"), glow = M.on.has("glow");
     if (M.swipe) M.swipe.forEach((l) => l.setOpacity(radar ? 1 : 0));
+    if (M.swipeLine) M.swipeLine.hidden = !radar;
     if (M.overlay) {
       const url = glow && M.glowUrl ? M.glowUrl : M.base + M.info.after.image;   // glow off: the plain radar picture
       if (M.overlay._url !== url) M.overlay.setUrl(url);
@@ -590,7 +592,7 @@
     if (!M.newsTouched) newsOpen(step === 1 || step === 4);
     if (step === 1) {
       startSwipe(); cameraQuestion();
-      say("Slide the bar on the map: left = BEFORE, right = AFTER. Can you spot what changed? Tap a ? if you want me to explain.");
+      say("Move the slider: towards BEFORE you see the old radar picture, towards AFTER the new one. Can you spot what changed? Tap a ? if you want me to explain.");
       next("Next: make it glow ✨", true);
     }
     if (step === 2) { refreshCards(); composite(); glowHint(); }
@@ -613,18 +615,36 @@
   $("#btn-back").addEventListener("click", openWorld);
 
   // ---------- step 1 · before ⇄ after swipe ----------
+  // The knob works like a time machine: at "before" you see only the BEFORE picture, at "after" only the AFTER one.
+  // In between, AFTER covers the map from the left up to a yellow line (AFTER on its left, BEFORE on its right),
+  // so the line moves the same way as the knob. (It used to be the other way round: moving the knob towards
+  // "before" showed MORE of the after picture, and players thought before and after were switched.)
   function startSwipe() {
-    const after = L.imageOverlay(M.base + M.info.after.image, M.bounds).addTo(missionMap);
     const before = L.imageOverlay(M.base + M.info.before.image, M.bounds).addTo(missionMap);
-    M.swipe = [after, before];
+    const after = L.imageOverlay(M.base + M.info.after.image, M.bounds).addTo(missionMap);
+    M.swipe = [before, after];
+    const line = el("div", { class: "swipe-line" });
+    line.innerHTML = `<span class="tag a">AFTER · ${esc(M.info.after.date)}</span><span class="tag b">BEFORE · ${esc(M.info.before.date)}</span>`;
+    missionMap.getContainer().appendChild(line);
+    M.swipeLine = line;
     applyRadar();
     $("#swipe-bar").hidden = false;
-    const clip = () => before.getElement() && (before.getElement().style.clipPath = `inset(0 ${100 - $("#swipe").value}% 0 0)`);
-    before.once("load", clip); clip();
-    $("#swipe").oninput = () => { clip(); emit("swipe", { v: +$("#swipe").value }); };
+    const v = () => +$("#swipe").value;
+    const draw = () => {
+      if (after.getElement()) after.getElement().style.clipPath = `inset(0 ${100 - v()}% 0 0)`;
+      const nw = missionMap.latLngToContainerPoint(M.bounds.getNorthWest()), se = missionMap.latLngToContainerPoint(M.bounds.getSouthEast());
+      const size = missionMap.getSize(), top = Math.max(0, nw.y), bottom = Math.min(size.y, se.y);
+      line.style.left = `${nw.x + (v() / 100) * (se.x - nw.x)}px`;
+      line.style.top = `${top}px`; line.style.height = `${Math.max(0, bottom - top)}px`;
+      line.classList.toggle("at-start", v() <= 2); line.classList.toggle("at-end", v() >= 98);
+    };
+    after.once("load", draw); draw();
+    missionMap.on("move zoom resize", draw); M.swipeDraw = draw;
+    $("#swipe").oninput = () => { draw(); emit("swipe", { v: v() }); };
   }
   function stopSwipe() {
     if (M && M.swipe) { M.swipe.forEach((l) => missionMap.removeLayer(l)); M.swipe = null; }
+    if (M && M.swipeLine) { M.swipeLine.remove(); M.swipeLine = null; missionMap.off("move zoom resize", M.swipeDraw); }
     $("#swipe-bar").hidden = true;
     applyRadar();
   }
