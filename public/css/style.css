@@ -500,3 +500,8 @@ img.medal { height: 28px; vertical-align: middle; }
 .swipe-line .tag.a { right: 8px; } .swipe-line .tag.b { left: 8px; }
 .swipe-line.at-start .tag.a, .swipe-line.at-end .tag.b { display: none; }
 .swipe-line.at-start .tag.b { left: 8px; } .swipe-line.at-end .tag.a { right: 8px; }
+@media (max-width: 820px) {   /* phone: the training tip stays on screen, pinned under the top bar */
+  .tut-on #guide-panel:not(.pop):not(.min) { position: fixed !important; top: 58px; bottom: auto !important; left: 8px; right: 8px; width: auto !important; z-index: 950;
+    margin: 0; max-height: 40vh; overflow: auto; box-shadow: 0 10px 30px rgba(0, 0, 0, .65); }
+  .tut-on #guide-panel:not(.pop) .alien.small { width: 64px; }
+}

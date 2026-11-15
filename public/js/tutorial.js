@@ -33,7 +33,7 @@
           `bounce my wave back. <b>Dark</b> = a weak echo: smooth things like water or flat bare soil bounce it away, like a mirror.` },
       { step: 1, title: "Step 1 · Look: move the slider", target: "#swipe-bar", wait: (e) => e.ev === "swipe" && e.count >= 4,
         text: `There are <b>two</b> radar pictures here: <b>BEFORE</b> (${b}) and <b>AFTER</b> (${a}). ` +
-          `Drag the <b>slider</b> at the top right of the map, left and right.` },
+          `Drag the <b>slider</b> at the top of the map, left and right.` },
       { step: 1, title: "What changed?", target: "#mission-map", button: "Next ▶",
         text: `Slider at <b>BEFORE</b> = June, at <b>AFTER</b> = October; the yellow line shows where they meet. ` +
           `Each little square is a <b>field</b>. Did some fields turn <b>darker</b>? ` +
@@ -123,7 +123,12 @@
     okButton(c.button || c.skip || (c.pop ? "Next ▶" : null));
     if (c.target) document.querySelectorAll(c.target).forEach((x, k) => {
       x.classList.add("tut-target");
-      if (k === 0 && x.closest(".mixer")) x.scrollIntoView({ block: "center", behavior: "smooth" });   // centre: the sticky Next bar hides the bottom
+      if (k) return;
+      if (window.innerWidth <= 820) {   // phone: the tip is pinned at the top, so bring the target into view below it
+        const r = x.getBoundingClientRect(), tip = $("#guide-panel").getBoundingClientRect();
+        const want = Math.max(tip.bottom + 16, window.innerHeight * 0.5 - r.height / 2);
+        window.scrollBy({ top: r.top - want, behavior: "smooth" });
+      } else if (x.closest(".mixer")) x.scrollIntoView({ block: "center", behavior: "smooth" });   // centre: the sticky Next bar hides the bottom
     });
     // "Next" in a pop-up moves on; a card that waits for the player only shrinks back to the bubble
     M.tutNext = () => (c.wait && !c.pop ? show() : next());
