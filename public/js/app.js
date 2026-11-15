@@ -139,6 +139,7 @@
   // ---------- world map ----------
   async function openWorld() {
     show("screen-world"); $("#world-note").hidden = true;
+    $("#done-pop").hidden = true; $("#guide-panel").classList.remove("pop"); backdrop();
     if (!missions.length) missions = await (await fetch("missions/index.json")).json();
     if (!worldMap) {
       worldMap = L.map("world-map", { worldCopyJump: true, minZoom: 2 }).setView([20, 20], 2);
@@ -296,7 +297,12 @@
     spots: () => `Tap the places that glow. Each glowing spot you find = ${PTS.spot} points, and the faster the better. ` +
       `Tapping where nothing changed costs a heart ❤️.` + (MODE === "easy" ? " Stuck? Press 💡 Hint." : ""),
   };
-  const say = (t) => { $("#guide-text").textContent = t; if (guideMin) { const g = $("#guide-panel"); g.classList.remove("ping"); void g.offsetWidth; g.classList.add("ping"); } };
+  // a new step (M.popNext) opens the alien in the middle of the screen; later tips go to the small bubble
+  const say = (t) => {
+    $("#guide-text").textContent = t;
+    if (M && M.popNext) { M.popNext = false; return guideMode("pop"); }
+    if (guideMin) { const g = $("#guide-panel"); g.classList.remove("ping"); void g.offsetWidth; g.classList.add("ping"); }
+  };
   const PLAYTEST = location.hash.includes("playtest");
   function log(ev, data = {}) {
     if (!PLAYTEST || !M) return;
@@ -316,7 +322,7 @@
     const { CO, CX } = info.channels;
     if (M && M.mapLayers) Object.values(M.mapLayers).forEach((l) => l && missionMap.removeLayer(l));
     M = { id, info, base, bounds: L.latLngBounds([s, w], [n, e]), step: 1, layers: {}, opened: Date.now(), log: [],
-          mapLayers: {}, on: new Set(extra.layers || ["towns"]), osmP: null, bonusQueue: null, inBonus: false, bonusAsked: 0, bonusRight: 0,
+          mapLayers: {}, on: new Set(["radar", "glow", ...(extra.layers || ["towns"])]), osmP: null, bonusQueue: null, inBonus: false, bonusAsked: 0, bonusRight: 0,
           buckets: { red: null, cyan: null }, glasses: "CO",
           best: info.change_rule.channel === 1 && CO !== CX ? "CX" : "CO", tried: new Set(), measured: false,
           picked: null, overlay: null, swipe: null, extra: [], points: 0, got: {}, ana: null, found: new Set(), hearts: HEARTS,
@@ -371,10 +377,30 @@
   function newsOpen(open) { $("#m-info").hidden = !open; $("#btn-news").classList.toggle("on", open); $("#btn-news").innerHTML = `${ART("ui-news")}What happened${open ? " ✕" : ""}`; }
   $("#btn-news").addEventListener("click", () => { M.newsTouched = true; newsOpen($("#m-info").hidden); });
   // the alien's tips can shrink to just the alien; a new tip makes it wiggle
+  // three sizes: "pop" (big, in the middle, the screen dimmed), "bubble" (bottom left) and "min" (just the alien).
+  // Tapping the small alien always brings the big one back.
   let guideMin = store.get("guideMin", false);
-  function guideSize(min) { guideMin = min; store.set("guideMin", min); $("#guide-panel").classList.toggle("min", min); $("#guide-panel").classList.remove("ping"); }
-  $("#btn-guide-min").addEventListener("click", () => guideSize(true));
-  $("#alien-guide").addEventListener("click", () => guideMin && guideSize(false));
+  function guideMode(mode) {
+    const g = $("#guide-panel"), pop = mode === "pop";
+    if (!pop) { guideMin = mode === "min"; store.set("guideMin", guideMin); }
+    g.classList.toggle("pop", pop); g.classList.toggle("min", mode === "min"); g.classList.remove("ping");
+    const head = pop && M && M.popTitle;
+    $("#guide-title").hidden = !head; $("#guide-title").textContent = head || "";
+    $("#guide-story").hidden = !(pop && M && M.popStory); $("#guide-story").textContent = (pop && M && M.popStory) || "";
+    backdrop();
+    if (pop) $("#btn-guide-ok").focus({ preventScroll: true });
+  }
+  const guideClose = () => $("#guide-panel").classList.contains("pop") && guideMode("bubble");
+  function guideSize(min) { guideMode(min ? "min" : "bubble"); }
+  $("#btn-guide-min").addEventListener("click", () => guideMode("min"));
+  $("#btn-guide-big").addEventListener("click", () => guideMode("pop"));
+  $("#btn-guide-ok").addEventListener("click", guideClose);
+  $("#alien-guide").addEventListener("click", () => !$("#guide-panel").classList.contains("pop") && guideMode("pop"));
+  // the dimmed screen behind a pop-up: tap it (or Esc) to close
+  function backdrop() { $("#pop-backdrop").hidden = !($("#guide-panel").classList.contains("pop") || !$("#done-pop").hidden); }
+  const closePops = () => { guideClose(); if (!$("#done-pop").hidden) { $("#done-pop").hidden = true; backdrop(); } };
+  $("#pop-backdrop").addEventListener("click", closePops);
+  document.addEventListener("keydown", (e) => e.key === "Escape" && closePops());
   guideSize(guideMin);
 
   // ---------- map layers: OpenStreetMap towns / roads / rivers, NASA's camera, a street map ----------
@@ -438,8 +464,22 @@
     g.putImageData(out, 0, 0);
     return L.imageOverlay(cv.toDataURL(), M.bounds, { pane: "osm", interactive: false });
   }
+  // the radar itself is two layers too: the picture, and the glow on it (both on unless the player switches them off)
+  const RADAR = { radar: "📡 Radar picture", glow: "✨ Glow (what changed)" };
+  function applyRadar() {
+    if (!M) return;
+    const radar = M.on.has("radar"), glow = M.on.has("glow");
+    if (M.swipe) M.swipe.forEach((l) => l.setOpacity(radar ? 1 : 0));
+    if (M.overlay) {
+      const url = glow && M.glowUrl ? M.glowUrl : M.base + M.info.after.image;   // glow off: the plain radar picture
+      if (M.overlay._url !== url) M.overlay.setUrl(url);
+      M.overlay.setOpacity(!M.swipe && radar ? 1 : 0);
+    }
+    if (M.changeLayer) M.changeLayer.setOpacity(glow ? 0.55 : 0);
+  }
   async function setLayer(key, on) {   // no key: just (re)draw what M.on asks for
     if (key) on ? M.on.add(key) : M.on.delete(key);
+    if (key in RADAR) { applyRadar(); return renderLayers(); }
     if (key === "camera" && on) M.on.delete("street");
     if (key === "street" && on) M.on.delete("camera");
     const mine = M, g = await osmData();
@@ -455,17 +495,26 @@
   }
   function renderLayers() {
     const box = $("#layer-list");
-    box.innerHTML = Object.entries(LAYERS)
+    const row = (k, label) => `<label class="sw"><input type="checkbox" data-layer="${k}" ${M.on.has(k) ? "checked" : ""}> ${label}</label>`;
+    const glowNow = M.step >= 2 || M.lab;   // step 1 shows the plain pictures: nothing glows yet
+    const radarRows = Object.entries(RADAR).filter(([k]) => k !== "glow" || glowNow).map(([k, label]) => row(k, label)).join("");
+    const nOn = [...M.on].filter((k) => k in LAYERS || (k in RADAR && (k !== "glow" || glowNow))).length;
+    $("#btn-layers").innerHTML = `${ART("ui-layers")}Map layers <b class="layer-count">${nOn} on</b>${box.hidden ? "" : " ✕"}`;
+    box.innerHTML = `<p class="layer-head">Tap a switch to turn a layer on or off</p><p class="layer-group">Radar</p>${radarRows}<p class="layer-group">Map</p>` + Object.entries(LAYERS)
       .filter(([k]) => k !== "camera" || M.content.camera !== false)
       .filter(([k]) => !k.startsWith("wet_") || (M.content.layers || []).includes(k) || (M.content.offer || []).includes(k))   // only where it tells the story
       .filter(([k]) => !OSM_KIND[k] || !M.osmKinds || M.osmKinds.has(OSM_KIND[k]))   // hide OSM layers this place has none of
-      .map(([k, label]) => `<label><input type="checkbox" data-layer="${k}" ${M.on.has(k) ? "checked" : ""}> ${label
-        .replace("{before}", M.info.before.date).replace("{after}", M.info.after.date)}</label>`).join("") +
+      .map(([k, label]) => row(k, label.replace("{before}", M.info.before.date).replace("{after}", M.info.after.date))).join("") +
       `<p class="muted small">${M.on.has("camera") ? `Photo from ${M.content.camera?.date || M.info.after.date}. ` : ""}` +
       `${M.on.has("camera") || M.on.has("street") ? "Untick it to see the radar again." : "Map data © OpenStreetMap"}</p>`;
     box.querySelectorAll("input[data-layer]").forEach((c) => c.addEventListener("change", () => { log("layer", { k: c.dataset.layer, on: c.checked }); setLayer(c.dataset.layer, c.checked); }));
   }
-  $("#btn-layers").addEventListener("click", () => ($("#layer-list").hidden = !$("#layer-list").hidden));
+  $("#btn-layers").addEventListener("click", () => {
+    $("#layer-list").hidden = !$("#layer-list").hidden;
+    store.set("layersSeen", true); $("#btn-layers").classList.remove("nudge");   // it pulses until the first time it's opened
+    renderLayers();
+  });
+  if (!store.get("layersSeen", false)) $("#btn-layers").classList.add("nudge");
 
   // step 1 bonus: could a normal camera see the ground that day? (content.json "camera": {"clouds": "yes" | "no"})
   function cameraQuestion() {
@@ -496,8 +545,12 @@
     if (at) floatText(at, `+${pts}`, "good");
   }
 
+  const STEP_NAME = { 1: "👀 Step 1 of 4 · Look", 2: "✨ Step 2 of 4 · Make it glow", 3: "🎯 Step 3 of 4 · Find it" };
   function goStep(step) {
     M.step = step;
+    // the first tip of each step pops up big in the middle (step 4 has its own "mission complete" pop-up)
+    M.popNext = step < 4; M.popStory = step === 1 ? $("#m-story").textContent : "";
+    M.popTitle = step === 1 ? `🛸 New mission: ${M.info.title || M.id}` : STEP_NAME[step];
     document.querySelectorAll(".steps li").forEach((li) => {
       li.classList.toggle("now", +li.dataset.step === step); li.classList.toggle("past", +li.dataset.step < step);
     });
@@ -514,6 +567,8 @@
     stopSwipe(); M.extra.forEach((l) => missionMap.removeLayer(l)); M.extra = []; M.foundLayer = null;
     if (M.on.has("camera") || M.on.has("street")) { M.on.delete("camera"); M.on.delete("street"); setLayer(); }   // show the radar again
     $("#camera-kit").hidden = true;
+    renderLayers();   // the glow switch appears from step 2
+    if (step === 4) guideClose();
 
     setCalm(step === 1 ? "wave" : step === 2 ? "think" : step === 3 ? "point" : "happy");
     if (!M.newsTouched) newsOpen(step === 1 || step === 4);
@@ -546,7 +601,7 @@
     const after = L.imageOverlay(M.base + M.info.after.image, M.bounds).addTo(missionMap);
     const before = L.imageOverlay(M.base + M.info.before.image, M.bounds).addTo(missionMap);
     M.swipe = [after, before];
-    if (M.overlay) M.overlay.setOpacity(0);
+    applyRadar();
     $("#swipe-bar").hidden = false;
     const clip = () => before.getElement() && (before.getElement().style.clipPath = `inset(0 ${100 - $("#swipe").value}% 0 0)`);
     before.once("load", clip); clip();
@@ -555,7 +610,7 @@
   function stopSwipe() {
     if (M && M.swipe) { M.swipe.forEach((l) => missionMap.removeLayer(l)); M.swipe = null; }
     $("#swipe-bar").hidden = true;
-    if (M && M.overlay) M.overlay.setOpacity(1);
+    applyRadar();
   }
 
   // ---------- step 2 · two cards into two buckets ----------
@@ -684,8 +739,9 @@
       const cv = el("canvas"); cv.width = W; cv.height = H; cv.getContext("2d").putImageData(out, 0, 0);
       url = cv.toDataURL("image/png");
     }
-    if (M.overlay) { M.overlay.setUrl(url); M.overlay.setOpacity(1); }
-    else M.overlay = L.imageOverlay(url, M.bounds).addTo(missionMap);
+    M.glowUrl = url;
+    if (!M.overlay) M.overlay = L.imageOverlay(url, M.bounds).addTo(missionMap);
+    applyRadar();   // shows the glow, or the plain picture if the player switched the glow off
   }
 
   // ---------- step 3 · other games (public/js/games/<type>.js) ----------
@@ -728,6 +784,7 @@
   function startLab() {
     const G = (window.SARbitLab || {})[M.lab.type];
     M.step = 3; stopSwipe(); setCalm("think");
+    M.popNext = true; M.popTitle = `🧪 Radar Lab: ${M.lab.title}`; M.popStory = M.lab.blurb || "";
     ["#glow-kit", "#find-kit", "#result", "#camera-kit", "#map-hud", "#btn-prev"].forEach((sel) => ($(sel).hidden = true));
     $("#game-kit").hidden = false; $("#game-kit").innerHTML = "";
     newsOpen(false);
@@ -921,7 +978,8 @@
     const n = R ? R.total : M.ana ? M.ana.targets.length : 0, f = R ? R.got : M.found.size;
     const st = R && R.stars != null ? R.stars : !n ? 0 : f === n ? 3 : f >= n / 2 ? 2 : f >= 1 ? 1 : 0;
     if (M.ana && !R) drawFound(true);
-    M.extra.push(L.imageOverlay(M.base + M.info.change_overlay, M.bounds, { opacity: 0.55, interactive: false }).addTo(missionMap));
+    M.changeLayer = L.imageOverlay(M.base + M.info.change_overlay, M.bounds, { opacity: 0.55, interactive: false }).addTo(missionMap);
+    M.extra.push(M.changeLayer); applyRadar();   // NISAR's change map is part of the glow layer
     scores[M.key] = Math.max(scores[M.key] || 0, M.points); stars[M.key] = Math.max(stars[M.key] || 0, st);
     savePlayer(); updateHud();
     if (st === 3) sfx("win");
@@ -932,10 +990,26 @@
       <p class="muted">Why? ${(M.lab && M.lab.why) || M.content.why || WHY[M.info.topic] || ""}</p>
       <p class="muted small">Mission done ✓ Each mission counts once.</p>`;
     if (PLAYTEST) playtestNotes(n, f, st);
+    missionDone(st, cheer, R ? R.line : `You found <b>${f}</b> of <b>${n}</b> glowing spots`);
     M.result = null;
     react(st >= 2 ? "happy" : "oops");
     say((R ? "" : f < n ? "The yellow spots are the ones you missed: they glow too! " : "You found every spot! ") + ((M.lab && M.lab.why) || M.content.why || WHY[M.info.topic] || ""));
     next("Next mission 🌍", true);
+  }
+
+  // the "mission complete" pop-up: stars, points, and where to go next
+  function missionDone(st, cheer, line) {
+    const box = $("#done-pop"), title = M.lab ? M.lab.title : M.info.title || M.id;
+    box.innerHTML = `<img class="done-alien" src="art/alien-${st >= 2 ? "happy" : "wave"}.webp" alt="">
+      <p class="done-kicker">${M.lab ? "Radar Lab done" : "Mission complete!"}</p>
+      <h2>${esc(title)}</h2>
+      <div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>
+      <p><b>${cheer}</b><br>${line}.</p>
+      <div class="actions"><button id="done-next">🌍 Next mission</button><button id="done-look" class="ghost">🔍 Look at my map</button></div>`;
+    box.hidden = false; backdrop();
+    $("#done-next").onclick = () => { box.hidden = true; backdrop(); openWorld(); };
+    $("#done-look").onclick = () => { box.hidden = true; backdrop(); };
+    $("#done-next").focus({ preventScroll: true });
   }
 
   // one line per mission, kept on this device until copied

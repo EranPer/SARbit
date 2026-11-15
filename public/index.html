@@ -133,13 +133,20 @@
       <div class="guide">
         <div id="alien-guide" class="alien small" title="Hide / show my tips"></div>
         <div class="guide-body">
+          <p id="guide-title" class="guide-title" hidden></p>
+          <p id="guide-story" class="guide-story" hidden></p>
           <p id="guide-text"></p>
           <p class="info-row"><button class="info" data-info="radar"><img class="ico" src="art/badge-radar.webp" alt=""> What is radar?</button>
             <button class="info" data-info="swipe" data-step-only="1">? The slider</button></p>
+          <button id="btn-guide-ok" class="guide-ok">Got it, let's go! 👍</button>
         </div>
+        <button id="btn-guide-big" class="ghost small panel-big" title="Show my tips big">⤢</button>
         <button id="btn-guide-min" class="ghost small panel-x" title="Hide tips">–</button>
       </div>
     </div>
+    <!-- pop-ups in the middle of the screen: the alien's big tips and "mission complete" -->
+    <div id="pop-backdrop" hidden></div>
+    <div id="done-pop" class="pop-card" role="dialog" aria-label="Mission complete" hidden></div>
     <aside id="news-panel" class="float-panel">
       <button id="btn-news" class="ghost small">📰 What happened</button>
       <section id="m-info" class="info-panel" hidden></section>

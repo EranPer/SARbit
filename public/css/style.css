@@ -409,3 +409,65 @@ img.medal { height: 28px; vertical-align: middle; }
 .lab-slider { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
 .lab-slider input { flex: 1; accent-color: var(--accent); }
 .lab-big { font-size: 16px; margin: 6px 0; } .lab-big b { color: var(--accent); }
+/* lasso: Draw / Move switch */
+.seg { display: flex; gap: 6px; margin: 8px 0 4px; }
+.seg button { flex: 1; }
+.seg button.on { background: var(--accent); color: #062018; border-color: var(--accent); }
+
+/* ---- the alien as a pop-up in the middle of the screen (feedback: the tips were easy to miss) ---- */
+#pop-backdrop { position: fixed; inset: 0; z-index: 1100; background: rgba(5, 8, 20, .62); backdrop-filter: blur(2px); }
+.guide-ok, .panel-big { display: none; }
+.panel-big { position: absolute; top: 2px; right: 30px; padding: 0 8px; line-height: 22px; }
+#guide-panel:not(.pop):not(.min) .panel-big { display: block; }
+#guide-panel.min .alien.small { position: relative; }
+#guide-panel.min .alien.small::after { content: "💬 tap me"; position: absolute; left: 50%; bottom: -4px; transform: translateX(-50%);
+  background: var(--accent); color: #062018; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 10px; white-space: nowrap; }
+#guide-panel.min .alien.small img { animation: float 3s ease-in-out infinite; }
+#guide-panel.min .alien.small { cursor: pointer; }
+#guide-panel:not(.pop) .alien.small { cursor: pointer; }
+#guide-panel.pop { position: fixed !important; z-index: 1200; left: 50% !important; top: 50% !important; bottom: auto !important;
+  transform: translate(-50%, -50%); width: min(600px, 92vw) !important; margin: 0 !important; padding: 18px 20px;
+  border: 2px solid var(--accent); box-shadow: 0 20px 60px rgba(0, 0, 0, .6); animation: popin .25s ease-out; }
+#guide-panel.pop .guide { align-items: center; gap: 18px; }
+#guide-panel.pop .alien.small { width: 150px; flex: none; }
+#guide-panel.pop .alien.small img { animation: float 3s ease-in-out infinite; }
+#guide-panel.pop .guide-body { padding-right: 0; }
+#guide-panel.pop #guide-text { font-size: 19px; line-height: 1.45; }
+#guide-panel.pop .panel-x { display: none; }
+#guide-panel.pop .guide-ok { display: block; width: 100%; margin-top: 14px; font-size: 18px; padding: 12px; }
+.guide-title { font-size: 20px !important; font-weight: 800; color: var(--accent); margin: 0 0 6px !important; }
+.guide-story { color: var(--muted); font-size: 15px !important; margin: 0 0 10px !important; }
+@keyframes popin { from { opacity: 0; transform: translate(-50%, -46%) scale(.94); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@media (max-width: 600px) {
+  #guide-panel.pop .guide { flex-direction: column; text-align: center; gap: 6px; }
+  #guide-panel.pop .alien.small { width: 110px; }
+  #guide-panel.pop #guide-text { font-size: 17px; }
+}
+
+/* ---- "mission complete" pop-up ---- */
+.pop-card { position: fixed; z-index: 1200; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(460px, 92vw);
+  max-height: 92vh; overflow: auto; background: var(--panel); border: 2px solid var(--accent); border-radius: 18px; padding: 20px 22px;
+  text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, .6); animation: popin .3s ease-out; }
+.pop-card .done-alien { width: 130px; animation: float 3s ease-in-out infinite; }
+.pop-card .done-kicker { margin: 4px 0 0; color: var(--accent); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-size: 14px; }
+.pop-card h2 { margin: 2px 0 6px; }
+.pop-card .stars { font-size: 40px; }
+.pop-card .big { font-size: 30px; font-weight: 800; color: var(--agriculture); }
+.pop-card .actions { justify-content: center; }
+
+/* ---- map layers: a bigger button and real on/off switches (feedback: people didn't see they could change them) ---- */
+#btn-layers { font-size: 15px; padding: 8px 14px; border: 2px solid var(--accent); font-weight: 700; }
+#btn-layers .layer-count { margin-left: 4px; background: var(--accent); color: #062018; border-radius: 10px; padding: 0 7px; font-size: 12px; }
+#btn-layers.nudge { animation: nudge 1.4s ease-in-out infinite; }
+@keyframes nudge { 0%, 100% { box-shadow: 0 0 0 0 rgba(124, 243, 199, .7); } 50% { box-shadow: 0 0 0 10px rgba(124, 243, 199, 0); } }
+#layer-list { min-width: 240px; padding: 10px 14px; border: 2px solid var(--accent); }
+#layer-list .layer-head { margin: 0; font-size: 12px; color: var(--muted); }
+#layer-list .layer-group { margin: 4px 0 0; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
+#layer-list label.sw { padding: 3px 0; }
+#layer-list label.sw input { appearance: none; -webkit-appearance: none; flex: none; width: 38px; height: 22px; margin: 0; border-radius: 11px;
+  background: #3a4570; position: relative; cursor: pointer; transition: background .2s; }
+#layer-list label.sw input::before { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; transition: transform .2s; }
+#layer-list label.sw input:checked { background: var(--accent); }
+#layer-list label.sw input:checked::before { transform: translateX(16px); }
+#guide-panel:not(.pop):not(.min) .guide-body { padding-right: 54px; }
