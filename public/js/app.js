@@ -1026,7 +1026,7 @@
     const cheer = st === 3 ? "Perfect! Amazing radar eyes! 🚀" : st === 2 ? "Great work, cadet! 👍" : st === 1 ? "Good start! 💪" : "Let's try again! 💪";
     $("#result").innerHTML = `<div class="stars">${starText(st)}</div><div class="big">${M.points} points</div>
       <p class="score-line"><b>${cheer}</b><br>${R ? R.line : `You found <b>${f}</b> of <b>${n}</b> glowing spots`}${M.got.glasses ? ", and picked the best radar glasses" : ""}.${M.bonusAsked ? `<br>⭐ Bonus questions: <b>${M.bonusRight}</b> of <b>${M.bonusAsked}</b> right` : ""}${M.got.camera ? "<br>📷 You knew what the camera could see." : ""}</p>
-      ${R ? "" : `<div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff2828"></i>what NISAR measured</span></div>`}
+      ${R ? "" : `<div class="legend"><span><i style="background:#4be08a"></i>found</span><span><i style="background:#ffe14a"></i>missed</span><span><i style="background:#ff2828"></i>change map (made from NISAR data)</span></div>`}
       <p class="muted">Why? ${(M.lab && M.lab.why) || M.content.why || WHY[M.info.topic] || ""}</p>
       <p class="muted small">Mission done ✓ Each mission counts once.</p>`;
     if (PLAYTEST) playtestNotes(n, f, st);

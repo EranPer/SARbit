@@ -82,7 +82,7 @@
           `"are the plants still there?". Press <b>Next</b>: now you check real fields yourself!` },
 
       { step: 3, pop: true, face: "point", title: "Step 3 · Be the scientist", button: "I'm ready ▶",
-        text: `Now you check real fields, like NISAR's science team. I put <b>numbered pins</b> on fields. For each pin: ` +
+        text: `Now you check real fields, like a radar scientist. I put <b>numbered pins</b> on fields. For each pin: ` +
           `${RED}glows red</b> → it was <b>harvested</b>. <b>Grey</b> → it <b>stayed the same</b>. Not sure? ` +
           `Press <b>👀 BEFORE</b> and <b>AFTER</b> to compare.` },
       { step: 3, title: "Pin 1", target: "#game-kit .quiz-a", wait: (e) => e.ev === "quiz-answer", release: true,

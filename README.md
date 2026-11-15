@@ -1,3 +1,5 @@
+This solution was developed as part of NASA Space Apps Tel Aviv 2026. The event was led by the Space Engineering Center (SEC) and SpaceTAU at Tel Aviv University, in partnership with the Rakia Mission and Space Campus IL.
+
 # SARbit · Radar Cleanup
 
 **A kids' web game for the NASA Space Apps Challenge 2026, challenge _Dancing with the SARs_.**
@@ -18,7 +20,7 @@ can read them. SARbit turns real NISAR radar into a game a 10-year-old can play 
 | 👀 **Look** | slides between the BEFORE and AFTER radar pictures | radar sends its own microwaves: it sees at night and through clouds |
 | ✨ **Glow** | drags BEFORE into red and AFTER into blue-green | a colour composite: unchanged ground turns grey, every change glows |
 | 🎯 **Find** | taps the glowing spots, lassoes cut forest, hunts oil platforms, checks fields, orders the seasons | change detection in decibels, polarisation (HH / HV) |
-| ⭐ **Score** | stars, points, and NISAR's own change map to compare with | |
+| ⭐ **Score** | stars, points, and a change map we made from the NISAR data to compare with | |
 
 - **🎓 Radar school** (Jezreel Valley, Israel) is a step-by-step training mission that opens first for every new player.
 - **7 real 2026 events:** floods in Valencia (Spain) and Limpopo (Mozambique), forest clearing along the BR-163 (Amazon),

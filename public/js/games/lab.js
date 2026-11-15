@@ -147,7 +147,7 @@
         ok[i] = 1; delta[i] = (A.data[i * 4] - Bf.data[i * 4]) / 6.375;
         truth[i] = (ref.data[i * 4 + 3] || 0) > 0; nTruth += truth[i];
       }
-      const match = (thr) => {   // how well "darker by ≥ thr dB" matches the team's flood map (F1: both found and tidy)
+      const match = (thr) => {   // how well "darker by ≥ thr dB" matches our reference change map (F1: both found and tidy)
         let tp = 0, mine = 0;
         for (let i = 0; i < W * H; i++) if (ok[i] && delta[i] <= -thr) { mine++; tp += truth[i]; }
         const p = mine ? tp / mine : 0, r = nTruth ? tp / nTruth : 0;
@@ -155,7 +155,7 @@
       };
       const best = [...Array(20)].map((_, i) => (i + 1) / 2).reduce((b, t) => (match(t).f1 > b.f1 ? { t, f1: match(t).f1 } : b), { t: 0.5, f1: -1 });
       const mineLayer = canvasLayer(api, W, H);   // made first, so the white outline sits on top of it
-      // NISAR team's flood map as a white outline
+      // our reference change map (made from the NISAR data with a 3 dB rule) as a white outline
       const outline = canvasLayer(api, W >> 2, H >> 2), q = (x, y) => truth[Math.min(H - 1, y * 4) * W + Math.min(W - 1, x * 4)];
       for (let y = 1; y < (H >> 2) - 1; y++) for (let x = 1; x < (W >> 2) - 1; x++)
         if (q(x, y) && (!q(x - 1, y) || !q(x + 1, y) || !q(x, y - 1) || !q(x, y + 1))) outline.img.data.set([255, 255, 255, 230], (y * (W >> 2) + x) * 4);
@@ -166,13 +166,13 @@
         mineLayer.show();
         const m = match(thr);
         const box = api.kit.querySelector("#det-live");
-        if (box) box.innerHTML = `Your map: <b>${(m.share * 100).toFixed(1)} %</b> of the picture is flood · matches the team's map: <b>${Math.round(m.f1 * 100)} %</b>`;
+        if (box) box.innerHTML = `Your map: <b>${(m.share * 100).toFixed(1)} %</b> of the picture is flood · matches the reference map: <b>${Math.round(m.f1 * 100)} %</b>`;
         M.labThr = { thr, f1: m.f1 };
       }
       for (let i = 0; i < W * H; i++) mineLayer.img.data.set([255, 225, 74, 0], i * 4);
       mineLayer.show(); outline.show();
       api.kit.innerHTML = `<p class="quiz-q">🎚 Build a flood detector! How much darker must a place get to count as flooded?</p>
-        <p class="muted small">Yellow = your flood map. White line = the flood map NISAR's science team made. Make yellow fill the white line, without spilling.</p>
+        <p class="muted small">Yellow = your flood map. White line = a reference flood map we made from the NISAR data with a 3 dB rule. Make yellow fill the white line, without spilling.</p>
         <div class="lab-slider"><span>0.5 dB</span><input id="det-thr" type="range" min="0.5" max="10" step="0.5" value="0.5"><span>10 dB</span></div>
         <p class="lab-big">Darker by at least <b id="det-val">0.5</b> dB</p>
         <p id="det-live" class="small"></p>
@@ -193,7 +193,7 @@
       M.finishGame = () => {
         if (!locked) api.kit.querySelector("#det-lock").click();   // "Score it" without locking: score the setting on screen
         const r = M.labResult || { stars: 0, f1: M.labThr.f1 };
-        api.done({ got: r.stars, total: 3, stars: r.stars, line: `Your flood detector matched the science team's map by <b>${Math.round(r.f1 * 100)} %</b>` }); };
+        api.done({ got: r.stars, total: 3, stars: r.stars, line: `Your flood detector matched the reference flood map by <b>${Math.round(r.f1 * 100)} %</b>` }); };
       api.say("Every radar picture is a bit grainy, so everything changes a little. Slide to choose how much darker a place must get before you call it flooded.");
       api.next("Score it ⭐", true);
       draw();

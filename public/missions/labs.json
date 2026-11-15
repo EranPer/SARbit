@@ -14,7 +14,7 @@
   "mission": "W2",
   "icon": "🎚",
   "title": "Flood detector",
-  "blurb": "Every radar picture is a bit grainy, so everything changes a little between two dates. How much darker must a place get before we call it flooded? Tune the detector like NISAR's scientists did for the Limpopo flood.",
+  "blurb": "Every radar picture is a bit grainy, so everything changes a little between two dates. How much darker must a place get before we call it flooded? Tune the detector like a radar scientist, on the Limpopo flood.",
   "why": "Choosing the threshold is a real science decision: too low and radar noise looks like flood, too high and real water is missed."
  },
  {
