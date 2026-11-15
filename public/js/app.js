@@ -353,6 +353,7 @@
     }
     missionMap.eachLayer((l) => !(l instanceof L.TileLayer) && missionMap.removeLayer(l));
     M.overlay = null;
+    missionMap.invalidateSize({ pan: false });   // a resize while the map was hidden left Leaflet thinking it is 0 px: the mission opened at world zoom
     missionMap.fitBounds(M.bounds);
     renderLayers();
 
