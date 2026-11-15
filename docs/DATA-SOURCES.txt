@@ -1,0 +1,218 @@
+﻿SARBIT: ALL THE DATA USED, WITH LINKS
+=====================================
+
+Every data source in the game, the slides and the pipeline, as of 15 November 2026. Part A is NASA (including partner data
+that NASA hosts). Part B is everything else. Part C lists what the team made from the NASA data, so it is never mistaken
+for a NASA product.
+
+The NISAR file links come from NASA's ASF DAAC archive, looked up by each mission's place and dates. Per file:
+download .h5 needs a free NASA Earthdata login · ASF search opens the file in ASF's search page (press "Search") ·
+metadata opens the file's record directly, no login.
+
+THE CHALLENGE'S OWN DATA LINKS (DANCING WITH THE SARS → RESOURCES)
+==================================================================
+
+From https://www.spaceappschallenge.org/2026/challenges/dancing-with-the-sars/?tab=resources
+
+NASA data & resources we used:
+
+- ASF Data Search Vertex: https://search.asf.alaska.edu/ — every NISAR radar file in the game came from this NASA archive (all 17 are listed in A1 below).
+- NISAR Data User Guide: https://nisar-docs.asf.alaska.edu/ — the reference for the GCOV product the pipeline reads (grids, projection, polarisations).
+- NASA Earthdata Search: https://search.earthdata.nasa.gov/search — the NASA Earthdata system the NISAR and GIBS data belong to.
+- Intro to Synthetic Aperture Radar (SAR): https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/sar — the team's SAR background (shared in the team chat on 28 Sep 2026); the game's explanations (bright/dark echoes, polarisation) follow it.
+
+NASA links from the same list that we did not use: NASA ARSET Trainings (https://appliedsciences.nasa.gov/get-involved/training),
+Intro to Remote Sensing (https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/remote-sensing), NISAR StoryMaps
+(https://nisar.jpl.nasa.gov/applications/arcgis-storymaps/), NISAR Applications White Papers
+(https://nisar.jpl.nasa.gov/applications/societal-benefit/), UAVSAR Postcards (https://uavsar.jpl.nasa.gov/education/postcards.html).
+
+Space Agency Partner resources on the challenge page, not used: CSA RCM data (https://donnees-data.asc-csa.gc.ca/en/dataset/rcm),
+CSA SAR Python tutorial (https://github.com/asc-csa/Synthetic_Aperture_Radar_Tutorial), CSA RADARSAT-1 data
+(https://donnees-data.asc-csa.gc.ca/en/dataset/radarsat1), CONAE SAOCOM catalogue (https://catalogos.conae.gov.ar/catalogo/catalogoSatSaocomInfo.html).
+Partner data we do use arrives through NASA: ISRO (NISAR co-builder) and ESA Sentinel-2 (inside NASA's HLS). Partner list:
+https://www.spaceappschallenge.org/2026/space-agency-partners/
+
+A · NASA DATA AND RESOURCES
+===========================
+
+A1 · NISAR radar (NASA-ISRO), Level-2 GCOV, from the ASF DAAC
+-------------------------------------------------------------
+
+- Product: NISAR L-band Geocoded Polarimetric Covariance (GCOV), archived at the Alaska Satellite Facility DAAC (NASA
+  Earthdata), in the collections NISAR_L2_GCOV_BETA_V1, NISAR_L2_GCOV_PROVISIONAL_V1 and NISAR_L2_GCOV_V1 (each
+  download link shows which).
+- Search: https://search.asf.alaska.edu/ (dataset NISAR) · archive API used for this list:
+  https://api.daac.asf.alaska.edu/services/search/param?dataset=NISAR&processingLevel=GCOV
+- What the game takes from each file: the HH and HV backscatter grids (HH only where noted), cut to the mission box.
+- Mode codes in the names: DHDH = dual-pol HH+HV · SHSH = HH only · QPDH = quad-pol.
+
+A3 · Radar school: Jezreel Valley · Jezreel Valley, Israel
+
+Mission box (west, south, east, north): 35.1898, 32.5270, 35.4100, 32.7132
+
+  - BEFORE | 2026-06-26 | NISAR_L2_PR_GCOV_023_172_A_018_2005_DHDH_A_20260626T025155_20260626T025230_P05023_N_F_J_001 | 172 A / 18 | 1.9 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_023_172_A_018_2005_DHDH_A_20260626T025155_20260626T025230_P05023_N_F_J_001/NISAR_L2_PR_GCOV_023_172_A_018_2005_DHDH_A_20260626T025155_20260626T025230_P05023_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_023_172_A_018_2005_DHDH_A_20260626T025155_20260626T025230_P05023_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_023_172_A_018_2005_DHDH_A_20260626T025155_20260626T025230_P05023_N_F_J_001
+  - AFTER | 2026-10-24 | NISAR_L2_PR_GCOV_033_172_A_018_2005_DHDH_A_20261024T025152_20261024T025227_P05036_N_F_J_001 | 172 A / 18 | 1.9 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_033_172_A_018_2005_DHDH_A_20261024T025152_20261024T025227_P05036_N_F_J_001/NISAR_L2_PR_GCOV_033_172_A_018_2005_DHDH_A_20261024T025152_20261024T025227_P05036_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_033_172_A_018_2005_DHDH_A_20261024T025152_20261024T025227_P05036_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_033_172_A_018_2005_DHDH_A_20261024T025152_20261024T025227_P05036_N_F_J_001
+
+A1 · Rice season · Punjab, India
+
+Mission box (west, south, east, north): 75.3954, 30.4093, 75.6047, 30.5906
+
+  - frame 1 (June) + BEFORE | 2026-06-16 | NISAR_L2_PR_GCOV_023_034_D_073_2005_DHDH_M_20260616T133919_20260616T133953_P05023_N_F_J_001 | 34 D / 73 | 2.0 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_023_034_D_073_2005_DHDH_M_20260616T133919_20260616T133953_P05023_N_F_J_001/NISAR_L2_PR_GCOV_023_034_D_073_2005_DHDH_M_20260616T133919_20260616T133953_P05023_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_023_034_D_073_2005_DHDH_M_20260616T133919_20260616T133953_P05023_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_023_034_D_073_2005_DHDH_M_20260616T133919_20260616T133953_P05023_N_F_J_001
+  - frame 2 (October) | 2026-10-02 | NISAR_L2_PR_GCOV_032_034_D_073_2005_DHDH_M_20261002T133915_20261002T133950_P05023_N_F_J_001 | 34 D / 73 | 2.0 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_032_034_D_073_2005_DHDH_M_20261002T133915_20261002T133950_P05023_N_F_J_001/NISAR_L2_PR_GCOV_032_034_D_073_2005_DHDH_M_20261002T133915_20261002T133950_P05023_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_032_034_D_073_2005_DHDH_M_20261002T133915_20261002T133950_P05023_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_032_034_D_073_2005_DHDH_M_20261002T133915_20261002T133950_P05023_N_F_J_001
+  - frame 3 (November) + AFTER | 2026-11-07 | NISAR_L2_UR_GCOV_035_034_D_073_2005_DHDH_M_20261107T133916_20261107T133951_P05036_F_F_J_001 | 34 D / 73 | 2.0 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR-UR/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_034_D_073_2005_DHDH_M_20261107T133916_20261107T133951_P05036_F_F_J_001/NISAR_L2_UR_GCOV_035_034_D_073_2005_DHDH_M_20261107T133916_20261107T133951_P05036_F_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_UR_GCOV_035_034_D_073_2005_DHDH_M_20261107T133916_20261107T133951_P05036_F_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_UR_GCOV_035_034_D_073_2005_DHDH_M_20261107T133916_20261107T133951_P05036_F_F_J_001
+
+
+D1 · Clearing along BR-163 · Novo Progresso, Para, Brazil
+
+Mission box (west, south, east, north): -55.4909, -7.1906, -55.3091, -7.0092
+
+  - BEFORE | 2026-06-21 | NISAR_L2_PR_GCOV_023_111_D_092_2005_DHDH_A_20260621T220101_20260621T220135_P05023_N_F_J_001 | 111 D / 92 | 2.0 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_023_111_D_092_2005_DHDH_A_20260621T220101_20260621T220135_P05023_N_F_J_001/NISAR_L2_PR_GCOV_023_111_D_092_2005_DHDH_A_20260621T220101_20260621T220135_P05023_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_023_111_D_092_2005_DHDH_A_20260621T220101_20260621T220135_P05023_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_023_111_D_092_2005_DHDH_A_20260621T220101_20260621T220135_P05023_N_F_J_001
+  - AFTER | 2026-10-19 | NISAR_L2_PR_GCOV_033_111_D_092_2005_DHDH_A_20261019T220058_20261019T220132_P05023_N_F_J_001 | 111 D / 92 | 2.0 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_033_111_D_092_2005_DHDH_A_20261019T220058_20261019T220132_P05023_N_F_J_001/NISAR_L2_PR_GCOV_033_111_D_092_2005_DHDH_A_20261019T220058_20261019T220132_P05023_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_033_111_D_092_2005_DHDH_A_20261019T220058_20261019T220132_P05023_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_033_111_D_092_2005_DHDH_A_20261019T220058_20261019T220132_P05023_N_F_J_001
+
+
+L3 · Shrinking Great Salt Lake · Utah, USA
+
+Mission box (west, south, east, north): -112.4819, 41.1358, -111.9973, 41.5012
+
+  - BEFORE | 2026-06-25 | NISAR_L2_PR_GCOV_023_157_D_068_4005_DHDH_A_20260625T022217_20260625T022251_P05023_N_F_J_001 | 157 D / 68 | 6.9 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_023_157_D_068_4005_DHDH_A_20260625T022217_20260625T022251_P05023_N_F_J_001/NISAR_L2_PR_GCOV_023_157_D_068_4005_DHDH_A_20260625T022217_20260625T022251_P05023_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_023_157_D_068_4005_DHDH_A_20260625T022217_20260625T022251_P05023_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_023_157_D_068_4005_DHDH_A_20260625T022217_20260625T022251_P05023_N_F_J_001
+  - AFTER | 2026-10-23 | NISAR_L2_PR_GCOV_033_157_D_068_4005_DHDH_A_20261023T022213_20261023T022248_P05036_N_F_J_001 | 157 D / 68 | 7.1 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_033_157_D_068_4005_DHDH_A_20261023T022213_20261023T022248_P05036_N_F_J_001/NISAR_L2_PR_GCOV_033_157_D_068_4005_DHDH_A_20261023T022213_20261023T022248_P05036_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_033_157_D_068_4005_DHDH_A_20261023T022213_20261023T022248_P05036_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_033_157_D_068_4005_DHDH_A_20261023T022213_20261023T022248_P05036_N_F_J_001
+
+M3 · Mississippi Delta: platform hunt · Louisiana, USA
+
+Mission box (west, south, east, north): -90.0056, 29.3076, -89.7947, 29.4924
+
+  - BEFORE | 2026-06-21 | NISAR_L2_PR_GCOV_023_105_A_016_4005_DHDH_A_20260621T111841_20260621T111907_P05023_N_P_J_001 | 105 A / 16 | 3.6 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_023_105_A_016_4005_DHDH_A_20260621T111841_20260621T111907_P05023_N_P_J_001/NISAR_L2_PR_GCOV_023_105_A_016_4005_DHDH_A_20260621T111841_20260621T111907_P05023_N_P_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_023_105_A_016_4005_DHDH_A_20260621T111841_20260621T111907_P05023_N_P_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_023_105_A_016_4005_DHDH_A_20260621T111841_20260621T111907_P05023_N_P_J_001
+  - AFTER | 2026-10-19 | NISAR_L2_PR_GCOV_033_105_A_016_4005_DHDH_A_20261019T111838_20261019T111904_P05023_N_P_J_001 | 105 A / 16 | 3.6 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_033_105_A_016_4005_DHDH_A_20261019T111838_20261019T111904_P05023_N_P_J_001/NISAR_L2_PR_GCOV_033_105_A_016_4005_DHDH_A_20261019T111838_20261019T111904_P05023_N_P_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_033_105_A_016_4005_DHDH_A_20261019T111838_20261019T111904_P05023_N_P_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_033_105_A_016_4005_DHDH_A_20261019T111838_20261019T111904_P05023_N_P_J_001
+
+W1 · Valencia flash floods · Gandia, Valencia, Spain
+
+Mission box (west, south, east, north): -0.4520, 39.1212, -0.2137, 39.3065
+
+  - BEFORE | 2026-10-11 | NISAR_L2_PR_GCOV_032_167_D_069_2005_DHDH_A_20261011T190137_20261011T190212_P05023_N_F_J_001 | 167 D / 69 | 1.9 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_032_167_D_069_2005_DHDH_A_20261011T190137_20261011T190212_P05023_N_F_J_001/NISAR_L2_PR_GCOV_032_167_D_069_2005_DHDH_A_20261011T190137_20261011T190212_P05023_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_032_167_D_069_2005_DHDH_A_20261011T190137_20261011T190212_P05023_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_032_167_D_069_2005_DHDH_A_20261011T190137_20261011T190212_P05023_N_F_J_001
+  - AFTER | 2026-10-23 | NISAR_L2_PR_GCOV_033_167_D_069_2005_DHDH_A_20261023T190137_20261023T190212_P05036_N_F_J_001 | 167 D / 69 | 1.9 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_033_167_D_069_2005_DHDH_A_20261023T190137_20261023T190212_P05036_N_F_J_001/NISAR_L2_PR_GCOV_033_167_D_069_2005_DHDH_A_20261023T190137_20261023T190212_P05036_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_033_167_D_069_2005_DHDH_A_20261023T190137_20261023T190212_P05036_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_033_167_D_069_2005_DHDH_A_20261023T190137_20261023T190212_P05036_N_F_J_001
+
+W2 · Limpopo floods · Chokwe, Mozambique
+
+Mission box (west, south, east, north): 32.8022, -24.6805, 33.1977, -24.3192
+
+  - BEFORE | 2026-01-05 | NISAR_L2_PR_GCOV_009_114_A_165_4005_DHDH_A_20260105T034232_20260105T034253_X05010_N_P_J_001 | 114 A / 165 | 4.0 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_BETA_V1/NISAR_L2_PR_GCOV_009_114_A_165_4005_DHDH_A_20260105T034232_20260105T034253_X05010_N_P_J_001/NISAR_L2_PR_GCOV_009_114_A_165_4005_DHDH_A_20260105T034232_20260105T034253_X05010_N_P_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_009_114_A_165_4005_DHDH_A_20260105T034232_20260105T034253_X05010_N_P_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_009_114_A_165_4005_DHDH_A_20260105T034232_20260105T034253_X05010_N_P_J_001
+  - AFTER | 2026-01-17 | NISAR_L2_PR_GCOV_010_114_A_165_4005_DHDH_A_20260117T034232_20260117T034254_X05010_N_P_J_001 | 114 A / 165 | 4.2 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_BETA_V1/NISAR_L2_PR_GCOV_010_114_A_165_4005_DHDH_A_20260117T034232_20260117T034254_X05010_N_P_J_001/NISAR_L2_PR_GCOV_010_114_A_165_4005_DHDH_A_20260117T034232_20260117T034254_X05010_N_P_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_010_114_A_165_4005_DHDH_A_20260117T034232_20260117T034254_X05010_N_P_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_010_114_A_165_4005_DHDH_A_20260117T034232_20260117T034254_X05010_N_P_J_001
+
+D3 · Nickel mine eats the rainforest · Weda Bay, Halmahera, Indonesia (in the repo, not shown on the map)
+
+Mission box (west, south, east, north): 127.8600, 0.3597, 128.0398, 0.5406
+
+  - BEFORE | 2026-06-17 | NISAR_L2_PR_GCOV_023_046_D_088_2005_SHSH_A_20260617T094618_20260617T094653_P05023_F_F_J_001 | 46 D / 88 | 1.0 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_023_046_D_088_2005_SHSH_A_20260617T094618_20260617T094653_P05023_F_F_J_001/NISAR_L2_PR_GCOV_023_046_D_088_2005_SHSH_A_20260617T094618_20260617T094653_P05023_F_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_023_046_D_088_2005_SHSH_A_20260617T094618_20260617T094653_P05023_F_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_023_046_D_088_2005_SHSH_A_20260617T094618_20260617T094653_P05023_F_F_J_001
+  - AFTER | 2026-10-27 | NISAR_L2_PR_GCOV_034_046_D_088_2005_DHDH_A_20261027T094615_20261027T094649_P05036_N_F_J_001 | 46 D / 88 | 1.4 GB | download .h5: https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_034_046_D_088_2005_DHDH_A_20261027T094615_20261027T094649_P05036_N_F_J_001/NISAR_L2_PR_GCOV_034_046_D_088_2005_DHDH_A_20261027T094615_20261027T094649_P05036_N_F_J_001.h5 · ASF search: https://search.asf.alaska.edu/#/?dataset=NISAR&searchType=List%20Search&searchList=NISAR_L2_PR_GCOV_034_046_D_088_2005_DHDH_A_20261027T094615_20261027T094649_P05036_N_F_J_001 · metadata: https://api.daac.asf.alaska.edu/services/search/param?output=geojson&granule_list=NISAR_L2_PR_GCOV_034_046_D_088_2005_DHDH_A_20261027T094615_20261027T094649_P05036_N_F_J_001
+
+The June file is HH only (SHSH), the October file HH+HV. That mismatch makes the mission sparkle, which is why it is
+kept off the map.
+
+A2 · NASA GIBS camera photos (🗺 Layers → "NASA camera photo", and the step-1 camera question)
+---------------------------------------------------------------------------------------------
+
+Loaded live from NASA GIBS, no key. Tile templates in public/js/app.js:
+
+- VIIRS (Suomi NPP, true colour, ~375 m):
+  https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/default/{date}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg
+- HLS S30 (Harmonized Landsat Sentinel-2, the Sentinel-2 part, 30 m):
+  https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/HLS_S30_Nadir_BRDF_Adjusted_Reflectance/default/{date}/GoogleMapsCompatible_Level12/{z}/{y}/{x}.png
+
+  - A3 · Radar school: Jezreel Valley | HLS S30 | 2026-10-23 | camera question + layer | NASA Worldview: https://worldview.earthdata.nasa.gov/?v=35.190,32.527,35.410,32.713&l=HLS_S30_Nadir_BRDF_Adjusted_Reflectance&t=2026-10-23
+  - D1 · Clearing along BR-163 | VIIRS SNPP | 2026-10-19 | camera question + layer | NASA Worldview: https://worldview.earthdata.nasa.gov/?v=-55.491,-7.191,-55.309,-7.009&l=VIIRS_SNPP_CorrectedReflectance_TrueColor&t=2026-10-19
+  - L3 · Shrinking Great Salt Lake | VIIRS SNPP | 2026-10-23 | camera question + layer | NASA Worldview: https://worldview.earthdata.nasa.gov/?v=-112.482,41.136,-111.997,41.501&l=VIIRS_SNPP_CorrectedReflectance_TrueColor&t=2026-10-23
+  - M3 · Mississippi Delta: platform hunt | VIIRS SNPP | 2026-10-19 | layer only | NASA Worldview: https://worldview.earthdata.nasa.gov/?v=-90.006,29.308,-89.795,29.492&l=VIIRS_SNPP_CorrectedReflectance_TrueColor&t=2026-10-19
+  - W1 · Valencia flash floods | VIIRS SNPP | 2026-10-23 | camera question + layer | NASA Worldview: https://worldview.earthdata.nasa.gov/?v=-0.452,39.121,-0.214,39.306&l=VIIRS_SNPP_CorrectedReflectance_TrueColor&t=2026-10-23
+  - W2 · Limpopo floods | VIIRS SNPP | 2026-01-17 | camera question + layer | NASA Worldview: https://worldview.earthdata.nasa.gov/?v=32.802,-24.680,33.198,-24.319&l=VIIRS_SNPP_CorrectedReflectance_TrueColor&t=2026-01-17
+  - D3 · Nickel mine eats the rainforest | VIIRS SNPP | 2026-10-27 | layer only (mission hidden) | NASA Worldview: https://worldview.earthdata.nasa.gov/?v=127.860,0.360,128.040,0.541&l=VIIRS_SNPP_CorrectedReflectance_TrueColor&t=2026-10-27
+
+A1 (Punjab) has the camera switched off ("camera": false).
+
+A3 · NASA pages used as sources ("📰 What happened" panels and facts)
+--------------------------------------------------------------------
+
+- M3 · NASA JPL: "NASA-ISRO radar mission peers through clouds to see Mississippi River Delta" (2026-01): https://www.jpl.nasa.gov/news/nasa-isro-radar-mission-peers-through-clouds-to-see-mississippi-river-delta/
+- M3 · NASA JPL: "Satellites help scientists track dramatic wetlands loss in Louisiana" (no date): https://www.jpl.nasa.gov/news/satellites-help-scientists-track-dramatic-wetlands-loss-in-louisiana/
+- W2 · NASA Scientific Visualization Studio: "NISAR Reveals Major Flooding in Mozambique" (2026-08-06): https://svs.gsfc.nasa.gov/5661
+- W2 · NASA Earth Observatory: "Floods Inundate Southern Mozambique" (2026-01): https://science.nasa.gov/earth/earth-observatory/floods-inundate-southern-mozambique/
+
+A4 · Partner data that arrives through NASA
+-------------------------------------------
+
+- ISRO: NISAR is a joint NASA-ISRO mission, so every radar file in A1 is NASA and ISRO data.
+- ESA Copernicus Sentinel-2: the HLS S30 photo for A3 is Sentinel-2 imagery, harmonised and served by NASA (HLS on GIBS).
+
+B · EVERYTHING ELSE (NOT NASA)
+==============================
+
+B1 · Base maps, loaded live
+---------------------------
+
+- Esri World Imagery (the satellite base map under everything):
+  https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x} · © Esri and its data providers
+- OpenStreetMap standard tiles (🗺 Layers → "Street map"): https://tile.openstreetmap.org/{z}/{x}/{y}.png ·
+  © OpenStreetMap contributors, https://www.openstreetmap.org/copyright
+
+B2 · OpenStreetMap data, downloaded once when the missions were built
+---------------------------------------------------------------------
+
+Fetched by pipeline/osm_layers.py from the public Overpass API: https://overpass-api.de/api/interpreter (fallbacks:
+https://overpass.private.coffee/api/interpreter, https://maps.mail.ru/osm/tools/overpass/api/interpreter).
+Licence ODbL: https://opendatacommons.org/licenses/odbl/
+
+  - public/missions/A3/osm.geojson | river, road, town | Layers, bonus questions
+  - public/missions/A1/osm.geojson | river, road, town | Layers, bonus questions
+  - public/missions/D1/osm.geojson | river, road, town | Layers, bonus questions
+  - public/missions/L3/osm.geojson | river, road, town | Layers, bonus questions
+  - public/missions/M3/osm.geojson | town | Layers, bonus questions
+  - public/missions/W1/osm.geojson | river, road, town | Layers, bonus questions
+  - public/missions/W2/osm.geojson | river, road, town | Layers, bonus questions
+  - public/missions/D1/roads.geojson | the BR-163 highway and its side roads | the Amazon lasso map
+
+B3 · News and fact sources (non-NASA), in "📰 What happened"
+-----------------------------------------------------------
+
+- A3 · WorldAtlas: "Jezreel Valley: The Breadbasket of Israel" (no date): https://www.worldatlas.com/articles/jezreel-valley-the-breadbasket-of-israel.html
+- A3 · Wikipedia: "Jezreel Valley" (no date): https://en.wikipedia.org/wiki/Jezreel_Valley
+- A1 · Outlook India: "In Punjab and Haryana, tech is curbing stubble burning, but battle is far from over" (2026-10): https://www.outlookindia.com/national/punjab-haryana-stubble-burning-technology
+- A1 · Republic World: "Punjab records 2,347 stubble burning incidents" (2026-11-05): https://www.republicworld.com/india/punjab-records-2347-stubble-burning-incidents-imposes-4037-lakh-fine-delhi-minister-blames-bhagwant-mann-2026-11-05-140473
+- D1 · Mongabay: "Crackdown lets rainforest reclaim illegal road in rare win for the Amazon" (2026-07): https://news.mongabay.com/2026/07/crackdown-lets-rainforest-reclaim-illegal-road-in-rare-win-for-the-amazon/
+- D1 · Mongabay: "Deforestation surges in Xingu, one of Amazon's most important basins" (2021-07): https://news.mongabay.com/2021/07/deforestation-surges-in-xingu-one-of-amazons-most-important-basins
+- L3 · Western Water: "Great Salt Lake ends 2025 at its third-lowest level" (2026-01-14): https://www.western-water.com/2026/01/14/great-salt-lake-ends-2025-at-its-third-lowest-level/
+- L3 · Idaho Capital Sun: "Researchers say they're getting closer to answers on Great Salt Lake dust" (2026-10-06): https://idahocapitalsun.com/2026/10/06/repub/researchers-say-theyre-getting-closer-to-answers-on-great-salt-lake-dust/
+- W1 · Watchers: "Four deaths reported as DANA Adam flooding prompts more than 1,000 rescues in eastern Spain" (2026-10-20): https://watchers.news/2026/10/20/four-deaths-reported-as-dana-adam-flooding-prompts-more-than-1-000-rescues-in-eastern-spain/
+- W1 · Anadolu Agency: "4 dead as severe floods hit eastern Spain, thousands evacuated" (2026-10): https://www.aa.com.tr/en/europe/4-dead-as-severe-floods-hit-eastern-spain-thousands-evacuated/4093292
+- D3 · Mining.com: "Foreign-backed nickel hub in Indonesia causing mass deforestation – report" (2024-01): https://mining.com/web/foreign-backed-nickel-hub-in-indonesia-causing-mass-deforestation-report
+- D3 · The Jakarta Post: "Indonesia seizes part of nickel site over forest violations" (2025-09-12): https://www.thejakartapost.com/business/2025/09/12/indonesia-seizes-part-of-nickel-site-over-forest-violations-
+- D3 · Mongabay: "Photos: The lives and forests bound to Indonesia's nickel dreams" (2024-12): https://news.mongabay.com/2024/12/photos-the-lives-and-forests-bound-to-indonesias-nickel-dreams/
+
+B4 · Images that are not data
+-----------------------------
+
+- AI-generated with Grok Imagine (xAI), 57 files in public/art/ (alien, icons, badges, mission cards, stars,
+  medals, trophy, Earth, dish, saucer, background): alien-full.webp, alien-happy.webp, alien-oops.webp, alien-point.webp, alien-surprised.webp, alien-think.webp, alien-wave.webp, badge-leaf.webp, badge-radar.webp, badge-water.webp, badge-wheat.webp, card-agriculture.webp, card-floods.webp, card-forest.webp, card-land.webp, card-marine.webp, coin.webp, dish.webp, earth.webp, icon-camera.webp, icon-circle.webp, icon-find.webp, icon-glow.webp, icon-heli.webp, icon-inspect.webp, icon-look.webp, icon-rig.webp, icon-score.webp, lyr-camera.webp, lyr-rivers.webp, lyr-roads.webp, lyr-street.webp, lyr-towns.webp, lyr-wet.webp, medal-1.webp, medal-2.webp, medal-3.webp, saucer.webp, space.webp, star-off.webp, star-on.webp, trophy.webp, ufo.webp, ui-back.webp, ui-board.webp, ui-close.webp, ui-device.webp, ui-finish.webp, ui-hint.webp, ui-layers.webp, ui-mute.webp, ui-news.webp, ui-player.webp, ui-send.webp, ui-sound.webp, ui-undo.webp, ui-world.webp
+- MENASIM logo public/art/menasim.webp, from https://www.menasim.org/home-en
+- Screenshots of the game used in the slides (public/pitch/img/*.jpg), made by the team.
+
+B5 · Software, libraries and services (no data; listed for completeness)
+------------------------------------------------------------------------
+
+- Leaflet 1.9.4 (the maps): https://unpkg.com/leaflet@1.9.4/dist/leaflet.js and https://unpkg.com/leaflet@1.9.4/dist/leaflet.css
+- GDAL (cuts the NISAR files, pipeline/clip.py) · FME Form 2026.3 (pipeline/sarbit_mission.fmw) · Python with NumPy, rasterio, Pillow
+- Vercel (hosting) · a Redis database (world leaderboard, api/scores.js)
+- Sounds are made in the browser (no audio files); fonts are the device's own.
+- AI tools: Grok Imagine (images), Claude Code (code and texts).
+
+C · MADE BY THE TEAM FROM THE NASA DATA (NOT NASA PRODUCTS)
+===========================================================
+
+All made from the NISAR files in A1, by pipeline/ (GDAL → FME) or in the browser:
+
+- img0.png, img1.png: the BEFORE / AFTER colour pictures (R = co-pol, G = cross-pol, B = co-pol)
+- img2.png: the red change map (pixels that changed by the mission's rule, e.g. ≥ 3 dB darker). Made by the team from the
+  NISAR data, not a NASA product. The score screen shows it and the Flood detector lab compares with it.
+- img3–img6.png: grey radar layers (BEFORE / AFTER × co- / cross-pol, −35…+5 dB) · img7, img8.png: co/cross ratio layers
+- grid.geojson (the 12 × 12 answer grid) and mission.json (box, dates, channels, change rule) in every mission folder
+- public/missions/A1/frame_20260616.png, frame_20261002.png, frame_20261107.png: the three Punjab season pictures
+- In the browser: the glow, the glowing spots, the wet-area outlines (radar darker than −18 dB), the glow-o-meter, the quiz
+  pins, and every bonus-question answer.
